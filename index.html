@@ -17,7 +17,7 @@
         :root {
             --bg-color: #F7F7F5; 
             --surface-color: #FFFFFF;
-            --accent-color: #38A1FF; /* Brightened electric light blue */
+            --accent-color: #38A1FF;
             
             --text-main: #1A1A1A;
             --text-muted: #595959;
@@ -25,7 +25,7 @@
             
             --font-display: 'Cormorant Garamond', serif;
             --font-ui: 'Montserrat', sans-serif;
-            --font-menu: 'Cormorant Garamond', serif; /* Elevated luxury serif menu typography */
+            --font-menu: 'Cormorant Garamond', serif;
         }
 
         * {
@@ -48,7 +48,7 @@
             overflow-x: hidden;
         }
 
-        /* Custom Cursor */
+        /* Custom Cursor (Desktop only) */
         #cursor {
             position: fixed;
             width: 8px;
@@ -156,10 +156,11 @@
             flex-direction: column;
             justify-content: center;
             position: relative;
+            padding-top: 6rem;
         }
 
         .hero h1 {
-            font-size: clamp(3rem, 8vw, 7rem);
+            font-size: clamp(2.8rem, 8vw, 7rem);
             margin-bottom: 2rem;
             font-style: italic;
         }
@@ -200,7 +201,7 @@
 
         .project-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 3rem;
         }
 
@@ -276,6 +277,7 @@
             border: 1px solid var(--border-color);
             background: var(--surface-color);
             user-select: none;
+            touch-action: pan-y; /* Allows normal vertical scrolling while dragging horizontal slider */
             box-shadow: 0 4px 20px rgba(0,0,0,0.03);
             transition: border-color 0.4s;
         }
@@ -452,9 +454,7 @@
             text-transform: uppercase;
         }
 
-        /* ==========================================================================
-           BACK TO TOP BUTTON
-           ========================================================================== */
+        /* Back to Top Button */
         #back-to-top {
             position: fixed;
             bottom: 2.5rem;
@@ -538,7 +538,7 @@
         }
 
         .cs-hero {
-            height: 60vh;
+            height: 50vh;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -548,7 +548,7 @@
         }
 
         .cs-hero h2 {
-            font-size: clamp(4rem, 10vw, 8rem);
+            font-size: clamp(3rem, 8vw, 8rem);
             font-style: italic;
             margin-bottom: 1rem;
             color: var(--text-main);
@@ -582,23 +582,105 @@
             color: var(--text-main);
         }
 
-        .cs-body h3 {
-            font-size: 2.5rem;
-            max-width: 900px;
-            margin: 4rem auto 1.5rem auto;
-            color: var(--accent-color);
+        /* ==========================================================================
+           RESPONSIVE MOBILE STYLES
+           ========================================================================== */
+        @media (hover: none) and (pointer: coarse) {
+            * {
+                cursor: auto !important;
+            }
+            #cursor {
+                display: none !important;
+            }
         }
 
-        .cs-body blockquote {
-            font-size: 2rem;
-            font-style: italic;
-            text-align: center;
-            color: var(--text-muted);
-            margin: 4rem auto;
-            max-width: 900px;
-            padding: 0 2rem;
-            border-left: 2px solid var(--accent-color);
-            border-right: 2px solid var(--accent-color);
+        @media (max-width: 850px) {
+            .container {
+                padding: 0 1.5rem;
+            }
+
+            header {
+                padding: 1.25rem 1.5rem;
+                flex-direction: column;
+                gap: 0.75rem;
+                align-items: flex-start;
+            }
+
+            nav ul {
+                gap: 1.25rem;
+                flex-wrap: wrap;
+            }
+
+            nav a {
+                font-size: 0.85rem;
+                letter-spacing: 2px;
+            }
+
+            .hero {
+                padding-top: 8rem;
+                min-height: auto;
+            }
+
+            .hero h1 {
+                font-size: 3.2rem;
+            }
+
+            .hero-bio {
+                font-size: 1.35rem;
+            }
+
+            .section-padding {
+                padding: 4rem 0;
+            }
+
+            .section-title {
+                font-size: 2.2rem;
+                margin-bottom: 2.5rem;
+            }
+
+            .project-grid {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+
+            footer {
+                padding: 5rem 0 2rem 0;
+                margin-top: 4rem;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+                padding-bottom: 4rem;
+            }
+
+            .footer-brand h2 {
+                font-size: 2.5rem;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            #back-to-top {
+                bottom: 1.5rem;
+                right: 1.5rem;
+                width: 46px;
+                height: 46px;
+            }
+
+            .cs-meta-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .close-btn {
+                top: 1.5rem;
+                right: 1.5rem;
+                padding: 0.75rem 1.25rem;
+            }
         }
     </style>
 </head>
@@ -807,7 +889,6 @@
 
     <!-- SCRIPTS -->
     <script>
-        // Set dynamic copyright year
         document.getElementById('year').textContent = new Date().getFullYear();
 
         // Custom Cursor Logic
@@ -815,16 +896,18 @@
         const interactives = document.querySelectorAll('.interactive, a, button, .project-card, .ba-container');
 
         document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
+            if (cursor) {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+            }
         });
 
         interactives.forEach(elem => {
-            elem.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
-            elem.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+            elem.addEventListener('mouseenter', () => cursor && cursor.classList.add('hovered'));
+            elem.addEventListener('mouseleave', () => cursor && cursor.classList.remove('hovered'));
         });
 
-        // BACK TO TOP BUTTON LOGIC
+        // Back to Top Button Logic
         const backToTopBtn = document.getElementById('back-to-top');
 
         window.addEventListener('scroll', () => {
@@ -842,7 +925,7 @@
             });
         }
 
-        // BEFORE AND AFTER INTERACTIVE SLIDER LOGIC
+        // Before & After Touch & Mouse Slider Logic
         document.querySelectorAll('.ba-container').forEach(container => {
             const afterLayer = container.querySelector('.ba-after');
             const handle = container.querySelector('.ba-handle');
@@ -871,6 +954,7 @@
 
             let isDragging = false;
 
+            // Mouse Events
             container.addEventListener('mousedown', (e) => {
                 isDragging = true;
                 updateSlider(e.clientX);
@@ -883,18 +967,22 @@
 
             window.addEventListener('mouseup', () => isDragging = false);
 
+            // Touch Events (With scroll prevention on drag)
             container.addEventListener('touchstart', (e) => {
                 isDragging = true;
                 updateSlider(e.touches[0].clientX);
-            });
+            }, { passive: true });
+
             window.addEventListener('touchmove', (e) => {
                 if (!isDragging) return;
+                if (e.cancelable) e.preventDefault(); // Prevents vertical window scroll while dragging horizontal slider handle
                 updateSlider(e.touches[0].clientX);
-            });
+            }, { passive: false });
+
             window.addEventListener('touchend', () => isDragging = false);
         });
 
-        // Project Database (HTML templates for expansion)
+        // Project Database & Modal Logic
         const projectData = {
             'umami': `
                 <div class="cs-hero">
@@ -935,19 +1023,11 @@
             `
         };
 
-        // Project Expansion Logic
         const modal = document.getElementById('project-modal');
         const modalContent = document.getElementById('project-content');
         
         function openProject(projectId) {
             modalContent.innerHTML = projectData[projectId] || projectData['generic'];
-            
-            const newInteractives = modalContent.querySelectorAll('a, button');
-            newInteractives.forEach(elem => {
-                elem.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
-                elem.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
-            });
-            
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
             modal.scrollTop = 0;
