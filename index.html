@@ -154,7 +154,6 @@
             flex-shrink: 0;
         }
 
-        /* Desaturated Theme Button */
         .theme-toggle-btn {
             background: var(--surface-color);
             border: 1px solid var(--border-color);
@@ -231,14 +230,12 @@
             width: 100%;
         }
 
-        /* Hero / About */
+        /* Hero / About Section */
         .hero {
-            min-height: 100vh;
+            padding-top: 8rem;
+            padding-bottom: 4rem;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            position: relative;
-            padding-top: 6rem;
         }
 
         .hero h1 {
@@ -248,9 +245,10 @@
         }
 
         .hero-bio {
-            max-width: 800px;
-            font-size: 1.8rem;
+            max-width: 850px;
+            font-size: 1.6rem;
             color: var(--text-muted);
+            margin-bottom: 4rem;
         }
 
         .hero-bio em {
@@ -268,8 +266,102 @@
             font-weight: 500;
         }
 
+        /* Video Showreel Container */
+        .showreel-container {
+            width: 100%;
+            aspect-ratio: 16/9;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 5rem;
+            background: var(--surface-color);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .showreel-container iframe,
+        .showreel-container video {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Clients Showcase */
+        .clients-subsection {
+            margin-bottom: 5rem;
+        }
+
+        .clients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .client-logo-card {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            aspect-ratio: 3/2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: border-color 0.3s ease;
+        }
+
+        .client-logo-card:hover {
+            border-color: var(--accent-color);
+        }
+
+        .client-logo-card img {
+            max-width: 80%;
+            max-height: 80%;
+            object-fit: contain;
+            filter: grayscale(100%);
+            opacity: 0.7;
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+
+        .client-logo-card:hover img {
+            filter: grayscale(0%);
+            opacity: 1;
+        }
+
+        /* Movie Posters Subsection */
+        .posters-subsection {
+            margin-bottom: 4rem;
+        }
+
+        .posters-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2.5rem;
+        }
+
+        .poster-card {
+            aspect-ratio: 2/3;
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+            transition: transform 0.4s ease, border-color 0.4s ease;
+        }
+
+        .poster-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--accent-color);
+        }
+
+        .poster-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         .section-padding {
-            padding: 8rem 0;
+            padding: 6rem 0;
         }
 
         .section-title {
@@ -278,6 +370,16 @@
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 1rem;
             color: var(--text-main);
+        }
+
+        .subsection-title {
+            font-family: var(--font-menu);
+            font-size: 0.9rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            display: block;
         }
 
         .project-grid {
@@ -793,6 +895,7 @@
         @media (max-width: 600px) {
             .cs-gallery { grid-template-columns: 1fr; }
             .cs-stats { grid-template-columns: 1fr; }
+            .posters-grid { grid-template-columns: 1fr; }
         }
 
         /* Mobile Adjustments */
@@ -867,7 +970,6 @@
 
             .hero {
                 padding-top: 6rem;
-                min-height: auto;
             }
 
             .hero h1 {
@@ -876,6 +978,10 @@
 
             .hero-bio {
                 font-size: 1.3rem;
+            }
+
+            .posters-grid {
+                grid-template-columns: 1fr;
             }
 
             .section-padding {
@@ -958,9 +1064,60 @@
         <section id="about" class="hero container">
             <span class="ui-label">Visual Alchemist & Creative Director</span>
             <h1>Manny Van Delight</h1>
+            
+            <!-- Introduction Text -->
             <div class="hero-bio">
-                <p>Hello, fellow rascals.</p><br>
-                <p>There is a quiet pressure in the creative world to keep things tidy—to propose concepts that fit neatly into predictable boxes. I’ve always preferred to live right on the edge of total logistical collapse. From engineering paper dresses that melt in high humidity to heavy VFX and generative AI, I bridge the gap between <em>impossible concepts</em> and <em>technical execution</em>.</p>
+                <p>Did I do well mum?</p><br>
+                <p>
+                    A creative rascal. A world-builder. A storyteller who turns distant lands and bold ideas into engaging art. Guided by my inner child as my true north, I fuse photography, film, and visual effects magic into powerful, immersive experiences.
+                    </p><br>
+                    <p>For decades, I crafted visuals for the world’s biggest brands - Audi, Porsche, Toyota -and contributed to films like Avatar, Tintin, Wonder Woman, Tomb Raider, and games like Horizon Zero Dawn. But beyond the industry, I found my true passion: creating my own art, where storytelling and technology collide.
+                    </p><br>
+                    <p>Now, I’m pushing the boundaries of interactive filmmaking -blending visuals, narrative, and cutting-edge tech to create stories where the audience plays a role. My work isn’t just something to watch; it’s something to experience and shape. Through community-driven storytelling, I invite people to vote and influence the narrative, making them an integral part of the creative process.
+                    </p><br>
+                    <p>And while I continue to carve my own path, I’m also working on one of the biggest movies out there - though I can’t reveal what it is just yet.
+                    Every share, every kind word, every purchase fuels this journey and for that, you have our deepest gratitude. - MvD</p>
+            </div>
+
+            <!-- Embedded Video / Showreel -->
+            <span class="subsection-title">Showreel & Director's Cut</span>
+            <div class="showreel-container">
+                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Van Delight Creative Reel" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+
+            <!-- Client Logos Showcase -->
+            <div class="clients-subsection">
+                <span class="subsection-title">Selected Key Clients</span>
+                <div class="clients-grid">
+                    <div class="client-logo-card interactive">
+                        <img src="assets/client-logo-1.png" alt="Client Logo 1" onerror="this.style.display='none'; this.parentNode.innerText='CLIENT 01';">
+                    </div>
+                    <div class="client-logo-card interactive">
+                        <img src="assets/client-logo-2.png" alt="Client Logo 2" onerror="this.style.display='none'; this.parentNode.innerText='CLIENT 02';">
+                    </div>
+                    <div class="client-logo-card interactive">
+                        <img src="assets/client-logo-3.png" alt="Client Logo 3" onerror="this.style.display='none'; this.parentNode.innerText='CLIENT 03';">
+                    </div>
+                    <div class="client-logo-card interactive">
+                        <img src="assets/client-logo-4.png" alt="Client Logo 4" onerror="this.style.display='none'; this.parentNode.innerText='CLIENT 04';">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Featured Movie Posters -->
+            <div class="posters-subsection">
+                <span class="subsection-title">Featured Key Art & Posters</span>
+                <div class="posters-grid">
+                    <div class="poster-card interactive">
+                        <img src="assets/tintin.png" alt="Movie Poster 1" onerror="this.src='https://via.placeholder.com/600x900?text=Movie+Poster+1'">
+                    </div>
+                    <div class="poster-card interactive">
+                        <img src="assets/wonderwoman.png" alt="Movie Poster 2" onerror="this.src='https://via.placeholder.com/600x900?text=Movie+Poster+2'">
+                    </div>
+                    <div class="poster-card interactive">
+                        <img src="assets/mortalengines.png" alt="Movie Poster 3" onerror="this.src='https://via.placeholder.com/600x900?text=Movie+Poster+3'">
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -1258,7 +1415,7 @@
             window.addEventListener('touchend', () => isDragging = false);
         });
 
-        /* Project Modal Data - Exact Content Restored */
+        /* Project Modal Data */
         const projectData = {
             'umami': `
                 <div class="cs-hero">
