@@ -661,6 +661,140 @@
             padding-bottom: 8rem;
         }
 
+        .cs-body p {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .cs-section-label {
+            font-family: var(--font-menu);
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent-color);
+            margin: 4rem 0 1rem;
+            font-weight: 600;
+        }
+
+        .cs-section-label:first-of-type {
+            margin-top: 2.5rem;
+        }
+
+        .cs-h3 {
+            font-size: 1.9rem;
+            font-style: italic;
+            color: var(--text-main);
+            margin-bottom: 1.25rem;
+        }
+
+        .cs-pull-quote {
+            text-align: center;
+            font-size: 1.7rem;
+            font-style: italic;
+            color: var(--text-main);
+            max-width: 700px;
+            margin: 3.5rem auto;
+            line-height: 1.5;
+        }
+
+        .cs-pull-quote span {
+            display: block;
+            margin-top: 1rem;
+            font-family: var(--font-menu);
+            font-size: 0.8rem;
+            font-style: normal;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent-color);
+        }
+
+        .cs-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2.5rem 0;
+        }
+
+        .cs-stats div {
+            border-top: 1px solid var(--border-color);
+            padding-top: 0.9rem;
+        }
+
+        .cs-stats strong {
+            display: block;
+            font-family: var(--font-menu);
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-main);
+            margin-bottom: 0.4rem;
+        }
+
+        .cs-stats p {
+            font-size: 0.95rem;
+            margin-bottom: 0;
+        }
+
+        .cs-gallery {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0 3rem;
+        }
+
+        .cs-gallery.single {
+            grid-template-columns: 1fr;
+            max-width: 640px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cs-img {
+            width: 100%;
+            aspect-ratio: 4/5;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            display: block;
+        }
+
+        .cs-gallery.single .cs-img {
+            aspect-ratio: 16/10;
+        }
+
+        .cs-caption {
+            font-family: var(--font-menu);
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-top: 0.6rem;
+            font-style: italic;
+        }
+
+        .cs-cta {
+            text-align: center;
+            margin-top: 3.5rem;
+        }
+
+        .cs-cta a {
+            color: var(--accent-color);
+            font-family: var(--font-menu);
+            font-size: 1rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 600;
+            text-decoration: none;
+            border-bottom: 1px solid var(--accent-color);
+            padding-bottom: 3px;
+        }
+
+        @media (max-width: 600px) {
+            .cs-gallery { grid-template-columns: 1fr; }
+            .cs-stats { grid-template-columns: 1fr; }
+        }
+
         /* Mobile Adjustments */
         @media (hover: none) and (pointer: coarse) {
             * { cursor: auto !important; }
@@ -835,7 +969,7 @@
             <h2 class="section-title">Projects</h2>
             <div class="project-grid">
                 <div class="project-card interactive" onclick="openProject('umami')">
-                    <div class="card-bg" style="background-image: url('https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="card-bg" style="background-image: url('https://lh7-us.googleusercontent.com/sitesv-images-rt/ACHe0d1oPVh6AqbQcZHF6-BOGXbqF57NdNcFQL76qER5HU-Ck5rLjmC3e8h9MVLB-rHPFV_fUqk179U6kHFvtkQ9Gxqdvm-nD1p2wOeS8sM6XIlUA1D2AvpWK9dVpcVheVRXqnqmGHjY5NC2MJbKnAZ94gu25QglPOnO0qqgS_v3WraiJBaq0DU6Ke38rN2gJjJb_oebqDCp5-LAk_TYKPL1MwtbnLzcW4atssB8VYP2=w1280');"></div>
                     <div class="card-content">
                         <h3>Umami Origami</h3>
                         <p>Surreal Fashion Portraits</p>
@@ -1129,22 +1263,94 @@
             'umami': `
                 <div class="cs-hero">
                     <div>
-                        <span class="ui-label">Surreal Fashion Portraits</span>
+                        <span class="ui-label">The Art of Not Crumbling Under Pressure</span>
                         <h2>Umami Origami</h2>
                     </div>
                 </div>
                 <div class="cs-meta-grid">
-                    <div><strong>ABOUT</strong> Ideas pushed beyond what the camera can capture.</div>
-                    <div><strong>TECHNIQUE</strong> Handcrafted dresses, custom digital assets.</div>
-                    <div><strong>THEME</strong> Every element is well thought through and placed to tell a story.</div>
+                    <div><strong>ABOUT</strong> A high-fashion dress built entirely from paper, shot across real landscapes, with 3D-rendered origami butterflies added in post.</div>
+                    <div><strong>TECHNIQUE</strong> Handcrafted paper couture, on-location photography, VFX compositing, and one AI-generated companion piece.</div>
+                    <div><strong>THEME</strong> Or, how I metaphorically and literally glued a project together.</div>
                 </div>
-                <div class="cs-body" style="padding-bottom: 8rem;">
-                    <p style="text-align: center; font-size: 1.8rem; font-style: italic; color: var(--accent-color); margin-bottom: 2.5rem;">
-                        The magic of photography meets the magic of paper folding, meets visual effects.
+                <div class="cs-body">
+                    <div class="cs-gallery single">
+                        <figure>
+                            <img class="cs-img" src="https://lh7-us.googleusercontent.com/sitesv-images-rt/ACHe0d1c7YxFtbre9zSIcZmd0o_VuBa2dhmp-O_fRIAWgPEoub11Ovy3t7UIMhTVIjEOD86eVIUdLjFXzURtTXfyqJU5CctTVNgl2plnOnJYGVfn52y8ZhLeZ3jtRuosqhBwrTie6hikjAkycks2feHQLsYYojqUquWFG-vJ_2ZTxJAy8_L6y3zvCek4wdkkYoNg1xeogDuc5mAmhAkMA2z_VxhjOYbPPwbOcui8MD78=w1000" alt="Path Of Delight" style="aspect-ratio:16/9;">
+                            <div class="cs-caption">Path Of Delight — all I need is what I see and all I see is in front of me. Only when we venture out, leaving everything behind, do we allow ourselves to discover what we truly need.</div>
+                        </figure>
+                    </div>
+
+                    <p>Hello, fellow rascals.</p>
+                    <p>There is a quiet pressure in the creative world to keep things tidy. To propose concepts that fit neatly into predictable boxes, follow the path of least resistance, and guarantee a smooth, frictionless production. It's safe, it's comfortable, and it is the fastest way to make sure a piece of work leaves absolutely no impression at all.</p>
+                    <p>Personally, I've always found that the most compelling visions live right on the edge of a total logistical collapse.</p>
+                    <p>Today, I'm taking you behind the scenes of my latest project: Umami Origami. It's a project born from a simple, slightly unhinged premise: what happens when you mix high fashion, structural engineering challenges, elegant VFX, a dash of AI, and a severe lack of respect for the weather forecast?</p>
+                    <p style="text-align: center; font-size: 1.8rem; font-style: italic; color: var(--accent-color); margin: 2.5rem 0;">
+                        Spoiler alert: you get magic. But first, you get a lot of stress.
                     </p>
-                    <p style="font-size: 1.4rem; line-height: 1.8; color: var(--text-main); text-align: left; max-width: 800px; margin: 0 auto;">
-                        Ok so the project is called Umami Origami because I made a fashion dress from paper and added origami butterflies to the photograph in post production.
+
+                    <div class="cs-section-label">The Main Event</div>
+                    <p>The concept was simple: craft a high-fashion dress entirely out of paper, shoot it across breathtaking landscapes, and add 3D-rendered origami butterflies in post-production. Easy on paper. Not as straightforward in reality.</p>
+
+                    <div class="cs-section-label">The Real-World Struggle (IRL Costs Real Money)</div>
+                    <h3 class="cs-h3">Paper hates the outdoors.</h3>
+                    <p>First of all, finding a dressmaker who doesn't immediately throw scissors at you when you say "make it out of paper" is a challenge. Plus it cost a pretty penny to bring to life, and once we got it on set, the universe decided to test my sanity.</p>
+                    <div class="cs-stats">
+                        <div><strong>Wind</strong><p>Every gentle breeze threatened to violently fold the neck piece into oblivion.</p></div>
+                        <div><strong>Humidity</strong><p>Dampened the paper, making the entire gown heavy, fragile, and prone to melting.</p></div>
+                    </div>
+                    <p>I had to pull out some serious McGyver moves, reinforcing the structural integrity of the dress mid-shoot while praying to the photography gods it wouldn't show in the final frames. Then there was the model. Bless her soul. Sitting down, moving, or doing literally anything came with a high risk of catastrophic structural failure. But we survived. And the results speak for themselves.</p>
+
+                    <div class="cs-gallery">
+                        <figure>
+                            <img class="cs-img" src="https://lh7-us.googleusercontent.com/sitesv-images-rt/ACHe0d0UxehNm6yEdBXTOcw0tCS8gUUdKGRTcZBUGrdS7HwjGKNhMnOu6D6F7M5PnC3HBoHdxVEzwcC4RYs2VX6lRoyAKpmnl2_cmErtflZtDKLXceBAHJjUSVd-sKTlANm81K2Qr6iy76NGPDyeBzAK6i-ECH-A7fkluRLfrGR8HopW6Vc4L9THK5dFkw8h6n8xTFYwAjIQ5kUlJbbFDKyGrVRNY1vzY3xZWj-vGPoWpQU=w800" alt="Ambling Reverie">
+                            <div class="cs-caption">Ambling Reverie — in the tender embrace of dawn, I meander through whispers of light and shadow.</div>
+                        </figure>
+                        <figure>
+                            <img class="cs-img" src="https://lh7-us.googleusercontent.com/sitesv-images-rt/ACHe0d1fmn3Lj22_7oDTaAP8l9oz2Fn5u6oi_4WqrTWcENgvytlj3WI5QCjnHVDqY_2ItCaJXJ71k-fn_x-TR2_Hjp7NZNcHTM_ykAnm7yRIsk1qQ_NGA0imAFBj1HGz9c4zwltJ9c6LZIFbQjVrN94-0W-mPr98aOhNpbxKZja-IxWYyk0xuXtVveOJ5XW3QiFhF9z8sgTDjTKSYJ_85v_LOt8x4g3m31tkN3LJlizVbGU=w800" alt="Sanctuary">
+                            <div class="cs-caption">Sanctuary — we are beautiful, we are different, we are attracted to somebody. Often we keep those desires close to heart.</div>
+                        </figure>
+                    </div>
+
+                    <div class="cs-section-label">Cheating Geography via VFX</div>
+                    <p>If you look at the locations, you'll notice they span across New Zealand and Australia. Did I fly the whole crew to every remote peak? Absolutely not — I value my bank account.</p>
+                    <p>For a couple of these concepts I leaned heavily into my visual effects background: shot the locations solo, shot the model separately, and merged her into the environments seamlessly. The 3D-rendered origami butterflies aren't pasted on top; they cast accurate shadows, catch the ambient light, and perfectly mimic the colours of her paper dress. To tie the physical world together, I also captured two shots featuring actual fabric dresses, injecting the digital butterflies to blur the line between the ordinary and the extraordinary.</p>
+
+                    <div class="cs-gallery">
+                        <figure>
+                            <img class="cs-img" src="https://lh7-us.googleusercontent.com/sitesv-images-rt/ACHe0d16C0LC_lq5LvJUP1Llh-ryWiz6I7GwuZD4HOAB22YRaunhxw_Dd-Cc89SRRvoLaMhOpGh2cfQDONduoXGhKvV0SRvUN6jBHWOOkffc5cvV3BYEgPfKSFWH2C91cpy8O0twfRDCRUmsH4_rnJTFgvrYjX5xszNsxo1ppNVz7YFf0N4gi94ncnN0BCGIRanTMOmRIyKgljfrptZkC_AbJnx_Qb8CphfiM0qTmmKGExk=w800" alt="Fleeting">
+                            <div class="cs-caption">Fleeting — a dance between nature and human presence, where the familiar meets the unknown.</div>
+                        </figure>
+                        <figure>
+                            <img class="cs-img" src="https://lh7-us.googleusercontent.com/sitesv-images-rt/ACHe0d2h8OLa4dN1WGkJJ4RslNY01LN3oMIGZ5f9FcS1LpyrPF8chbepTCKMI1LNmKX-1anAl0SBveQjMCgZCGbFT5jh1p7FT7pV1ld1YMGCvDJ-KLiIaCK-pkP93GkyoKX1uE41XJJYKut8nN9iQ8lgtx0IjIoRGcZ6pcdea69qGxkVTnRAkrE-PGf5o-_sI2ycJJvsTU6SfVToL4QGjKFduuwQ8fwhBwYbIdRXMFYtawA=w800" alt="Echoes of Delight">
+                            <div class="cs-caption">Echoes of Delight — choose joy, and joy will seek you in the crowd. Declare yourself beautiful, and beauty will mirror your form.</div>
+                        </figure>
+                    </div>
+
+                    <div class="cs-section-label">Enter the Auramancer (The AI Experiment)</div>
+                    <h3 class="cs-h3">The Gold Dancer.</h3>
+                    <p>Because the physical paper dress tried to murder my workflow, I decided to see how the digital gods would handle the pressure. I wanted to design an even more extreme dress for a ballet dancer.</p>
+                    <p>If you replace "glass" with "gold" in the word Vitrumancer, you get Auramancer (<em>Aurum</em> = Latin for gold, <em>Mancer</em> = one with control over an element). A Gold Dancer. Instead of spending weeks and a small fortune on a physical dress that would probably break a dancer's legs, I trained AI on exactly what I wanted. It was the only AI contribution to the project, but it proved a point: for scale, speed, and versatility, embracing the machine let me realize a concept that would otherwise be locked behind a budget wall.</p>
+                    <div class="cs-gallery single">
+                        <figure>
+                            <img class="cs-img" src="https://lh7-us.googleusercontent.com/sitesv-images-rt/ACHe0d3rF9nEYH260MEX6GybNRnYVh-SNq7CoGZkyHtYVNb2s0kJPtV_XN_GjfZh7Fqu5S-xKjDCEPW7E1tpP9r130E_v1jD6BGjJDaxDkLqN45TBiq5ZEKL1VLaKdoSl8c9hIXLS-V_BOduELZWXgrmoToSr5EzBhZ_TUjEdfMCWHsGRQApBDk1YFBw_tgcSW76V2cMqzIgR3NKHOOSK-TqdjXeB3BQv4du2IyJDY7OC8o=w1000" alt="Auramancer — The Gold Dancer">
+                            <div class="cs-caption">Auramancer — the gold dancer</div>
+                        </figure>
+                    </div>
+
+                    <div class="cs-section-label">The Peak — Midnight Magic</div>
+                    <p>Midnight Magic delves deep into the myriad emotions and experiences that come with immigrating to a new country. At its heart, it is a visual narrative of transformation, resilience, and growth, as one adapts to new circumstances.</p>
+                    <p>The art style is divided into distinct elements, each symbolizing a phase of this profound journey. On one hand, there is the night, black and white — the melancholy of leaving one's roots behind, a teary-eyed farewell to family and friends. On the other, the heavy tone is balanced with light-hearted magic: the moon lighting the way, sparkling mist, glowing creatures welcoming us to the new land.</p>
+                    <p>It's an immigrant's transformative odyssey — cultural shocks, bittersweet nostalgia, the forging of new bonds, and beauty discovered in the most unexpected times. A piece about the universal human experience of migration, and the ever-unfolding tapestry of cultures that make our world so rich.</p>
+
+                    <p class="cs-pull-quote">
+                        The best work isn't born in a sterile environment where everything goes according to plan. It's born when the paper dress is tearing, the wind is blowing, the locations are thousands of miles apart, and you are forced to use every tool in your arsenal — from VFX to AI to literal sticky tape — to make the vision reality.
+                        <span>I am not afraid to break things to make something beautiful.</span>
                     </p>
+                    <p style="text-align:center; font-style:italic; color: var(--text-main);">Stay delightfully unusual,<br>Manny Van Delight — Creative Director / Visual Alchemist</p>
+
+                    <div class="cs-cta">
+                        <a href="https://opensea.io/gallery/MannyVanDelight/deead016ab3b4fe685d51bbecf38c238" class="interactive">[ Collect on OpenSea ]</a>
+                    </div>
                 </div>
             `,
             'shattered': `
