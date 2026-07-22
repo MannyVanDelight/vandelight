@@ -32,7 +32,7 @@
             --text-main: #1A1A1A;
             --text-muted: #595959;
             --border-color: rgba(0, 0, 0, 0.08);
-            --header-bg: rgba(247, 247, 245, 0.92);
+            --header-bg: rgba(247, 247, 245, 0.95);
             --card-subtext: #1A1A1A;
         }
 
@@ -51,7 +51,7 @@
             --text-main: #F7F7F5;
             --text-muted: #A0A0A0;
             --border-color: rgba(255, 255, 255, 0.12);
-            --header-bg: rgba(18, 18, 18, 0.92);
+            --header-bg: rgba(18, 18, 18, 0.95);
             --card-subtext: #F7F7F5;
         }
 
@@ -117,12 +117,16 @@
             text-decoration: none;
         }
 
-        /* Header & Collapsible Navigation */
+        /* ==========================================================================
+           HEADER & NAVIGATION (ALWAYS 1-LINE)
+           ========================================================================== */
         header {
             position: fixed;
             top: 0;
+            left: 0;
             width: 100%;
-            padding: 1.75rem 3rem;
+            height: 68px;
+            padding: 0 3rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -131,12 +135,7 @@
             backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--border-color);
             transition: background-color 0.3s ease;
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
+            white-space: nowrap;
         }
 
         .logo {
@@ -145,6 +144,7 @@
             font-size: 1.1rem;
             letter-spacing: 4px;
             text-transform: uppercase;
+            flex-shrink: 0;
         }
 
         .logo span {
@@ -152,26 +152,39 @@
             font-weight: 600;
         }
 
-        /* Theme Toggle Button */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-shrink: 0;
+        }
+
+        /* Desaturated Theme Toggle Button */
         .theme-toggle-btn {
             background: var(--surface-color);
             border: 1px solid var(--border-color);
             color: var(--text-main);
-            padding: 0.4rem 0.9rem;
+            padding: 0.35rem 0.85rem;
             border-radius: 20px;
             font-family: var(--font-ui);
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             letter-spacing: 1px;
             text-transform: uppercase;
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 0.4rem;
+            gap: 0.35rem;
             transition: all 0.3s ease;
+            /* Complete Desaturation Filter */
+            filter: grayscale(100%);
+            -webkit-filter: grayscale(100%);
+            line-height: 1;
         }
 
         .theme-toggle-btn:hover {
             border-color: var(--accent-color);
             color: var(--accent-color);
+            filter: grayscale(0%);
+            -webkit-filter: grayscale(0%);
         }
 
         /* Hamburger Toggle Button */
@@ -180,22 +193,24 @@
             background: none;
             border: none;
             font-family: var(--font-menu);
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             color: var(--text-main);
             outline: none;
             z-index: 110;
+            line-height: 1;
+            padding: 0.2rem;
         }
 
         nav ul {
             display: flex;
-            gap: 3rem;
+            gap: 2.5rem;
             list-style: none;
             align-items: center;
         }
 
         nav a {
             font-family: var(--font-menu);
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 400;
             text-transform: uppercase;
             letter-spacing: 3px;
@@ -572,7 +587,7 @@
             transform: translateY(-4px);
         }
 
-        /* Modal Overlay */
+        /* Modal Overlay & Integrated Case Study Layout */
         .project-takeover {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100vh;
@@ -594,16 +609,16 @@
 
         .close-btn {
             position: fixed;
-            top: 2rem; right: 3rem;
+            top: 1.5rem; right: 2rem;
             font-family: var(--font-menu);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             letter-spacing: 3px;
             text-transform: uppercase;
             color: var(--text-main);
             z-index: 210;
             background: var(--surface-color);
             border: 1px solid var(--border-color);
-            padding: 1rem 1.5rem;
+            padding: 0.75rem 1.25rem;
             border-radius: 40px;
             backdrop-filter: blur(5px);
             transition: all 0.3s ease;
@@ -615,18 +630,16 @@
             border-color: var(--accent-color);
         }
 
+        /* Detailed Case Study Formatting */
         .cs-hero {
-            height: 50vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            padding-top: 8rem;
+            padding-bottom: 4rem;
             text-align: center;
             border-bottom: 1px solid var(--border-color);
-            padding-top: 4rem;
         }
 
         .cs-hero h2 {
-            font-size: clamp(3rem, 8vw, 8rem);
+            font-size: clamp(3rem, 7vw, 6.5rem);
             font-style: italic;
             margin-bottom: 1rem;
             color: var(--text-main);
@@ -634,51 +647,107 @@
 
         .cs-meta-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 2rem;
-            margin: 4rem 0;
+            margin: 3rem 0 5rem 0;
             font-family: var(--font-menu);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             letter-spacing: 1px;
             color: var(--text-muted);
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 2rem;
+            padding-bottom: 3rem;
         }
 
         .cs-meta-grid strong {
             color: var(--accent-color);
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.4rem;
             font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
-        .cs-body p {
-            font-size: 1.4rem;
-            max-width: 900px;
-            margin: 0 auto 2.5rem auto;
-            text-align: left;
+        .cs-body {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding-bottom: 8rem;
+        }
+
+        .cs-lead-text {
+            font-size: 2.2rem;
+            line-height: 1.4;
+            font-style: italic;
+            color: var(--text-main);
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .cs-section {
+            margin-bottom: 4rem;
+        }
+
+        .cs-section h3 {
+            font-size: 2rem;
+            margin-bottom: 1.2rem;
             color: var(--text-main);
         }
 
-        /* ==========================================================================
-           MOBILE OPTIMIZATIONS & GUTTER FIXES
-           ========================================================================== */
-        @media (hover: none) and (pointer: coarse) {
-            * {
-                cursor: auto !important;
-            }
-            #cursor {
-                display: none !important;
-            }
+        .cs-section p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
         }
 
-        @media (max-width: 850px) {
+        .cs-media-hero {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            margin: 3rem 0;
+            background-size: cover;
+            background-position: center;
+            border-radius: 4px;
+        }
+
+        .cs-gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .cs-gallery-item {
+            aspect-ratio: 4/5;
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            background-size: cover;
+            background-position: center;
+            border-radius: 4px;
+        }
+
+        /* ==========================================================================
+           MOBILE & HORIZONTAL LANDSCAPE OPTIMIZATIONS
+           ========================================================================== */
+        @media (hover: none) and (pointer: coarse) {
+            * { cursor: auto !important; }
+            #cursor { display: none !important; }
+        }
+
+        /* Triggers on both mobile portrait AND horizontal mobile landscape */
+        @media (max-width: 992px), (max-height: 500px) {
             .container {
                 padding: 0 1.5rem;
             }
 
             header {
-                padding: 1.25rem 1.5rem;
+                padding: 0 1.5rem;
+                height: 60px;
+            }
+
+            .logo {
+                font-size: 0.95rem;
+                letter-spacing: 2px;
             }
 
             .menu-toggle {
@@ -696,10 +765,11 @@
                 background: var(--bg-color);
                 backdrop-filter: blur(20px);
                 border-left: 1px solid var(--border-color);
-                padding: 6rem 2rem 2rem 2rem;
+                padding: 5rem 2rem 2rem 2rem;
                 transition: right 0.4s cubic-bezier(0.19, 1, 0.22, 1);
                 box-shadow: -10px 0 30px rgba(0,0,0,0.1);
                 z-index: 105;
+                overflow-y: auto;
             }
 
             nav.open {
@@ -709,26 +779,18 @@
             nav ul {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 2rem;
+                gap: 1.75rem;
             }
 
             nav a {
-                font-size: 1.2rem;
+                font-size: 1.15rem;
             }
 
-            /* Ensure slider width leaves swipe channels on mobile */
+            /* Slider Swipe Channel Fix */
             #before-after .container {
                 padding: 0 1.25rem;
             }
 
-            .ba-wrapper {
-                width: 100%;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
-
-            /* Reduce slider width on mobile so 14% of the screen width is reserved as side touch margins */
             .ba-container {
                 width: 86% !important;
                 margin: 0 auto;
@@ -740,7 +802,7 @@
             }
 
             .hero {
-                padding-top: 8rem;
+                padding-top: 6rem;
                 min-height: auto;
             }
 
@@ -795,14 +857,16 @@
             }
 
             .cs-meta-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
                 gap: 1.5rem;
             }
 
-            .close-btn {
-                top: 1.5rem;
-                right: 1.5rem;
-                padding: 0.75rem 1.25rem;
+            .cs-gallery-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cs-lead-text {
+                font-size: 1.6rem;
             }
         }
     </style>
@@ -815,17 +879,17 @@
     <!-- BACK TO TOP BUTTON -->
     <button id="back-to-top" class="interactive" aria-label="Back to top" onclick="scrollToTop()">&#8593;</button>
 
-    <!-- HEADER / NAVIGATION -->
+    <!-- HEADER / NAVIGATION (ALWAYS 1-LINE) -->
     <header>
         <div class="logo interactive">VAN DELIGHT<span>.ART</span></div>
         
         <div class="header-actions">
-            <!-- Light/Dark Mode Switcher -->
+            <!-- Desaturated Light/Dark Mode Switcher -->
             <button id="theme-toggle" class="theme-toggle-btn interactive" onclick="toggleTheme()" aria-label="Toggle Light/Dark Theme">
                 <span id="theme-icon">🌙 Dark</span>
             </button>
 
-            <!-- Mobile Hamburger Toggle -->
+            <!-- Collapsible Mobile Menu Trigger -->
             <button class="menu-toggle interactive" id="menu-btn" onclick="toggleMenu()" aria-label="Toggle Navigation">☰</button>
         </div>
 
@@ -1149,44 +1213,74 @@
             window.addEventListener('touchend', () => isDragging = false);
         });
 
-        // Project Modal Handling
+        /* Integrated Case Study Data */
         const projectData = {
             'umami': `
                 <div class="cs-hero">
-                    <div>
-                        <span class="ui-label">Surreal Fashion Portraits</span>
-                        <h2>Umami Origami</h2>
-                    </div>
+                    <span class="ui-label">Surreal Fashion Portraits</span>
+                    <h2>Umami Origami</h2>
                 </div>
+
                 <div class="cs-meta-grid">
-                    <div><strong>ABOUT</strong> Ideas pushed beyond what the camera can capture.</div>
-                    <div><strong>TECHNIQUE</strong> Handcrafted dresses, custom digital assets.</div>
-                    <div><strong>THEME</strong> Every element is well thought through and placed to tell a story.</div>
+                    <div><strong>CONCEPT</strong> Origami & Tactile Fashion</div>
+                    <div><strong>PRODUCTION</strong> Physical Papercraft & 3D CGI</div>
+                    <div><strong>TOOLS</strong> Houdini, Blender, Photoshop</div>
+                    <div><strong>ROLE</strong> Creative Director & VFX Lead</div>
                 </div>
-                <div class="cs-body" style="padding-bottom: 8rem;">
-                    <p style="text-align: center; font-size: 1.8rem; font-style: italic; color: var(--accent-color); margin-bottom: 3rem;">
-                        The magic of photography meets the magic of paper folding, meets visual effects.
-                    </p>
-                    <p>Ok so the project is called Umami Origami because I made a fashion dress from paper and added origami butterflies to the photograph in post production.</p>
+
+                <div class="cs-body">
+                    <div class="cs-lead-text">
+                        "Where high-fashion paper engineering collides with digital visual alchemy—pushing structural design past what standard cameras can capture."
+                    </div>
+
+                    <div class="cs-media-hero" style="background-image: url('https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1600&q=80');"></div>
+
+                    <div class="cs-section">
+                        <h3>The Narrative & Craft</h3>
+                        <p>
+                            <em>Umami Origami</em> was born out of a desire to create something rich and complex—the visual equivalent of 'umami' savory depth. The project centers around a custom gown engineered completely out of heavy-gsm textured paper, meticulously hand-folded into hundreds of geometric facets.
+                        </p>
+                        <p>
+                            Working with paper garments presents an intense race against time: ambient humidity soften the folds, and physical movement constantly threatens structural collapse. The tension between physical fragility and visual grandeur became the core spirit of the piece.
+                        </p>
+                    </div>
+
+                    <div class="cs-gallery-grid">
+                        <div class="cs-gallery-item" style="background-image: url('https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=800&q=80');"></div>
+                        <div class="cs-gallery-item" style="background-color: var(--surface-color); display: flex; align-items: center; justify-content: center; padding: 2rem; border: 1px solid var(--border-color);">
+                            <p style="font-style: italic; font-size: 1.4rem; text-align: center; color: var(--text-main);">
+                                "We engineered 400 individual paper folds to construct the silhouette before introducing 3D digital swarms."
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="cs-section">
+                        <h3>CGI Integration & Post Production</h3>
+                        <p>
+                            To extend the story beyond the studio plate, thousands of 3D origami butterflies were particle-simulated using Houdini to spiral around the model. Precision 3D camera tracking ensured that digital shadows and reflections seamlessly wrapped around the physical paper folds of the dress, merging practical craft with generative digital design.
+                        </p>
+                    </div>
                 </div>
             `,
             'shattered': `
                 <div class="cs-hero">
-                    <div>
-                        <span class="ui-label">Interactive Project</span>
-                        <h2>Shattered Dawn</h2>
-                    </div>
+                    <span class="ui-label">Interactive Project</span>
+                    <h2>Shattered Dawn</h2>
                 </div>
-                <div class="cs-body" style="padding-bottom: 8rem;">
-                    <h3 style="text-align: center;">Vote Your Heroine</h3>
-                    <p style="text-align: center; margin-top: 2rem;">
-                        <a href="#" class="interactive" style="color: var(--accent-color); font-family: var(--font-menu); font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 600;">VOTE HERE</a>
-                    </p>
+                <div class="cs-body" style="padding-bottom: 8rem; text-align: center;">
+                    <p class="cs-lead-text">Interactive Digital Storytelling Experience</p>
+                    <p><a href="#" class="interactive" style="color: var(--accent-color); font-family: var(--font-menu); font-size: 1rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 600;">[ CAST YOUR VOTE ]</a></p>
                 </div>
             `,
             'generic': `
-                <div class="cs-hero"><h2>Coming Soon</h2></div>
-                <div class="cs-body"><p style="text-align: center;">Full case study breakdown is currently being curated.</p></div>
+                <div class="cs-hero">
+                    <span class="ui-label">Case Study</span>
+                    <h2>Melodyssey</h2>
+                </div>
+                <div class="cs-body" style="text-align: center; padding-bottom: 8rem;">
+                    <p class="cs-lead-text">Audio-Visual Synthesis Breakdown</p>
+                    <p style="color: var(--text-muted);">Full case study assets coming soon.</p>
+                </div>
             `
         };
 
