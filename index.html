@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Force light mode rendering across mobile OS dark mode themes -->
+    <meta name="color-scheme" content="light">
     <title>MANNY VAN DELIGHT | Visual Alchemist</title>
     
     <!-- Elegant, High-Fashion Typography -->
@@ -15,6 +17,7 @@
            ELEGANT LIGHT MODE & DESIGN SYSTEM
            ========================================================================== */
         :root {
+            color-scheme: light; /* Lock browsers to light palette */
             --bg-color: #F7F7F5; 
             --surface-color: #FFFFFF;
             --accent-color: #38A1FF;
@@ -37,11 +40,13 @@
 
         html {
             scroll-behavior: smooth;
+            background-color: var(--bg-color);
+            color-scheme: light;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
+            background-color: var(--bg-color) !important;
+            color: var(--text-main) !important;
             font-family: var(--font-display);
             font-size: 1.2rem;
             line-height: 1.6;
@@ -85,7 +90,7 @@
             text-decoration: none;
         }
 
-        /* Header / Nav */
+        /* Header & Collapsible Navigation */
         header {
             position: fixed;
             top: 0;
@@ -95,7 +100,7 @@
             justify-content: space-between;
             align-items: center;
             z-index: 100;
-            background: rgba(247, 247, 245, 0.85);
+            background: rgba(247, 247, 245, 0.9);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--border-color);
         }
@@ -111,6 +116,18 @@
         .logo span {
             color: var(--accent-color);
             font-weight: 600;
+        }
+
+        /* Hamburger Toggle Button */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-family: var(--font-menu);
+            font-size: 1.5rem;
+            color: var(--text-main);
+            outline: none;
+            z-index: 110;
         }
 
         nav ul {
@@ -267,7 +284,7 @@
         }
 
         /* ==========================================================================
-           INTERACTIVE BEFORE & AFTER SLIDER COMPONENTS
+           BEFORE & AFTER SLIDER
            ========================================================================== */
         .ba-container {
             position: relative;
@@ -277,7 +294,7 @@
             border: 1px solid var(--border-color);
             background: var(--surface-color);
             user-select: none;
-            touch-action: pan-y; /* Allows normal vertical scrolling while dragging horizontal slider */
+            touch-action: pan-y;
             box-shadow: 0 4px 20px rgba(0,0,0,0.03);
             transition: border-color 0.4s;
         }
@@ -378,9 +395,7 @@
             color: var(--text-muted);
         }
 
-        /* ==========================================================================
-           FOOTER & ELEGANT TYPOGRAPHY
-           ========================================================================== */
+        /* Footer */
         footer {
             background: #111111;
             color: #F7F7F5;
@@ -454,7 +469,7 @@
             text-transform: uppercase;
         }
 
-        /* Back to Top Button */
+        /* Back to Top */
         #back-to-top {
             position: fixed;
             bottom: 2.5rem;
@@ -494,7 +509,7 @@
             transform: translateY(-4px);
         }
 
-        /* Fullscreen Project Expansion */
+        /* Project Modal Takeover */
         .project-takeover {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100vh;
@@ -583,7 +598,7 @@
         }
 
         /* ==========================================================================
-           RESPONSIVE MOBILE STYLES
+           MOBILE-SPECIFIC ENHANCEMENTS
            ========================================================================== */
         @media (hover: none) and (pointer: coarse) {
             * {
@@ -595,25 +610,47 @@
         }
 
         @media (max-width: 850px) {
+            /* Container padding creates touch-channels on left & right to scroll vertically */
             .container {
-                padding: 0 1.5rem;
+                padding: 0 1.75rem;
             }
 
             header {
                 padding: 1.25rem 1.5rem;
-                flex-direction: column;
-                gap: 0.75rem;
-                align-items: flex-start;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            /* Collapsible Mobile Navigation Drawer */
+            nav {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 75%;
+                max-width: 320px;
+                height: 100vh;
+                background: rgba(247, 247, 245, 0.98);
+                backdrop-filter: blur(15px);
+                border-left: 1px solid var(--border-color);
+                padding: 6rem 2.5rem 2rem 2.5rem;
+                transition: right 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+                box-shadow: -10px 0 30px rgba(0,0,0,0.05);
+                z-index: 105;
+            }
+
+            nav.open {
+                right: 0;
             }
 
             nav ul {
-                gap: 1.25rem;
-                flex-wrap: wrap;
+                flex-direction: column;
+                gap: 2rem;
             }
 
             nav a {
-                font-size: 0.85rem;
-                letter-spacing: 2px;
+                font-size: 1.2rem;
             }
 
             .hero {
@@ -626,7 +663,7 @@
             }
 
             .hero-bio {
-                font-size: 1.35rem;
+                font-size: 1.3rem;
             }
 
             .section-padding {
@@ -640,7 +677,7 @@
 
             .project-grid {
                 grid-template-columns: 1fr;
-                gap: 2.5rem;
+                gap: 3rem;
             }
 
             footer {
@@ -692,21 +729,22 @@
     <!-- BACK TO TOP BUTTON -->
     <button id="back-to-top" class="interactive" aria-label="Back to top" onclick="scrollToTop()">&#8593;</button>
 
-    <!-- NAVIGATION -->
+    <!-- HEADER / NAVIGATION -->
     <header>
         <div class="logo interactive">VAN DELIGHT<span>.ART</span></div>
-        <nav>
+        <button class="menu-toggle interactive" id="menu-btn" onclick="toggleMenu()" aria-label="Toggle Navigation">☰</button>
+        <nav id="nav-drawer">
             <ul>
-                <li><a href="#about" class="interactive">About</a></li>
-                <li><a href="#projects" class="interactive">Projects</a></li>
-                <li><a href="#before-after" class="interactive">Before & Afters</a></li>
-                <li><a href="#client-work" class="interactive">Client Work</a></li>
+                <li><a href="#about" class="interactive" onclick="closeMenu()">About</a></li>
+                <li><a href="#projects" class="interactive" onclick="closeMenu()">Projects</a></li>
+                <li><a href="#before-after" class="interactive" onclick="closeMenu()">Before & Afters</a></li>
+                <li><a href="#client-work" class="interactive" onclick="closeMenu()">Client Work</a></li>
             </ul>
         </nav>
     </header>
 
     <main>
-        <!-- ABOUT (HOME) SECTION -->
+        <!-- ABOUT SECTION -->
         <section id="about" class="hero container">
             <span class="ui-label">Visual Alchemist & Creative Director</span>
             <h1>Manny Van Delight</h1>
@@ -748,7 +786,7 @@
             </div>
         </section>
 
-        <!-- BEFORE AND AFTERS SECTION (WITH INTERACTIVE SLIDER) -->
+        <!-- BEFORE AND AFTERS SECTION -->
         <section id="before-after" class="section-padding container">
             <h2 class="section-title">Before And Afters</h2>
             <div class="project-grid">
@@ -907,6 +945,24 @@
             elem.addEventListener('mouseleave', () => cursor && cursor.classList.remove('hovered'));
         });
 
+        // Collapsible Mobile Menu Logic
+        const navDrawer = document.getElementById('nav-drawer');
+        const menuBtn = document.getElementById('menu-btn');
+
+        function toggleMenu() {
+            navDrawer.classList.toggle('open');
+            if (navDrawer.classList.contains('open')) {
+                menuBtn.textContent = '✕';
+            } else {
+                menuBtn.textContent = '☰';
+            }
+        }
+
+        function closeMenu() {
+            navDrawer.classList.remove('open');
+            menuBtn.textContent = '☰';
+        }
+
         // Back to Top Button Logic
         const backToTopBtn = document.getElementById('back-to-top');
 
@@ -925,7 +981,7 @@
             });
         }
 
-        // Before & After Touch & Mouse Slider Logic
+        // Before & After Interactive Slider Logic
         document.querySelectorAll('.ba-container').forEach(container => {
             const afterLayer = container.querySelector('.ba-after');
             const handle = container.querySelector('.ba-handle');
@@ -967,7 +1023,7 @@
 
             window.addEventListener('mouseup', () => isDragging = false);
 
-            // Touch Events (With scroll prevention on drag)
+            // Touch Events
             container.addEventListener('touchstart', (e) => {
                 isDragging = true;
                 updateSlider(e.touches[0].clientX);
@@ -975,14 +1031,14 @@
 
             window.addEventListener('touchmove', (e) => {
                 if (!isDragging) return;
-                if (e.cancelable) e.preventDefault(); // Prevents vertical window scroll while dragging horizontal slider handle
+                if (e.cancelable) e.preventDefault();
                 updateSlider(e.touches[0].clientX);
             }, { passive: false });
 
             window.addEventListener('touchend', () => isDragging = false);
         });
 
-        // Project Database & Modal Logic
+        // Project Expansion Logic
         const projectData = {
             'umami': `
                 <div class="cs-hero">
