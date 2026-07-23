@@ -295,40 +295,41 @@
 
         .clients-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 1.25rem;
             align-items: center;
         }
 
         .client-logo-card {
-            background: var(--surface-color);
-            border: 1px solid var(--border-color);
-            padding: 1.5rem;
-            aspect-ratio: 3/2;
+            background: #1A1A1A;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            aspect-ratio: 1/1;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 4px;
             transition: border-color 0.3s ease;
+            padding: 0.6rem;
         }
 
         .client-logo-card:hover {
             border-color: var(--accent-color);
         }
 
+        .client-logo-card:hover { border-color: var(--accent-color); }
+
         .client-logo-card img {
-            max-width: 80%;
-            max-height: 80%;
+            max-width: 100px;
+            max-height: 100px;
+            width: auto;
+            height: auto;
             object-fit: contain;
             filter: grayscale(100%);
             opacity: 0.7;
             transition: filter 0.3s ease, opacity 0.3s ease;
         }
 
-        .client-logo-card:hover img {
-            filter: grayscale(0%);
-            opacity: 1;
-        }
+        .client-logo-card:hover img { filter: grayscale(0%); opacity: 1; }
 
         /* Movie Posters Subsection */
         .posters-subsection {
@@ -389,6 +390,12 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 3rem;
+        }
+
+        .ba-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
         }
 
         /* Project Cards */
@@ -460,7 +467,7 @@
         .ba-container {
             position: relative;
             width: 100%;
-            aspect-ratio: 4/5;
+            aspect-ratio: 6/4;
             overflow: hidden;
             border: 1px solid var(--border-color);
             background: var(--surface-color);
@@ -855,6 +862,10 @@
                 width: calc(100% + 3rem);
                 margin-left: -1.5rem;
             }
+            .clients-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 0.75rem;
+            }
         }
 
         .cs-img {
@@ -976,9 +987,25 @@
                 padding: 0 1.25rem;
             }
 
-            .ba-container {
-                width: 86% !important;
-                margin: 0 auto;
+            .ba-grid { gap: 0.6rem; }
+
+            .ba-meta-text { padding: 0 0.1rem; }
+            .ba-meta-text h3 { font-size: 0.85rem; line-height: 1.2; }
+            .ba-meta-text p { font-size: 0.62rem; }
+
+            .ba-label {
+                font-size: 0.5rem;
+                letter-spacing: 1px;
+                padding: 0.2rem 0.45rem;
+                top: 0.5rem;
+            }
+            .ba-label-before { right: 0.5rem; }
+            .ba-label-after { left: 0.5rem; }
+
+            .ba-handle-button {
+                width: 24px;
+                height: 24px;
+                font-size: 0.5rem;
             }
 
             .ba-meta-text {
@@ -1107,19 +1134,19 @@
             <!-- Client Logos Showcase -->
             <div class="clients-subsection">
                 <span class="subsection-title">Selected Key Clients</span>
-                <div class="clients-grid">
-                    <div class="client-logo-card interactive">
-                        <img src="assets/client-logo-1.png" alt="Client Logo 1" onerror="this.style.display='none'; this.parentNode.innerText='CLIENT 01';">
-                    </div>
-                    <div class="client-logo-card interactive">
-                        <img src="assets/client-logo-2.png" alt="Client Logo 2" onerror="this.style.display='none'; this.parentNode.innerText='CLIENT 02';">
-                    </div>
-                    <div class="client-logo-card interactive">
-                        <img src="assets/client-logo-3.png" alt="Client Logo 3" onerror="this.style.display='none'; this.parentNode.innerText='CLIENT 03';">
-                    </div>
-                    <div class="client-logo-card interactive">
-                        <img src="assets/client-logo-4.png" alt="Client Logo 4" onerror="this.style.display='none'; this.parentNode.innerText='CLIENT 04';">
-                    </div>
+               <div class="clients-grid">
+                    <div class="client-logo-card interactive"><img src="assets/amblin.png" alt="Client Logo 1" onerror="this.style.display='none'; this.parentNode.innerText='CLIENT 01';"></div>
+                    <div class="client-logo-card interactive"><img src="assets/paramount.png" alt="Client Logo 2" onerror="this.style.display='none'; this.parentNode.innerText='CLIENT 02';"></div>
+                    <div class="client-logo-card interactive"><img src="assets/universal.png" alt="Client Logo 3" onerror="this.style.display='none'; this.parentNode.innerText='CLIENT 03';"></div>
+                    <div class="client-logo-card interactive"><img src="assets/sony.png" alt="Client Logo 4" onerror="this.style.display='none'; this.parentNode.innerText='CLIENT 04';"></div>
+                    <div class="client-logo-card interactive"><img src="assets/thirdfloor.png" alt="Client Logo 5" onerror="this.style.display='none'; this.parentNode.innerText='CLIENT 05';"></div>
+                    <div class="client-logo-card interactive"><img src="assets/warner.png" alt="Client Logo 6" onerror="this.style.display='none'; this.parentNode.innerText='CLIENT 06';"></div>
+                    <div class="client-logo-card interactive"><img src="assets/weta.png" alt="Client Logo 7" onerror="this.style.display='none'; this.parentNode.innerText='CLIENT 07';"></div>
+                    <div class="client-logo-card interactive"><img src="assets/columbia.png" alt="Client Logo 8" onerror="this.style.display='none'; this.parentNode.innerText='CLIENT 08';"></div>
+                    <div class="client-logo-card interactive"><img src="assets/audi.png" alt="Client Logo 9" onerror="this.style.display='none'; this.parentNode.innerText='CLIENT 09';"></div>
+                    <div class="client-logo-card interactive"><img src="assets/porsche.png" alt="Client Logo 10" onerror="this.style.display='none'; this.parentNode.innerText='CLIENT 10';"></div>
+                    <div class="client-logo-card interactive"><img src="assets/toyota.png" alt="Client Logo 11" onerror="this.style.display='none'; this.parentNode.innerText='CLIENT 11';"></div>
+                    <div class="client-logo-card interactive"><img src="assets/youtube.png" alt="Client Logo 12" onerror="this.style.display='none'; this.parentNode.innerText='CLIENT 12';"></div>
                 </div>
             </div>
 
@@ -1181,7 +1208,7 @@
         <!-- BEFORE AND AFTERS SECTION -->
         <section id="before-after" class="section-padding container">
             <h2 class="section-title">Before And Afters</h2>
-            <div class="project-grid">
+            <div class="ba-grid">
                 
                 <div class="ba-wrapper">
                     <div class="ba-container interactive">
