@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="color-scheme" content="light dark">
+    <meta name="color-scheme" content="light">
     <title>MANNY VAN DELIGHT | Visual Alchemist</title>
     
     <!-- Typography -->
@@ -1338,14 +1338,17 @@
         function toggleTheme() {
             const html = document.documentElement;
             const themeIcon = document.getElementById('theme-icon');
+            const colorScheme = document.querySelector('meta[name="color-scheme"]');
             const currentTheme = html.getAttribute('data-theme');
-            
+
             if (currentTheme === 'dark') {
                 html.setAttribute('data-theme', 'light');
                 themeIcon.textContent = '🌙 Dark';
+                if (colorScheme) colorScheme.setAttribute('content', 'light');
             } else {
                 html.setAttribute('data-theme', 'dark');
                 themeIcon.textContent = '☀️ Light';
+                if (colorScheme) colorScheme.setAttribute('content', 'dark');
             }
         }
 
