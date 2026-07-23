@@ -849,11 +849,12 @@
             margin: 2rem 0 3rem;
         }
 
-        .cs-gallery.single {
-            grid-template-columns: 1fr;
-            max-width: 640px;
-            margin-left: auto;
-            margin-right: auto;
+        @media (max-width: 992px) {
+            .cs-gallery.single {
+                max-width: none;
+                width: calc(100% + 3rem);
+                margin-left: -1.5rem;
+            }
         }
 
         .cs-img {
@@ -907,10 +908,12 @@
 
         .cs-video iframe { width: 100%; height: 100%; border: none; display: block; }
 
-        @media (max-width: 600px) {
+        @media (max-width: 420px) {
             .cs-gallery { grid-template-columns: 1fr; }
-            .cs-stats { grid-template-columns: 1fr; }
             .posters-grid { grid-template-columns: 1fr; }
+            .project-grid { grid-template-columns: 1fr; }
+            .cs-meta-grid { grid-template-columns: 1fr; }
+            .cs-stats { grid-template-columns: 1fr; }
         }
 
         /* Mobile Adjustments */
@@ -996,7 +999,8 @@
             }
 
             .posters-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.25rem;
             }
 
             .section-padding {
@@ -1009,8 +1013,8 @@
             }
 
             .project-grid {
-                grid-template-columns: 1fr;
-                gap: 3rem;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
             }
 
             footer {
@@ -1042,8 +1046,8 @@
             }
 
             .cs-meta-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
             }
         }
     </style>
