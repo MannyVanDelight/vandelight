@@ -80,13 +80,16 @@
         /* Custom Cursor */
         #cursor {
             position: fixed;
+            top: 0;
+            left: 0;
             width: 8px;
             height: 8px;
             background: var(--accent-color);
             border-radius: 50%;
             pointer-events: none;
             z-index: 99999;
-            transform: translate(-50%, -50%);
+            transform: translate3d(-50%, -50%, 0);
+            will-change: transform;
             transition: width 0.3s, height 0.3s, background 0.3s, border 0.3s;
         }
 
@@ -95,7 +98,7 @@
             height: 50px;
             background: rgba(56, 161, 255, 0.08);
             border: 1px solid var(--accent-color);
-            backdrop-filter: blur(2px);
+        /*    backdrop-filter: blur(2px);*/
         }
 
         .container {
@@ -1346,9 +1349,9 @@
             }
         }
 
-        // Custom Cursor
+       // Custom Cursor
         const cursor = document.getElementById('cursor');
-        const interactives = document.querySelectorAll('.interactive, a, button, .project-card, .ba-container');
+        const interactiveSelector = '.interactive, a, button, .project-card, .ba-container';
 
         document.addEventListener('mousemove', (e) => {
             if (cursor) {
@@ -1357,9 +1360,18 @@
             }
         });
 
-        interactives.forEach(elem => {
-            elem.addEventListener('mouseenter', () => cursor && cursor.classList.add('hovered'));
-            elem.addEventListener('mouseleave', () => cursor && cursor.classList.remove('hovered'));
+        document.addEventListener('mouseover', (e) => {
+            if (cursor && e.target.closest(interactiveSelector)) {
+                cursor.classList.add('hovered');
+            }
+        });
+
+        document.addEventListener('mouseout', (e) => {
+            if (!cursor || !e.target.closest(interactiveSelector)) return;
+            const goingTo = e.relatedTarget;
+            if (!goingTo || !goingTo.closest || !goingTo.closest(interactiveSelector)) {
+                cursor.classList.remove('hovered');
+            }
         });
 
         // Collapsible Mobile Menu
