@@ -270,10 +270,18 @@
         }
 
         /* Video Showreel Container */
+        .showreel-wrapper {
+            max-width: 900px;
+            margin: 0 0 5rem;
+        }
+
+        .showreel-wrapper .subsection-title {
+            margin-bottom: 1.5rem;
+        }
+
         .showreel-container {
             width: 100%;
-            max-width: 900px;
-            margin: 0 auto 5rem;
+            margin-bottom: 0;      /* wrapper handles spacing now */
             aspect-ratio: 16/9;
             border: 1px solid var(--border-color);
             border-radius: 4px;
@@ -387,11 +395,6 @@
             color: var(--text-muted);
             margin-bottom: 1.5rem;
             display: block;
-        }
-
-        #about > .subsection-title {
-            max-width: 900px;
-            margin: 0 0 1.5rem;
         }
 
         .project-grid {
@@ -1152,13 +1155,18 @@
             </div>
 
             <!-- Embedded Video / Showreel -->
-            <span class="subsection-title">Fvck'n Mondays</span>
-            <div class="showreel-container">
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/H-IdvMM3Ng4?si=cG1OiV2fH8UoookO" title="Star Wars Fan Film" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            <div class="showreel-wrapper"></div>
+                <span class="subsection-title">Fvck'n Mondays</span>
+                <div class="showreel-container">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/H-IdvMM3Ng4?si=cG1OiV2fH8UoookO" title="Star Wars Fan Film" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
             </div>
-            <span class="subsection-title">Allround VFX Reel</span>
-            <div class="showreel-container">
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/vqJQTj1UP08" title="Allround VFX Reel" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+            <div class="showreel-wrapper"></div>
+                <span class="subsection-title">Allround VFX Reel</span>
+                <div class="showreel-container">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/vqJQTj1UP08" title="Allround VFX Reel" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
             </div>
 
             <!-- Client Logos Showcase -->
