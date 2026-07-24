@@ -933,7 +933,7 @@
 
         @media (max-width: 420px) {
             .cs-gallery { grid-template-columns: 1fr; }
-            .posters-grid { grid-template-columns: 1fr; }
+            .posters-grid { grid-template-columns: repeat(3, 1fr); }
             .project-grid { grid-template-columns: 1fr; }
             .cs-meta-grid { grid-template-columns: 1fr; }
             .cs-stats { grid-template-columns: 1fr; }
@@ -1038,8 +1038,8 @@
             }
 
             .posters-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 1.25rem;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0.75rem;
             }
 
             .section-padding {
@@ -1175,13 +1175,19 @@
                 <span class="subsection-title">Featured Key Art & Posters</span>
                 <div class="posters-grid">
                     <div class="poster-card interactive">
-                        <img src="assets/tintin.png" alt="Movie Poster 1" onerror="this.src='https://via.placeholder.com/600x900?text=Movie+Poster+1'">
+                        <img src="assets/tintin.jpg" alt="Movie Poster 1" onerror="this.src='https://via.placeholder.com/600x900?text=Movie+Poster+1'">
                     </div>
                     <div class="poster-card interactive">
-                        <img src="assets/wonderwoman.png" alt="Movie Poster 2" onerror="this.src='https://via.placeholder.com/600x900?text=Movie+Poster+2'">
+                        <img src="assets/wonderwoman.jpg" alt="Movie Poster 2" onerror="this.src='https://via.placeholder.com/600x900?text=Movie+Poster+2'">
                     </div>
                     <div class="poster-card interactive">
-                        <img src="assets/mortalengines.png" alt="Movie Poster 3" onerror="this.src='https://via.placeholder.com/600x900?text=Movie+Poster+3'">
+                        <img src="assets/mortalengines.jpg" alt="Movie Poster 3" onerror="this.src='https://via.placeholder.com/600x900?text=Movie+Poster+3'">
+                    </div><div class="poster-card interactive">
+                        <img src="assets/tombraider.JPG" alt="Movie Poster 3" onerror="this.src='https://via.placeholder.com/600x900?text=Movie+Poster+3'">
+                    </div><div class="poster-card interactive">
+                        <img src="assets/Avatar.JPG" alt="Movie Poster 3" onerror="this.src='https://via.placeholder.com/600x900?text=Movie+Poster+3'">
+                    </div><div class="poster-card interactive">
+                        <img src="assets/horizon.jpg" alt="Movie Poster 3" onerror="this.src='https://via.placeholder.com/600x900?text=Movie+Poster+3'">
                     </div>
                 </div>
             </div>
