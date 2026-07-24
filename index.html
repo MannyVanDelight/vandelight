@@ -20,7 +20,7 @@
         html[data-theme="light"] body {
             background-color: #F7F7F5 !important;
             color: #1A1A1A !important;
-            color-scheme: light !important;
+            color-scheme: light only !important;
         }
 
         html[data-theme="light"] {
@@ -38,7 +38,7 @@
         html[data-theme="dark"] body {
             background-color: #121212 !important;
             color: #F7F7F5 !important;
-            color-scheme: dark !important;
+            color-scheme: dark only !important;
         }
 
         html[data-theme="dark"] {
@@ -871,16 +871,15 @@
                 max-width: 56px;
                 max-height: 56px;
             }
-            #before-after .project-grid {
+            #before-after .ba-grid {
                 grid-template-columns: 1fr;
-                gap: 2.5rem;
+                gap: 3rem;
             }
             #before-after .ba-wrapper {
-                max-width: 92%;
+                max-width: 90%;
                 margin: 0 auto;
             }
         }
-
         .cs-img {
             width: 100%;
             aspect-ratio: 4/5;
@@ -1063,9 +1062,17 @@
             }
 
             .footer-grid {
-                grid-template-columns: 1fr;
-                gap: 3rem;
+                grid-template-columns: 1fr 1fr;
+                gap: 2rem 1.5rem;
                 padding-bottom: 4rem;
+            }
+
+            .footer-brand {
+                grid-column: 1 / -1;
+            }
+
+            .footer-grid > div:last-child {
+                text-align: right;
             }
 
             .footer-brand h2 {
