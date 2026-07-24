@@ -290,17 +290,19 @@
 
         /* Clients Showcase */
         .clients-subsection {
-            margin-bottom: 5rem;
+            max-width: 900px;
+            margin: 0 auto 5rem;
         }
 
         .clients-grid {
-            display: grid;
-            grid-template-columns: repeat(8, 1fr);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             gap: 1.25rem;
-            align-items: center;
         }
 
         .client-logo-card {
+            width: 100px;
             background: #1A1A1A;
             border: 1px solid rgba(255, 255, 255, 0.12);
             aspect-ratio: 1/1;
@@ -319,8 +321,8 @@
         .client-logo-card:hover { border-color: var(--accent-color); }
 
         .client-logo-card img {
-            max-width: 100px;
-            max-height: 100px;
+            max-width: 75px;
+            max-height: 75px;
             width: auto;
             height: auto;
             object-fit: contain;
@@ -862,9 +864,20 @@
                 width: calc(100% + 3rem);
                 margin-left: -1.5rem;
             }
-            .clients-grid {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 0.75rem;
+            .client-logo-card {
+                width: 80px;
+            }
+            .client-logo-card img {
+                max-width: 56px;
+                max-height: 56px;
+            }
+            #before-after .project-grid {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+            #before-after .ba-wrapper {
+                max-width: 92%;
+                margin: 0 auto;
             }
         }
 
