@@ -75,8 +75,7 @@
     </span></button>
 
     <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
-      <button onClick="{{ toggleMenu }}" aria-label="Toggle navigation" style="background:none;border:0;color:var(--text-main);font-size:1.35rem;line-height:1;padding:.15rem;flex-shrink:0">{{ menuIcon }}</button>
-    </sc-if>
+<button onClick="{{ toggleMenu }}" aria-label="Toggle navigation" style="background:none;border:0;color:var(--text-main);font-size:1.35rem;line-height:1;padding:.15rem;flex-shrink:0;position:relative;z-index:110">{{ menuIcon }}</button>    </sc-if>
   </div>
 
   <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
@@ -92,7 +91,11 @@
 </header>
 
 <main id="top">
-  <section id="about" data-screen-label="About" style="max-width:1400px;margin:0 auto;padding:9rem clamp(1.25rem,4vw,3rem) 3rem;scroll-margin-top:80px">
+  <section id="about" data-screen-label="About" style="max-width:1400px;margin:0 auto;padding:9rem clamp(1.25rem,4vw,3rem) 3rem;scroll-margin-top:80px;position:relative;isolation:isolate">
+    <div style="position:absolute;inset:0;z-index:-1;overflow:hidden">
+      <img src="assets/banner.jpg" alt="" loading="eager" decoding="async" style="width:100%;height:100%;object-fit:cover;opacity:.32">
+      <div style="position:absolute;inset:0;background:linear-gradient(180deg, var(--bg-color) 0%, transparent 40%, var(--bg-color) 100%)"></div>
+    </div>
     <span style="display:block;font-family:'Cormorant Garamond',serif;font-size:.85rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent-color);font-weight:500;margin-bottom:1rem">Visual Alchemist &amp; Creative Director</span>
     <h1 style="font-size:clamp(2.8rem,8vw,7rem);font-weight:400;line-height:1.05;font-style:italic;margin-bottom:1.75rem">Manny Van Delight</h1>
 
@@ -110,7 +113,7 @@
       </div>
     </div>
 
-    <div data-reveal="1" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:2.5rem;margin-bottom:5rem">
+    <div data-reveal="1" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(380px,100%),1fr));gap:2.5rem;margin-bottom:5rem">
       <div>
         <span style="display:block;font-family:'Cormorant Garamond',serif;font-size:.9rem;letter-spacing:3px;text-transform:uppercase;color:var(--text-muted);margin-bottom:1rem">Fvck'n Mondays</span>
         <div style="width:100%;aspect-ratio:16/9;border:1px solid var(--border-color);border-radius:4px;overflow:hidden;background:var(--surface-color);position:relative;box-shadow:0 10px 30px rgba(0,0,0,.06)">
@@ -119,7 +122,7 @@
           </sc-if>
           <sc-if value="{{ reelAIdle }}" hint-placeholder-val="{{ true }}">
             <button data-reel="A" onClick="{{ playReel }}" aria-label="Play Fvck'n Mondays" style="position:absolute;inset:0;width:100%;height:100%;border:0;padding:0;background:#000;display:block;overflow:hidden">
-              <img src="assets/reel-fvckn-mondays.jpg" alt="" loading="lazy" decoding="async" onError="{{ onMediaError }}" style="width:100%;height:100%;object-fit:cover;opacity:.82;transition:opacity .4s,transform .6s">
+              <img src="https://img.youtube.com/vi/H-IdvMM3Ng4/hqdefault.jpg" alt="" loading="lazy" decoding="async" onError="{{ onMediaError }}" style="width:100%;height:100%;object-fit:cover;opacity:.82;transition:opacity .4s,transform .6s">
               <span style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:74px;height:74px;border-radius:50%;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.75);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.4rem;padding-left:5px;backdrop-filter:blur(2px)">▶</span>
             </button>
           </sc-if>
@@ -133,7 +136,7 @@
           </sc-if>
           <sc-if value="{{ reelBIdle }}" hint-placeholder-val="{{ true }}">
             <button data-reel="B" onClick="{{ playReel }}" aria-label="Play Allround VFX Reel" style="position:absolute;inset:0;width:100%;height:100%;border:0;padding:0;background:#000;display:block;overflow:hidden">
-              <img src="assets/reel-allround-vfx.jpg" alt="" loading="lazy" decoding="async" onError="{{ onMediaError }}" style="width:100%;height:100%;object-fit:cover;opacity:.82;transition:opacity .4s,transform .6s">
+              <img src="https://img.youtube.com/vi/vqJQTj1UP08/hqdefault.jpg" alt="" loading="lazy" decoding="async" onError="{{ onMediaError }}" style="width:100%;height:100%;object-fit:cover;opacity:.82;transition:opacity .4s,transform .6s">
               <span style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:74px;height:74px;border-radius:50%;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.75);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.4rem;padding-left:5px;backdrop-filter:blur(2px)">▶</span>
             </button>
           </sc-if>
@@ -852,7 +855,10 @@ class Component extends DCLogic {
       toggleTheme: () => this.applyTheme(this.state.theme === 'dark' ? 'light' : 'dark'),
       toggleMenu: () => this.setState(st => ({ menuOpen: !st.menuOpen })),
       closeMenu: () => this.setState({ menuOpen: false }),
-      scrollTop: () => { try { this.scroller().scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { this.scroller().scrollTop = 0; } },
+      scrollTop: () => {
+        try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {}
+        try { this.scroller().scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { this.scroller().scrollTop = 0; }
+      },
       onMediaError: (e) => {
         e.target.style.display = 'none';
         const n = e.target.nextElementSibling;
