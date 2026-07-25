@@ -1,1806 +1,865 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="color-scheme" content="light">
-    <title>MANNY VAN DELIGHT | Visual Alchemist</title>
-    
-    <!-- Typography -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,600&family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet">
-    
-    <style>
-        /* ==========================================================================
-           THEME SYSTEM (LIGHT DEFAULT)
-           ========================================================================== */
-        
-        html[data-theme="light"],
-        html[data-theme="light"] body {
-            background-color: #F7F7F5 !important;
-            color: #1A1A1A !important;
-            color-scheme: light only !important;
-        }
-
-        html[data-theme="light"] {
-            --bg-color: #F7F7F5; 
-            --surface-color: #FFFFFF;
-            --accent-color: #38A1FF;
-            --text-main: #1A1A1A;
-            --text-muted: #595959;
-            --border-color: rgba(0, 0, 0, 0.08);
-            --header-bg: rgba(247, 247, 245, 0.95);
-            --card-subtext: #1A1A1A;
-        }
-
-        html[data-theme="dark"],
-        html[data-theme="dark"] body {
-            background-color: #121212 !important;
-            color: #F7F7F5 !important;
-            color-scheme: dark only !important;
-        }
-
-        html[data-theme="dark"] {
-            --bg-color: #121212; 
-            --surface-color: #1E1E1E;
-            --accent-color: #38A1FF;
-            --text-main: #F7F7F5;
-            --text-muted: #A0A0A0;
-            --border-color: rgba(255, 255, 255, 0.12);
-            --header-bg: rgba(18, 18, 18, 0.95);
-            --card-subtext: #F7F7F5;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            cursor: none;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: var(--font-display, 'Cormorant Garamond', serif);
-            font-size: 1.2rem;
-            line-height: 1.6;
-            overflow-x: hidden;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        :root {
-            --font-display: 'Cormorant Garamond', serif;
-            --font-ui: 'Montserrat', sans-serif;
-            --font-menu: 'Cormorant Garamond', serif;
-        }
-
-        /* Custom Cursor */
-        #cursor {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 8px;
-            height: 8px;
-            background: var(--accent-color);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 99999;
-            transform: translate3d(-50%, -50%, 0);
-            will-change: transform;
-            transition: width 0.3s, height 0.3s, background 0.3s, border 0.3s;
-        }
-
-        #cursor.hovered {
-            width: 50px;
-            height: 50px;
-            background: rgba(56, 161, 255, 0.08);
-            border: 1px solid var(--accent-color);
-        /*    backdrop-filter: blur(2px);*/
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 3rem;
-        }
-
-        h1, h2, h3, h4 {
-            font-weight: 400;
-            line-height: 1.1;
-        }
-
-        a {
-            color: inherit;
-            text-decoration: none;
-        }
-
-        /* HEADER & NAVIGATION (STRICT 1-LINE) */
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 68px;
-            padding: 0 3rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 100;
-            background: var(--header-bg);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border-color);
-            transition: background-color 0.3s ease;
-            white-space: nowrap;
-        }
-
-        .logo {
-            font-family: var(--font-menu);
-            font-weight: 500;
-            font-size: 1.1rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            flex-shrink: 0;
-        }
-
-        .logo span {
-            color: var(--accent-color);
-            font-weight: 600;
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            flex-shrink: 0;
-        }
-
-        .theme-toggle-btn {
-            background: var(--surface-color);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 0.35rem 0.85rem;
-            border-radius: 20px;
-            font-family: var(--font-ui);
-            font-size: 0.7rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.35rem;
-            transition: all 0.3s ease;
-            filter: grayscale(100%);
-            -webkit-filter: grayscale(100%);
-            line-height: 1;
-        }
-
-        .theme-toggle-btn:hover {
-            border-color: var(--accent-color);
-            color: var(--accent-color);
-            filter: grayscale(0%);
-            -webkit-filter: grayscale(0%);
-        }
-
-        .menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            font-family: var(--font-menu);
-            font-size: 1.4rem;
-            color: var(--text-main);
-            outline: none;
-            z-index: 110;
-            line-height: 1;
-            padding: 0.2rem;
-        }
-
-        nav ul {
-            display: flex;
-            gap: 2.5rem;
-            list-style: none;
-            align-items: center;
-        }
-
-        nav a {
-            font-family: var(--font-menu);
-            font-size: 0.95rem;
-            font-weight: 400;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: var(--text-main);
-            transition: color 0.4s ease, letter-spacing 0.4s ease;
-            position: relative;
-        }
-
-        nav a::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0;
-            height: 1px;
-            background-color: var(--accent-color);
-            transition: width 0.3s ease;
-        }
-
-        nav a:hover {
-            color: var(--accent-color);
-        }
-
-        nav a:hover::after {
-            width: 100%;
-        }
-
-        /* Hero / About Section */
-        .hero {
-            padding-top: 8rem;
-            padding-bottom: 4rem;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .hero h1 {
-            font-size: clamp(2.8rem, 8vw, 7rem);
-            margin-bottom: 2rem;
-            font-style: italic;
-        }
-
-        .hero-bio {
-            max-width: 850px;
-            font-size: 1.6rem;
-            color: var(--text-muted);
-            margin-bottom: 4rem;
-        }
-
-        .hero-bio em {
-            color: var(--text-main);
-        }
-
-        .ui-label {
-            font-family: var(--font-menu);
-            font-size: 0.85rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            color: var(--accent-color);
-            margin-bottom: 1rem;
-            display: block;
-            font-weight: 500;
-        }
-
-        /* Video Showreel Container */
-        .showreel-wrapper {
-            max-width: 900px;
-            margin: 0 0 5rem;
-        }
-
-        .showreel-wrapper .subsection-title {
-            margin-bottom: 1.5rem;
-        }
-
-        .showreel-container {
-            width: 100%;
-            margin-bottom: 0;      /* wrapper handles spacing now */
-            aspect-ratio: 16/9;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            overflow: hidden;
-            background: var(--surface-color);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-        }
-
-        .showreel-container iframe,
-        .showreel-container video {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        /* Clients Showcase */
-        .clients-subsection {
-            max-width: 900px;
-            margin: 0 auto 5rem;
-        }
-
-        .clients-grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 1.25rem;
-        }
-
-        .client-logo-card {
-            width: 100px;
-            background: #1A1A1A;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            aspect-ratio: 1/1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 4px;
-            transition: border-color 0.3s ease;
-            padding: 0.6rem;
-        }
-
-        .client-logo-card:hover {
-            border-color: var(--accent-color);
-        }
-
-        .client-logo-card:hover { border-color: var(--accent-color); }
-
-        .client-logo-card img {
-            max-width: 75px;
-            max-height: 75px;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-            filter: grayscale(100%);
-            opacity: 0.7;
-            transition: filter 0.3s ease, opacity 0.3s ease;
-        }
-
-        .client-logo-card:hover img { filter: grayscale(0%); opacity: 1; }
-
-        /* Movie Posters Subsection */
-        .posters-subsection {
-            margin-bottom: 4rem;
-        }
-
-        .posters-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2.5rem;
-        }
-
-        .poster-card {
-            aspect-ratio: 2/3;
-            background: var(--surface-color);
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            overflow: hidden;
-            position: relative;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
-            transition: transform 0.4s ease, border-color 0.4s ease;
-        }
-
-        .poster-card:hover {
-            transform: translateY(-6px);
-            border-color: var(--accent-color);
-        }
-
-        .poster-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .section-padding {
-            padding: 6rem 0;
-        }
-
-        .section-title {
-            font-size: 3rem;
-            margin-bottom: 4rem;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 1rem;
-            color: var(--text-main);
-        }
-
-        .subsection-title {
-            font-family: var(--font-menu);
-            font-size: 0.9rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            margin-bottom: 1.5rem;
-            display: block;
-        }
-
-        .project-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 3rem;
-        }
-
-        .ba-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
-        }
-
-        /* Project Cards */
-        .project-card {
-            position: relative;
-            aspect-ratio: 4/5;
-            background: var(--surface-color);
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            display: flex;
-            align-items: flex-end;
-            padding: 2rem;
-            transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1), box-shadow 0.6s;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-        }
-
-        .project-card:hover {
-            transform: scale(0.98);
-            border-color: var(--accent-color);
-            box-shadow: 0 10px 40px rgba(56, 161, 255, 0.15);
-        }
-
-        .card-bg {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-size: cover;
-            background-position: center;
-            opacity: 0.85;
-            transition: opacity 0.6s, transform 0.6s;
-        }
-
-        .card-bg::after {
-            content: '';
-            position: absolute;
-            bottom: 0; left: 0; width: 100%; height: 60%;
-            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
-        }
-
-        .project-card:hover .card-bg {
-            opacity: 1;
-            transform: scale(1.05);
-        }
-
-        .card-content {
-            position: relative;
-            z-index: 2;
-            color: #FFFFFF;
-        }
-
-        .card-content h3 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .card-content p {
-            font-family: var(--font-menu);
-            font-size: 0.85rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: #FFFFFF;
-            opacity: 0.9;
-        }
-
-        /* Before & After Slider */
-        .ba-wrapper {
-            width: 100%;
-        }
-
-        .ba-container {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 6/4;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            background: var(--surface-color);
-            user-select: none;
-            touch-action: pan-y;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-            transition: border-color 0.4s;
-            border-radius: 4px;
-        }
-
-        .ba-container:hover {
-            border-color: var(--accent-color);
-        }
-
-        .ba-image-layer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-        }
-
-        .ba-after {
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 50%;
-            overflow: hidden;
-            z-index: 2;
-        }
-
-        .ba-after .ba-image-layer {
-            width: var(--card-width, 400px); 
-        }
-
-        .ba-label {
-            position: absolute;
-            top: 1.5rem;
-            font-family: var(--font-menu);
-            font-size: 0.75rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            background: rgba(0,0,0,0.6);
-            color: #FFF;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            backdrop-filter: blur(4px);
-            z-index: 4;
-            pointer-events: none;
-        }
-
-        .ba-label-before { right: 1.5rem; }
-        .ba-label-after { left: 1.5rem; }
-
-        .ba-handle {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 50%;
-            width: 2px;
-            background: #FFFFFF;
-            z-index: 5;
-            transform: translateX(-50%);
-            box-shadow: 0 0 10px rgba(0,0,0,0.3);
-            pointer-events: none;
-        }
-
-        .ba-handle-button {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #FFFFFF;
-            border: 2px solid var(--accent-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            color: var(--accent-color);
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-
-        .ba-meta-text {
-            margin-top: 1rem;
-            padding: 0 0.5rem;
-        }
-
-        .ba-meta-text h3 {
-            font-size: 1.8rem;
-            color: var(--text-main);
-        }
-
-        .ba-meta-text p {
-            font-family: var(--font-menu);
-            font-size: 0.85rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--text-muted);
-        }
-
-        /* Footer */
-        footer {
-            background: #111111;
-            color: #F7F7F5;
-            padding: 8rem 0 3rem 0;
-            margin-top: 8rem;
-            position: relative;
-        }
-
-        .footer-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            gap: 4rem;
-            padding-bottom: 6rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .footer-brand h2 {
-            font-size: 3.5rem;
-            font-style: italic;
-            margin-bottom: 1.5rem;
-        }
-
-        .footer-brand p {
-            color: #A0A0A0;
-            max-width: 450px;
-            font-size: 1.1rem;
-        }
-
-        .footer-title {
-            font-family: var(--font-menu);
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            color: var(--accent-color);
-            margin-bottom: 1.5rem;
-            font-weight: 500;
-        }
-
-        .footer-links {
-            list-style: none;
-        }
-
-        .footer-links li {
-            margin-bottom: 1rem;
-        }
-
-        .footer-links a {
-            font-family: var(--font-menu);
-            font-size: 1.05rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: #E0E0E0;
-            transition: color 0.3s, padding-left 0.3s;
-            display: inline-block;
-        }
-
-        .footer-links a:hover {
-            color: var(--accent-color);
-            padding-left: 6px;
-        }
-
-        .footer-bottom {
-            padding-top: 3rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-family: var(--font-menu);
-            font-size: 0.85rem;
-            color: #777777;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        #back-to-top {
-            position: fixed;
-            bottom: 2.5rem;
-            right: 2.5rem;
-            width: 52px;
-            height: 52px;
-            border-radius: 50%;
-            background: var(--surface-color);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            font-family: var(--font-menu);
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 90;
-            backdrop-filter: blur(10px);
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(20px);
-            transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-            outline: none;
-        }
-
-        #back-to-top.visible {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        #back-to-top:hover {
-            background: var(--accent-color);
-            color: #FFFFFF;
-            border-color: var(--accent-color);
-            box-shadow: 0 8px 30px rgba(56, 161, 255, 0.35);
-            transform: translateY(-4px);
-        }
-
-        /* Modal Overlay */
-        .project-takeover {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100vh;
-            background: var(--bg-color);
-            z-index: 200;
-            overflow-y: auto;
-            overflow-x: hidden;
-            opacity: 0;
-            pointer-events: none;
-            clip-path: circle(0% at 50% 50%);
-            transition: clip-path 0.8s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.4s ease;
-        }
-
-        .project-takeover.active {
-            opacity: 1;
-            pointer-events: all;
-            clip-path: circle(150% at 50% 50%);
-        }
-
-        .close-btn {
-            position: fixed;
-            top: 1.5rem; right: 2rem;
-            font-family: var(--font-menu);
-            font-size: 0.8rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: var(--text-main);
-            z-index: 210;
-            background: var(--surface-color);
-            border: 1px solid var(--border-color);
-            padding: 0.75rem 1.25rem;
-            border-radius: 40px;
-            backdrop-filter: blur(5px);
-            transition: all 0.3s ease;
-        }
-
-        .close-btn:hover {
-            color: #FFFFFF;
-            background: var(--accent-color);
-            border-color: var(--accent-color);
-        }
-
-        .cs-hero {
-            padding-top: 8rem;
-            padding-bottom: 3rem;
-            text-align: center;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .cs-hero h2 {
-            font-size: clamp(3rem, 7vw, 6.5rem);
-            font-style: italic;
-            margin-bottom: 1rem;
-            color: var(--text-main);
-        }
-
-        .cs-meta-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-            margin: 3rem 0;
-            font-family: var(--font-menu);
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 2rem;
-        }
-
-        .cs-meta-grid strong {
-            color: var(--accent-color);
-            display: block;
-            margin-bottom: 0.4rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .cs-body {
-            max-width: 900px;
-            margin: 0 auto;
-            padding-bottom: 8rem;
-        }
-
-        .cs-body p {
-            font-size: 1.15rem;
-            line-height: 1.8;
-            color: var(--text-muted);
-            margin-bottom: 1.5rem;
-        }
-
-        .cs-section-label {
-            font-family: var(--font-menu);
-            font-size: 0.8rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: var(--accent-color);
-            margin: 4rem 0 1rem;
-            font-weight: 600;
-        }
-
-        .cs-section-label:first-of-type {
-            margin-top: 2.5rem;
-        }
-
-        .cs-h3 {
-            font-size: 1.9rem;
-            font-style: italic;
-            color: var(--text-main);
-            margin-bottom: 1.25rem;
-        }
-
-        .cs-pull-quote {
-            text-align: center;
-            font-size: 1.7rem;
-            font-style: italic;
-            color: var(--text-main);
-            max-width: 700px;
-            margin: 3.5rem auto;
-            line-height: 1.5;
-        }
-
-        .cs-pull-quote span {
-            display: block;
-            margin-top: 1rem;
-            font-family: var(--font-menu);
-            font-size: 0.8rem;
-            font-style: normal;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--accent-color);
-        }
-
-        .cs-stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin: 2.5rem 0;
-        }
-
-        .cs-stats div {
-            border-top: 1px solid var(--border-color);
-            padding-top: 0.9rem;
-        }
-
-        .cs-stats strong {
-            display: block;
-            font-family: var(--font-menu);
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: var(--text-main);
-            margin-bottom: 0.4rem;
-        }
-
-        .cs-stats p {
-            font-size: 0.95rem;
-            margin-bottom: 0;
-        }
-
-        .cs-gallery {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin: 2rem 0 3rem;
-        }
-
-        .cs-gallery.single {
-            grid-template-columns: 1fr;
-            max-width: 640px;
-            margin: 2rem auto 3rem;
-        }
-
-        @media (max-width: 992px) {
-            .cs-gallery.single {
-                max-width: none;
-                width: calc(100% + 3rem);
-                margin-left: -1.5rem;
-            }
-            .client-logo-card {
-                width: 80px;
-            }
-            .client-logo-card img {
-                max-width: 56px;
-                max-height: 56px;
-            }
-            #before-after .ba-grid {
-                grid-template-columns: 1fr;
-                gap: 3rem;
-            }
-            #before-after .ba-wrapper {
-                max-width: 90%;
-                margin: 0 auto;
-            }
-        }
-        .cs-img {
-            width: 100%;
-            aspect-ratio: 4/5;
-            object-fit: cover;
-            border-radius: 4px;
-            border: 1px solid var(--border-color);
-            display: block;
-        }
-
-        .cs-gallery.single .cs-img {
-            aspect-ratio: 16/10;
-        }
-
-        .cs-caption {
-            font-family: var(--font-menu);
-            font-size: 0.8rem;
-            letter-spacing: 0.5px;
-            color: var(--text-muted);
-            margin-top: 0.6rem;
-            font-style: italic;
-        }
-
-        .cs-cta {
-            text-align: center;
-            margin-top: 3.5rem;
-        }
-
-        .cs-cta a {
-            color: var(--accent-color);
-            font-family: var(--font-menu);
-            font-size: 1rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            font-weight: 600;
-            text-decoration: none;
-            border-bottom: 1px solid var(--accent-color);
-            padding-bottom: 3px;
-        }
-
-        .cs-video {
-            width: 100%;
-            aspect-ratio: 16/9;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 1.5rem 0 3rem;
-            background: var(--surface-color);
-        }
-
-        .cs-video iframe { width: 100%; height: 100%; border: none; display: block; }
-
-        @media (max-width: 420px) {
-            .cs-gallery { grid-template-columns: 1fr; }
-            .posters-grid { grid-template-columns: repeat(3, 1fr); }
-            .project-grid { grid-template-columns: 1fr; }
-            .cs-meta-grid { grid-template-columns: 1fr; }
-            .cs-stats { grid-template-columns: 1fr; }
-        }
-
-        /* Mobile Adjustments */
-        @media (hover: none) and (pointer: coarse) {
-            * { cursor: auto !important; }
-            #cursor { display: none !important; }
-        }
-
-        @media (max-width: 992px), (max-height: 500px) {
-            .container {
-                padding: 0 1.5rem;
-            }
-
-            header {
-                padding: 0 1.5rem;
-                height: 60px;
-            }
-
-            .logo {
-                font-size: 0.95rem;
-                letter-spacing: 2px;
-            }
-
-            .menu-toggle {
-                display: block;
-            }
-
-            nav {
-                position: fixed;
-                top: 0;
-                right: -100%;
-                width: 80%;
-                max-width: 320px;
-                height: 100vh;
-                background: var(--bg-color);
-                backdrop-filter: blur(20px);
-                border-left: 1px solid var(--border-color);
-                padding: 5rem 2rem 2rem 2rem;
-                transition: right 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-                box-shadow: -10px 0 30px rgba(0,0,0,0.1);
-                z-index: 105;
-                overflow-y: auto;
-            }
-
-            nav.open {
-                right: 0;
-            }
-
-            nav ul {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1.75rem;
-            }
-
-            nav a {
-                font-size: 1.15rem;
-            }
-
-            #before-after .container {
-                padding: 0 1.25rem;
-            }
-
-            .ba-grid { gap: 0.6rem; }
-
-            .ba-meta-text { padding: 0 0.1rem; }
-            .ba-meta-text h3 { font-size: 0.85rem; line-height: 1.2; }
-            .ba-meta-text p { font-size: 0.62rem; }
-
-            .ba-label {
-                font-size: 0.5rem;
-                letter-spacing: 1px;
-                padding: 0.2rem 0.45rem;
-                top: 0.5rem;
-            }
-            .ba-label-before { right: 0.5rem; }
-            .ba-label-after { left: 0.5rem; }
-
-            .ba-handle-button {
-                width: 24px;
-                height: 24px;
-                font-size: 0.5rem;
-            }
-
-            .ba-meta-text {
-                width: 86%;
-                margin: 0.75rem auto 0 auto;
-            }
-
-            .hero {
-                padding-top: 6rem;
-            }
-
-            .hero h1 {
-                font-size: 3.2rem;
-            }
-
-            .hero-bio {
-                font-size: 1.3rem;
-            }
-
-            .posters-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 0.75rem;
-            }
-
-            .section-padding {
-                padding: 4rem 0;
-            }
-
-            .section-title {
-                font-size: 2.2rem;
-                margin-bottom: 2.5rem;
-            }
-
-            .project-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 1.5rem;
-            }
-
-            footer {
-                padding: 5rem 0 2rem 0;
-                margin-top: 4rem;
-            }
-
-            .footer-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 2rem 1.5rem;
-                padding-bottom: 4rem;
-            }
-
-            .footer-brand {
-                grid-column: 1 / -1;
-            }
-
-            .footer-grid > div:last-child {
-                text-align: right;
-            }
-
-            .footer-brand h2 {
-                font-size: 2.5rem;
-            }
-
-            .footer-bottom {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
-            }
-
-            #back-to-top {
-                bottom: 1.5rem;
-                right: 1.5rem;
-                width: 46px;
-                height: 46px;
-            }
-
-            .cs-meta-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 1rem;
-            }
-        }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
 </head>
-<body id="top">
+<body>
+<x-dc>
+<helmet>
+<meta name="description" content="Manny Van Delight — Visual Alchemist &amp; Creative Director. VFX, photography and interactive filmmaking for Audi, Porsche, Avatar, Tintin, Horizon Zero Dawn." />
+<meta property="og:title" content="Manny Van Delight | Visual Alchemist" />
+<meta property="og:description" content="VFX, photography and interactive filmmaking. Projects, before &amp; afters, client work." />
+<meta property="og:type" content="website" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,600&amp;family=Montserrat:wght@300;400;500;600&amp;display=swap" rel="stylesheet" />
+<style>
+  html[data-theme="light"]{--bg-color:#F7F7F5;--surface-color:#FFFFFF;--accent-color:#38A1FF;--text-main:#1A1A1A;--text-muted:#595959;--border-color:rgba(0,0,0,.09);--header-bg:rgba(247,247,245,.92);--stripe-a:#FFFFFF;--stripe-b:#EDEDEA;color-scheme:light}
+  html[data-theme="dark"]{--bg-color:#121212;--surface-color:#1E1E1E;--accent-color:#38A1FF;--text-main:#F7F7F5;--text-muted:#A3A3A3;--border-color:rgba(255,255,255,.13);--header-bg:rgba(18,18,18,.92);--stripe-a:#1E1E1E;--stripe-b:#171717;color-scheme:dark}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{scroll-behavior:smooth;background:var(--bg-color)}
+  html[data-cursor="on"] *{cursor:none}
+  body{background:var(--bg-color);color:var(--text-main);font-family:'Cormorant Garamond',serif;font-size:1.2rem;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased;transition:background-color .3s ease,color .3s ease}
+  a{color:var(--accent-color);text-decoration:none}
+  a:hover{color:var(--text-main)}
+  button{font-family:inherit}
+  img{max-width:100%}
+  ::selection{background:var(--accent-color);color:#fff}
+  [data-reveal].armed{opacity:0;transform:translateY(20px)}
+  [data-reveal].armed.shown{opacity:1;transform:none;transition:opacity .8s cubic-bezier(.19,1,.22,1),transform .8s cubic-bezier(.19,1,.22,1)}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation-duration:.01ms !important;transition-duration:.01ms !important}}
+</style>
+</helmet>
 
-    <div id="cursor"></div>
-    <button id="back-to-top" class="interactive" aria-label="Back to top" onclick="scrollToTop()">&#8593;</button>
+<div id="mvd-cursor" style="position:fixed;top:0;left:0;width:8px;height:8px;border-radius:50%;background:var(--accent-color);pointer-events:none;z-index:9999;opacity:0;transform:translate3d(-50%,-50%,0);will-change:transform;transition:width .25s,height .25s,background .25s,border-color .25s"></div>
 
-    <!-- HEADER / NAVIGATION (1-LINE) -->
-    <header>
-        <div class="logo interactive">VAN DELIGHT<span>.ART</span></div>
-        
-        <div class="header-actions">
-            <button id="theme-toggle" class="theme-toggle-btn interactive" onclick="toggleTheme()" aria-label="Toggle Light/Dark Theme">
-                <span id="theme-icon">🌙 Dark</span>
-            </button>
-            <button class="menu-toggle interactive" id="menu-btn" onclick="toggleMenu()" aria-label="Toggle Navigation">☰</button>
-        </div>
+<header style="position:fixed;top:0;left:0;width:100%;height:68px;padding:0 clamp(1.1rem,4vw,3rem);display:flex;justify-content:space-between;align-items:center;z-index:100;background:var(--header-bg);backdrop-filter:blur(10px);border-bottom:1px solid var(--border-color);white-space:nowrap">
+  <div style="position:absolute;left:0;bottom:-1px;height:2px;width:100%;transform:scaleX(0);transform-origin:0 50%;background:var(--accent-color);opacity:.85;will-change:transform" ref="{{ progressRef }}"></div>
 
-        <nav id="nav-drawer">
-            <ul>
-                <li><a href="#about" class="interactive" onclick="closeMenu()">About</a></li>
-                <li><a href="#projects" class="interactive" onclick="closeMenu()">Projects</a></li>
-                <li><a href="#before-after" class="interactive" onclick="closeMenu()">Before & Afters</a></li>
-                <li><a href="#client-work" class="interactive" onclick="closeMenu()">Client Work</a></li>
-            </ul>
-        </nav>
-    </header>
+  <a href="#top" style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:1.05rem;letter-spacing:4px;text-transform:uppercase;color:var(--text-main);flex-shrink:0">VAN DELIGHT<span style="color:var(--accent-color);font-weight:600">.ART</span></a>
 
-    <main>
-        <!-- ABOUT SECTION -->
-        <section id="about" class="hero container">
-            <span class="ui-label">Visual Alchemist & Creative Director</span>
-            <h1>Manny Van Delight</h1>
-            
-            <!-- Introduction Text -->
-            <div class="hero-bio">
-                <p>Did I do well mum?</p><br>
-                <p>
-                    A creative rascal. A world-builder. A storyteller who turns distant lands and bold ideas into engaging art. Guided by my inner child as my true north, I fuse photography, film, and visual effects magic into powerful, immersive experiences.
-                    </p><br>
-                    <p>For decades, I crafted visuals for the world’s biggest brands - Audi, Porsche, Toyota -and contributed to films like Avatar, Tintin, Wonder Woman, Tomb Raider, and games like Horizon Zero Dawn. But beyond the industry, I found my true passion: creating my own art, where storytelling and technology collide.
-                    </p><br>
-                    <p>Now, I’m pushing the boundaries of interactive filmmaking -blending visuals, narrative, and cutting-edge tech to create stories where the audience plays a role. My work isn’t just something to watch; it’s something to experience and shape. Through community-driven storytelling, I invite people to vote and influence the narrative, making them an integral part of the creative process.
-                    </p><br>
-                    <p>And while I continue to carve my own path, I’m also working on one of the biggest movies out there - though I can’t reveal what it is just yet.
-                    Every share, every kind word, every purchase fuels this journey and for that, you have our deepest gratitude. - MvD</p>
-            </div>
+  <div style="display:flex;align-items:center;gap:clamp(1.25rem,3vw,2.5rem)">
+    <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+      <nav style="display:flex">
+        <ul style="display:flex;gap:clamp(1.4rem,2.6vw,2.5rem);list-style:none;align-items:center">
+          <li><a href="#about" onClick="{{ closeMenu }}" style="font-family:'Cormorant Garamond',serif;font-size:.95rem;text-transform:uppercase;letter-spacing:3px;color:var(--text-main)" style-hover="color:var(--accent-color)">About</a></li>
+          <li><a href="#projects" onClick="{{ closeMenu }}" style="font-family:'Cormorant Garamond',serif;font-size:.95rem;text-transform:uppercase;letter-spacing:3px;color:var(--text-main)" style-hover="color:var(--accent-color)">Projects</a></li>
+          <li><a href="#before-after" onClick="{{ closeMenu }}" style="font-family:'Cormorant Garamond',serif;font-size:.95rem;text-transform:uppercase;letter-spacing:3px;color:var(--text-main)" style-hover="color:var(--accent-color)">Before &amp; Afters</a></li>
+          <li><a href="#client-work" onClick="{{ closeMenu }}" style="font-family:'Cormorant Garamond',serif;font-size:.95rem;text-transform:uppercase;letter-spacing:3px;color:var(--text-main)" style-hover="color:var(--accent-color)">Client Work</a></li>
+        </ul>
+      </nav>
+    </sc-if>
 
-            <!-- Embedded Video / Showreel -->
-            <div class="showreel-wrapper"></div>
-                <span class="subsection-title">Fvck'n Mondays</span>
-                <div class="showreel-container">
-                    <iframe width="560" height="315" src="https://www.youtube.com/embed/H-IdvMM3Ng4?si=cG1OiV2fH8UoookO" title="Star Wars Fan Film" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                </div>
-            </div>
+    <button onClick="{{ toggleTheme }}" aria-label="Toggle light or dark theme" title="Toggle light / dark" style="width:34px;height:34px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;border:1px solid var(--border-color);background:var(--surface-color);color:var(--text-main);font-size:.95rem;line-height:1;padding:0;transition:border-color .3s,transform .3s" style-hover="border-color:var(--accent-color);transform:rotate(-18deg)"><svg hidden="{{ isDark }}" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M20.5 14.8A8.6 8.6 0 0 1 9.2 3.5 8 8 0 1 0 20.5 14.8Z"></path></svg><svg hidden="{{ isLight }}" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.4 5.4l1.6 1.6M17 17l1.6 1.6M18.6 5.4 17 7M7 17l-1.6 1.6"></path></svg></button>
 
-            <div class="showreel-wrapper"></div>
-                <span class="subsection-title">Allround VFX Reel</span>
-                <div class="showreel-container">
-                    <iframe width="560" height="315" src="https://www.youtube.com/embed/vqJQTj1UP08" title="Allround VFX Reel" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                </div>
-            </div>
+    <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+      <button onClick="{{ toggleMenu }}" aria-label="Toggle navigation" style="background:none;border:0;color:var(--text-main);font-size:1.35rem;line-height:1;padding:.15rem;flex-shrink:0">{{ menuIcon }}</button>
+    </sc-if>
+  </div>
 
-            <!-- Client Logos Showcase -->
-            <div class="clients-subsection">
-                <span class="subsection-title">Selected Key Clients</span>
-               <div class="clients-grid">
-                    <div class="client-logo-card interactive"><img src="assets/amblin.png" alt="Client Logo 1" onerror="this.style.display='none'; this.parentNode.innerText='CLIENT 01';"></div>
-                    <div class="client-logo-card interactive"><img src="assets/paramount.png" alt="Client Logo 2" onerror="this.style.display='none'; this.parentNode.innerText='CLIENT 02';"></div>
-                    <div class="client-logo-card interactive"><img src="assets/universal.png" alt="Client Logo 3" onerror="this.style.display='none'; this.parentNode.innerText='CLIENT 03';"></div>
-                    <div class="client-logo-card interactive"><img src="assets/sony.png" alt="Client Logo 4" onerror="this.style.display='none'; this.parentNode.innerText='CLIENT 04';"></div>
-                    <div class="client-logo-card interactive"><img src="assets/thirdfloor.png" alt="Client Logo 5" onerror="this.style.display='none'; this.parentNode.innerText='CLIENT 05';"></div>
-                    <div class="client-logo-card interactive"><img src="assets/warner.png" alt="Client Logo 6" onerror="this.style.display='none'; this.parentNode.innerText='CLIENT 06';"></div>
-                    <div class="client-logo-card interactive"><img src="assets/weta.png" alt="Client Logo 7" onerror="this.style.display='none'; this.parentNode.innerText='CLIENT 07';"></div>
-                    <div class="client-logo-card interactive"><img src="assets/columbia.png" alt="Client Logo 8" onerror="this.style.display='none'; this.parentNode.innerText='CLIENT 08';"></div>
-                    <div class="client-logo-card interactive"><img src="assets/audi.png" alt="Client Logo 9" onerror="this.style.display='none'; this.parentNode.innerText='CLIENT 09';"></div>
-                    <div class="client-logo-card interactive"><img src="assets/porsche.png" alt="Client Logo 10" onerror="this.style.display='none'; this.parentNode.innerText='CLIENT 10';"></div>
-                    <div class="client-logo-card interactive"><img src="assets/toyota.png" alt="Client Logo 11" onerror="this.style.display='none'; this.parentNode.innerText='CLIENT 11';"></div>
-                    <div class="client-logo-card interactive"><img src="assets/youtube.png" alt="Client Logo 12" onerror="this.style.display='none'; this.parentNode.innerText='CLIENT 12';"></div>
-                </div>
-            </div>
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <nav style="position:fixed;top:0;right:0;width:82%;max-width:320px;height:100vh;background:var(--bg-color);border-left:1px solid var(--border-color);padding:5.5rem 2rem 2rem;box-shadow:-10px 0 40px rgba(0,0,0,.18);z-index:105;overflow-y:auto">
+      <ul style="display:flex;flex-direction:column;align-items:flex-start;gap:1.75rem;list-style:none">
+        <li><a href="#about" onClick="{{ closeMenu }}" style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;text-transform:uppercase;letter-spacing:3px;color:var(--text-main)">About</a></li>
+        <li><a href="#projects" onClick="{{ closeMenu }}" style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;text-transform:uppercase;letter-spacing:3px;color:var(--text-main)">Projects</a></li>
+        <li><a href="#before-after" onClick="{{ closeMenu }}" style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;text-transform:uppercase;letter-spacing:3px;color:var(--text-main)">Before &amp; Afters</a></li>
+        <li><a href="#client-work" onClick="{{ closeMenu }}" style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;text-transform:uppercase;letter-spacing:3px;color:var(--text-main)">Client Work</a></li>
+      </ul>
+    </nav>
+  </sc-if>
+</header>
 
-            <!-- Featured Movie Posters -->
-            <div class="posters-subsection">
-                <span class="subsection-title">Featured Film & Game Posters</span>
-                <div class="posters-grid">
-                    <div class="poster-card interactive">
-                        <img src="assets/tintin.jpg" alt="Tintin Movie Poster" onerror="this.src='https://via.placeholder.com/600x900?text=Movie+Poster+1'">
-                    </div>
-                    <div class="poster-card interactive">
-                        <img src="assets/wonderwoman.jpg" alt="Wonder Woman Movie Poster" onerror="this.src='https://via.placeholder.com/600x900?text=Movie+Poster+2'">
-                    </div>
-                    <div class="poster-card interactive">
-                        <img src="assets/mortalengines.JPG" alt="Mortal Engines Movie Poster" onerror="this.src='https://via.placeholder.com/600x900?text=Movie+Poster+3'">
-                    </div><div class="poster-card interactive">
-                        <img src="assets/tombraider.JPG" alt="Tomb Raider Movie Poster" onerror="this.src='https://via.placeholder.com/600x900?text=Movie+Poster+3'">
-                    </div><div class="poster-card interactive">
-                        <img src="assets/Avatar.JPG" alt="Avatar Fire and Ash Movie Poster" onerror="this.src='https://via.placeholder.com/600x900?text=Movie+Poster+3'">
-                    </div><div class="poster-card interactive">
-                        <img src="assets/horizon.jpg" alt="Horizon Zero Dawn Game Poster" onerror="this.src='https://via.placeholder.com/600x900?text=Movie+Poster+3'">
-                    </div>
-                </div>
-            </div>
-        </section>
+<main id="top">
+  <section id="about" data-screen-label="About" style="max-width:1400px;margin:0 auto;padding:9rem clamp(1.25rem,4vw,3rem) 3rem;scroll-margin-top:80px">
+    <span style="display:block;font-family:'Cormorant Garamond',serif;font-size:.85rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent-color);font-weight:500;margin-bottom:1rem">Visual Alchemist &amp; Creative Director</span>
+    <h1 style="font-size:clamp(2.8rem,8vw,7rem);font-weight:400;line-height:1.05;font-style:italic;margin-bottom:1.75rem">Manny Van Delight</h1>
 
-        <!-- PROJECTS SECTION -->
-        <section id="projects" class="section-padding container">
-            <h2 class="section-title">Projects</h2>
-            <div class="project-grid">
-                <div class="project-card interactive" onclick="openProject('umami')">
-                    <div class="card-bg" style="background-image: url(assets/UO-Sanctuary-web-meta.jpg)"></div>
-                    <div class="card-content">
-                        <h3>Umami Origami</h3>
-                        <p>Surreal Fashion Portraits</p>
-                    </div>
-                </div>
+    <p style="font-size:clamp(1.5rem,3.2vw,2.1rem);font-style:italic;color:var(--text-main);margin-bottom:2rem">Did I do well mum?</p>
 
-                <div class="project-card interactive" onclick="openProject('mooning')">
-                    <div class="card-bg" style="background-image: url(assets/1155.jpg);"></div>
-                    <div class="card-content">
-                        <h3>Mooning The Ignorant</h3>
-                        <p>Animation Loops</p>
-                    </div>
-                </div>
-
-                <div class="project-card interactive" onclick="openProject('shattered')">
-                    <div class="card-bg" style="background-image: url(assets/ShatteredDawn01.jpg); background-size: cover; background-position: center;"></div>
-                    <div class="card-content">
-                        <h3>Shattered Dawn</h3>
-                        <p>Vote Your Heroine</p>
-                    </div>
-                </div>
-
-                <div class="project-card interactive" onclick="openProject('generic')">
-                    <div class="card-bg" style="background-color: var(--surface-color);"></div>
-                    <div class="card-content" style="color: var(--text-main);">
-                        <h3>Melodyssey</h3>
-                        <p style="color: var(--text-muted);">Audio-Visual Odyssey</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- BEFORE AND AFTERS SECTION -->
-        <section id="before-after" class="section-padding container">
-            <h2 class="section-title">Before And Afters</h2>
-            <div class="ba-grid">
-                
-                <div class="ba-wrapper">
-                    <div class="ba-container interactive">
-                        <span class="ba-label ba-label-before">After</span>
-                        <span class="ba-label ba-label-after">Before</span>
-                        
-                        <div class="ba-image-layer" style="background-image: url(assets/Day-To-Night.mp4_snapshot_00.01.123.jpg)"></div>
-                        <div class="ba-after">
-                            <div class="ba-image-layer" style="background-image: url(assets/Day-To-Night.mp4_snapshot_00.01.899.jpg)"></div>
-                        </div>
-
-                        <div class="ba-handle">
-                            <div class="ba-handle-button">&#10094;&#10095;</div>
-                        </div>
-                    </div>
-                    <div class="ba-meta-text">
-                        <h3>Day to Night Conversion</h3>
-                        <p>Raw Shoot vs Final Look</p>
-                    </div>
-                </div>
-
-                <div class="ba-wrapper">
-                    <div class="ba-container interactive">
-                        <span class="ba-label ba-label-before">After</span>
-                        <span class="ba-label ba-label-after">Before</span>
-                        
-                        <div class="ba-image-layer" style="background-image: url(assets/HopeRiver-after.jpg)"></div>
-                        <div class="ba-after">
-                            <div class="ba-image-layer" style="background-image: url(assets/HopeRiver-before.jpg)"></div>
-                        </div>
-
-                        <div class="ba-handle">
-                            <div class="ba-handle-button">&#10094;&#10095;</div>
-                        </div>
-                    </div>
-                    <div class="ba-meta-text">
-                        <h3>Digital Car Integration</h3>
-                        <p>Location Shoot vs Final Look</p>
-                    </div>
-                </div>
-
-                <div class="ba-wrapper">
-                    <div class="ba-container interactive">
-                        <span class="ba-label ba-label-before">After</span>
-                        <span class="ba-label ba-label-after">Before</span>
-                        
-                        <div class="ba-image-layer" style="background-image: url(assets/garage-after.jpg)"></div>
-                        <div class="ba-after">
-                            <div class="ba-image-layer" style="background-image: url(assets/garage-before.jpg)"></div>
-                        </div>
-
-                        <div class="ba-handle">
-                            <div class="ba-handle-button">&#10094;&#10095;</div>
-                        </div>
-                    </div>
-                    <div class="ba-meta-text">
-                        <h3>Adding Sci-fi VFX</h3>
-                        <p>RAW Footage vs Final Look</p>
-                    </div>
-                </div>
-                
-                <div class="ba-wrapper">
-                    <div class="ba-container interactive">
-                        <span class="ba-label ba-label-before">After</span>
-                        <span class="ba-label ba-label-after">Before</span>
-                        
-                        <div class="ba-image-layer" style="background-image: url(assets/Arch-Vis-after.jpg)"></div>
-                        <div class="ba-after">
-                            <div class="ba-image-layer" style="background-image: url(assets/Arch-Vis-before.jpg)"></div>
-                        </div>
-
-                        <div class="ba-handle">
-                            <div class="ba-handle-button">&#10094;&#10095;</div>
-                        </div>
-                    </div>
-                    <div class="ba-meta-text">
-                        <h3>Digital Twin Property</h3>
-                        <p>Empty lot vs 3d render</p>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- CLIENT WORK SECTION -->
-        <section id="client-work" class="section-padding container">
-            <h2 class="section-title">Client Work</h2>
-            <div class="project-grid">
-                
-                <div class="project-card interactive" onclick="openProject('client-fashion')">
-                    <div class="card-bg" style="background-color: var(--surface-color);"></div>
-                    <div class="card-content" style="color: var(--text-main);">
-                        <h3>Haute Couture Runway</h3>
-                        <p style="color: var(--accent-color);">Editorial Direction</p>
-                    </div>
-                </div>
-
-                <div class="project-card interactive" onclick="openProject('client-film')">
-                    <div class="card-bg" style="background-color: var(--surface-color);"></div>
-                    <div class="card-content" style="color: var(--text-main);">
-                        <h3>Commercial Campaign</h3>
-                        <p style="color: var(--accent-color);">VFX Supervision & Editing</p>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-    </main>
-
-    <!-- FOOTER -->
-    <footer>
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <h2>Manny Van Delight</h2>
-                    <p>Visual Alchemist & Creative Director, bridging impossible visual concepts with precision technical execution.</p>
-                </div>
-
-                <div>
-                    <div class="footer-title">Navigation</div>
-                    <ul class="footer-links">
-                        <li><a href="#about" class="interactive">About</a></li>
-                        <li><a href="#projects" class="interactive">Projects</a></li>
-                        <li><a href="#before-after" class="interactive">Before & Afters</a></li>
-                        <li><a href="#client-work" class="interactive">Client Work</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <div class="footer-title">Socials</div>
-                    <ul class="footer-links">
-                        <li><a href="https://instagram.com" target="_blank" class="interactive">Instagram</a></li>
-                        <li><a href="https://twitter.com" target="_blank" class="interactive">Twitter / X</a></li>
-                        <li><a href="https://opensea.io" target="_blank" class="interactive">OpenSea</a></li>
-                        <li><a href="mailto:contact@vandelight.art" class="interactive">Contact</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="footer-bottom">
-                <div>&copy; <span id="year"></span> Manny Van Delight. All rights reserved.</div>
-                <div>Crafted with precision.</div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- FULLSCREEN PROJECT TAKEOVER -->
-    <div id="project-modal" class="project-takeover">
-        <button class="close-btn interactive" onclick="closeProject()">[ CLOSE ]</button>
-        <div id="project-content" class="container"></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:2.5rem clamp(2rem,4vw,4rem);max-width:1150px;margin-bottom:4.5rem">
+      <div>
+        <p style="font-size:1.35rem;line-height:1.55;color:var(--text-main);margin-bottom:1.4rem;text-wrap:pretty">A creative rascal. A world-builder. A storyteller who turns distant lands and bold ideas into engaging art. Guided by my inner child as my true north, I fuse photography, film, and visual effects magic into powerful, immersive experiences.</p>
+        <p style="font-size:1.1rem;line-height:1.7;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">For decades, I crafted visuals for the world's biggest brands — Audi, Porsche, Toyota — and contributed to films like Avatar, Tintin, Wonder Woman, Tomb Raider, and games like Horizon Zero Dawn. But beyond the industry, I found my true passion: creating my own art, where storytelling and technology collide.</p>
+      </div>
+      <div>
+        <p style="font-size:1.1rem;line-height:1.7;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">Now, I'm pushing the boundaries of interactive filmmaking — blending visuals, narrative, and cutting-edge tech to create stories where the audience plays a role. My work isn't just something to watch; it's something to experience and shape. Through community-driven storytelling, I invite people to vote and influence the narrative, making them an integral part of the creative process.</p>
+        <p style="font-size:1.1rem;line-height:1.7;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">And while I continue to carve my own path, I'm also working on one of the biggest movies out there — though I can't reveal what it is just yet. Every share, every kind word, every purchase fuels this journey and for that, you have our deepest gratitude.</p>
+        <p style="font-family:'Montserrat',sans-serif;font-size:.75rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent-color)">— MvD</p>
+      </div>
     </div>
 
-    <!-- SCRIPTS -->
-    <script>
-        document.getElementById('year').textContent = new Date().getFullYear();
+    <div data-reveal="1" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:2.5rem;margin-bottom:5rem">
+      <div>
+        <span style="display:block;font-family:'Cormorant Garamond',serif;font-size:.9rem;letter-spacing:3px;text-transform:uppercase;color:var(--text-muted);margin-bottom:1rem">Fvck'n Mondays</span>
+        <div style="width:100%;aspect-ratio:16/9;border:1px solid var(--border-color);border-radius:4px;overflow:hidden;background:var(--surface-color);position:relative;box-shadow:0 10px 30px rgba(0,0,0,.06)">
+          <sc-if value="{{ reelA }}" hint-placeholder-val="{{ false }}">
+            <iframe src="https://www.youtube-nocookie.com/embed/H-IdvMM3Ng4?autoplay=1&amp;rel=0" title="Fvck'n Mondays" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen="allowfullscreen" style="width:100%;height:100%;border:0;display:block"></iframe>
+          </sc-if>
+          <sc-if value="{{ reelAIdle }}" hint-placeholder-val="{{ true }}">
+            <button data-reel="A" onClick="{{ playReel }}" aria-label="Play Fvck'n Mondays" style="position:absolute;inset:0;width:100%;height:100%;border:0;padding:0;background:#000;display:block;overflow:hidden">
+              <img src="https://i.ytimg.com/vi/H-IdvMM3Ng4/maxresdefault.jpg" alt="" loading="lazy" decoding="async" onError="{{ onMediaError }}" style="width:100%;height:100%;object-fit:cover;opacity:.82;transition:opacity .4s,transform .6s" />
+              <span style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:74px;height:74px;border-radius:50%;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.75);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.4rem;padding-left:5px;backdrop-filter:blur(2px)">&#9654;</span>
+            </button>
+          </sc-if>
+        </div>
+      </div>
+      <div>
+        <span style="display:block;font-family:'Cormorant Garamond',serif;font-size:.9rem;letter-spacing:3px;text-transform:uppercase;color:var(--text-muted);margin-bottom:1rem">Allround VFX Reel</span>
+        <div style="width:100%;aspect-ratio:16/9;border:1px solid var(--border-color);border-radius:4px;overflow:hidden;background:var(--surface-color);position:relative;box-shadow:0 10px 30px rgba(0,0,0,.06)">
+          <sc-if value="{{ reelB }}" hint-placeholder-val="{{ false }}">
+            <iframe src="https://www.youtube-nocookie.com/embed/vqJQTj1UP08?autoplay=1&amp;rel=0" title="Allround VFX Reel" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen="allowfullscreen" style="width:100%;height:100%;border:0;display:block"></iframe>
+          </sc-if>
+          <sc-if value="{{ reelBIdle }}" hint-placeholder-val="{{ true }}">
+            <button data-reel="B" onClick="{{ playReel }}" aria-label="Play Allround VFX Reel" style="position:absolute;inset:0;width:100%;height:100%;border:0;padding:0;background:#000;display:block;overflow:hidden">
+              <img src="https://i.ytimg.com/vi/vqJQTj1UP08/maxresdefault.jpg" alt="" loading="lazy" decoding="async" onError="{{ onMediaError }}" style="width:100%;height:100%;object-fit:cover;opacity:.82;transition:opacity .4s,transform .6s" />
+              <span style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:74px;height:74px;border-radius:50%;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.75);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.4rem;padding-left:5px;backdrop-filter:blur(2px)">&#9654;</span>
+            </button>
+          </sc-if>
+        </div>
+      </div>
+    </div>
 
-        // Light / Dark Theme Switching Logic
-        function toggleTheme() {
-            const html = document.documentElement;
-            const themeIcon = document.getElementById('theme-icon');
-            const colorScheme = document.querySelector('meta[name="color-scheme"]');
-            const currentTheme = html.getAttribute('data-theme');
+    <div data-reveal="1" style="max-width:900px;margin:0 auto 5rem">
+      <span style="display:block;font-family:'Cormorant Garamond',serif;font-size:.9rem;letter-spacing:3px;text-transform:uppercase;color:var(--text-muted);margin-bottom:1.5rem;text-align:center">Selected Key Clients</span>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:1rem">
+        <sc-for list="{{ clients }}" as="client" hint-placeholder-count="12">
+          <div style="width:96px;aspect-ratio:1/1;background:#1A1A1A;border:1px solid rgba(255,255,255,.12);border-radius:4px;display:flex;align-items:center;justify-content:center;padding:.6rem;transition:border-color .3s" style-hover="border-color:var(--accent-color)">
+            <img src="{{ client.src }}" alt="{{ client.name }}" loading="lazy" decoding="async" width="72" height="72" onError="{{ onMediaError }}" style="max-width:72px;max-height:72px;width:auto;height:auto;object-fit:contain;filter:grayscale(100%);opacity:.7;transition:filter .3s,opacity .3s" style-hover="filter:grayscale(0%);opacity:1" />
+            <span data-fallback="1" style="display:none;font-family:'Montserrat',sans-serif;font-size:.52rem;letter-spacing:1px;text-transform:uppercase;color:#8A8A8A;text-align:center;line-height:1.3">{{ client.name }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
 
-            if (currentTheme === 'dark') {
-                html.setAttribute('data-theme', 'light');
-                themeIcon.textContent = '🌙 Dark';
-                if (colorScheme) colorScheme.setAttribute('content', 'light');
-            } else {
-                html.setAttribute('data-theme', 'dark');
-                themeIcon.textContent = '☀️ Light';
-                if (colorScheme) colorScheme.setAttribute('content', 'dark');
-            }
+    <div data-reveal="1">
+      <span style="display:block;font-family:'Cormorant Garamond',serif;font-size:.9rem;letter-spacing:3px;text-transform:uppercase;color:var(--text-muted);margin-bottom:1.5rem">Featured Film &amp; Game Posters</span>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(108px,1fr));gap:clamp(.7rem,1.6vw,1.5rem)">
+        <sc-for list="{{ posters }}" as="poster" hint-placeholder-count="6">
+          <div style="position:relative;aspect-ratio:2/3;background-image:repeating-linear-gradient(45deg,var(--stripe-a) 0 8px,var(--stripe-b) 8px 16px);border:1px solid var(--border-color);border-radius:4px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.05);transition:transform .4s,border-color .4s" style-hover="transform:translateY(-6px);border-color:var(--accent-color)">
+            <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:.5rem;font-family:ui-monospace,monospace;font-size:.55rem;line-height:1.5;letter-spacing:.5px;color:var(--text-muted);text-align:center">{{ poster.slot }}</span>
+            <img src="{{ poster.src }}" alt="{{ poster.name }}" loading="lazy" decoding="async" onError="{{ onMediaError }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects" data-screen-label="Projects" data-reveal="1" style="max-width:1400px;margin:0 auto;padding:6rem clamp(1.25rem,4vw,3rem);scroll-margin-top:80px">
+    <h2 style="font-size:clamp(2.2rem,5vw,3rem);font-weight:400;margin-bottom:3rem;border-bottom:1px solid var(--border-color);padding-bottom:1rem">Projects</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:clamp(1.25rem,2.5vw,2.5rem)">
+      <sc-for list="{{ projects }}" as="p" hint-placeholder-count="6">
+        <button data-project="{{ p.id }}" onClick="{{ openProject }}" aria-label="{{ p.aria }}" style="position:relative;aspect-ratio:4/5;overflow:hidden;border:1px solid var(--border-color);background-image:repeating-linear-gradient(45deg,var(--stripe-a) 0 9px,var(--stripe-b) 9px 18px);display:flex;align-items:flex-end;padding:1.75rem;text-align:left;box-shadow:0 4px 20px rgba(0,0,0,.04);transition:transform .5s cubic-bezier(.19,1,.22,1),box-shadow .5s,border-color .5s" style-hover="transform:scale(.985);border-color:var(--accent-color);box-shadow:0 12px 40px rgba(56,161,255,.16)">
+          <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:1rem;font-family:ui-monospace,monospace;font-size:.6rem;letter-spacing:.5px;color:var(--text-muted);text-align:center">{{ p.slot }}</span>
+          <img src="{{ p.cover }}" alt="" loading="lazy" decoding="async" onError="{{ onMediaError }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
+          <span style="position:absolute;left:0;right:0;bottom:0;height:62%;background:linear-gradient(to top,rgba(0,0,0,.78),transparent)"></span>
+          <span style="position:relative;z-index:2;color:#FFFFFF;width:100%">
+            <span style="display:block;font-family:'Cormorant Garamond',serif;font-size:clamp(1.6rem,2.3vw,2.3rem);line-height:1.1;margin-bottom:.4rem">{{ p.title }}</span>
+            <span style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;font-family:'Montserrat',sans-serif;font-size:.68rem;letter-spacing:2px;text-transform:uppercase;opacity:.92">{{ p.sub }}<span style="border:1px solid rgba(255,255,255,.55);border-radius:20px;padding:.15rem .5rem;font-size:.58rem;letter-spacing:1.5px">{{ p.badge }}</span></span>
+          </span>
+        </button>
+      </sc-for>
+    </div>
+  </section>
+
+  <section id="before-after" data-screen-label="Before and afters" data-reveal="1" style="max-width:1400px;margin:0 auto;padding:6rem clamp(1.25rem,4vw,3rem);scroll-margin-top:80px">
+    <h2 style="font-size:clamp(2.2rem,5vw,3rem);font-weight:400;margin-bottom:1rem;border-bottom:1px solid var(--border-color);padding-bottom:1rem">Before And Afters</h2>
+    <p style="font-family:'Montserrat',sans-serif;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:3rem">Drag the handle — or focus a frame and use the arrow keys</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(1.5rem,3vw,2.5rem)">
+      <sc-for list="{{ bas }}" as="ba" hint-placeholder-count="4">
+        <div>
+          <div data-ba="1" tabindex="0" role="slider" aria-label="{{ ba.title }} before and after comparison" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" style="position:relative;width:100%;aspect-ratio:6/4;overflow:hidden;border:1px solid var(--border-color);border-radius:4px;background-image:repeating-linear-gradient(45deg,var(--stripe-a) 0 9px,var(--stripe-b) 9px 18px);user-select:none;touch-action:pan-y;box-shadow:0 4px 20px rgba(0,0,0,.04);transition:border-color .4s" style-hover="border-color:var(--accent-color)">
+            <img src="{{ ba.after }}" alt="{{ ba.title }} after" loading="lazy" decoding="async" onError="{{ onMediaError }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
+            <img data-ba-top="1" src="{{ ba.before }}" alt="{{ ba.title }} before" loading="lazy" decoding="async" onError="{{ onMediaError }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;clip-path:inset(0 50% 0 0)" />
+            <span style="position:absolute;top:.9rem;left:.9rem;font-family:'Montserrat',sans-serif;font-size:.6rem;letter-spacing:2px;text-transform:uppercase;background:rgba(0,0,0,.6);color:#FFF;padding:.25rem .7rem;border-radius:20px;z-index:4;pointer-events:none">Before</span>
+            <span style="position:absolute;top:.9rem;right:.9rem;font-family:'Montserrat',sans-serif;font-size:.6rem;letter-spacing:2px;text-transform:uppercase;background:rgba(0,0,0,.6);color:#FFF;padding:.25rem .7rem;border-radius:20px;z-index:4;pointer-events:none">After</span>
+            <span data-ba-handle="1" style="position:absolute;top:0;bottom:0;left:50%;width:2px;background:#FFFFFF;z-index:5;transform:translateX(-50%);box-shadow:0 0 10px rgba(0,0,0,.35);pointer-events:none">
+              <span style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:38px;height:38px;border-radius:50%;background:#FFFFFF;border:2px solid var(--accent-color);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 15px rgba(0,0,0,.2);color:var(--accent-color);font-size:.7rem">&#10094;&#10095;</span>
+            </span>
+          </div>
+          <div style="margin-top:.9rem">
+            <h3 style="font-size:clamp(1.1rem,2vw,1.7rem);font-weight:400;line-height:1.2">{{ ba.title }}</h3>
+            <p style="font-family:'Montserrat',sans-serif;font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)">{{ ba.sub }}</p>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section id="client-work" data-screen-label="Client work" data-reveal="1" style="max-width:1400px;margin:0 auto;padding:6rem clamp(1.25rem,4vw,3rem);scroll-margin-top:80px">
+    <h2 style="font-size:clamp(2.2rem,5vw,3rem);font-weight:400;margin-bottom:1rem;border-bottom:1px solid var(--border-color);padding-bottom:1rem">Client Work</h2>
+    <p style="font-family:'Montserrat',sans-serif;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:3rem">Selected frames, films and campaign work — click any tile to enlarge</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));grid-auto-rows:clamp(140px,15vw,200px);gap:clamp(.6rem,1.4vw,1.1rem)">
+      <sc-for list="{{ tiles }}" as="t" hint-placeholder-count="9">
+        <button data-tile="{{ t.index }}" onClick="{{ openTile }}" aria-label="{{ t.aria }}" style="position:relative;overflow:hidden;border:1px solid var(--border-color);border-radius:3px;padding:0;background-image:repeating-linear-gradient(45deg,var(--stripe-a) 0 9px,var(--stripe-b) 9px 18px);grid-column:{{ t.col }};grid-row:{{ t.row }};transition:border-color .4s,box-shadow .4s" style-hover="border-color:var(--accent-color);box-shadow:0 10px 34px rgba(56,161,255,.15)">
+          <span style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;padding:1rem;font-family:ui-monospace,monospace;font-size:.6rem;letter-spacing:.5px;color:var(--text-muted);text-align:center;line-height:1.6">{{ t.slot }}<span style="font-size:.52rem;opacity:.75">{{ t.kindLabel }}</span></span>
+          <img src="{{ t.thumb }}" alt="" loading="lazy" decoding="async" onError="{{ onMediaError }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .7s cubic-bezier(.19,1,.22,1)" style-hover="transform:scale(1.04)" />
+          <span hidden="{{ t.noTitle }}" style="position:absolute;left:0;right:0;bottom:0;height:65%;background:linear-gradient(to top,rgba(0,0,0,.8),transparent);opacity:.95;pointer-events:none"></span>
+          <span style="position:absolute;left:0;right:0;bottom:0;z-index:2;padding:1rem;display:flex;align-items:flex-end;justify-content:space-between;gap:.75rem;text-align:left;pointer-events:none">
+            <span>
+              <span style="display:block;font-family:'Cormorant Garamond',serif;font-size:1.15rem;line-height:1.2;color:#FFFFFF">{{ t.title }}</span>
+              <span style="display:block;font-family:'Montserrat',sans-serif;font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.8);margin-top:.2rem">{{ t.sub }}</span>
+            </span>
+            <span style="flex-shrink:0;width:30px;height:30px;border-radius:50%;border:1px solid rgba(255,255,255,.5);background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;color:#FFFFFF;font-size:.65rem;padding-left:2px">{{ t.glyph }}</span>
+          </span>
+        </button>
+      </sc-for>
+    </div>
+  </section>
+</main>
+
+<footer style="background:#101010;color:#F7F7F5;padding:7rem 0 3rem;margin-top:6rem">
+  <div style="max-width:1400px;margin:0 auto;padding:0 clamp(1.25rem,4vw,3rem)">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:3rem;padding-bottom:5rem;border-bottom:1px solid rgba(255,255,255,.1)">
+      <div style="grid-column:1/-1;max-width:520px">
+        <h2 style="font-size:clamp(2.2rem,5vw,3.4rem);font-weight:400;font-style:italic;margin-bottom:1.25rem">Manny Van Delight</h2>
+        <p style="color:#A0A0A0;font-size:1.05rem;line-height:1.65">Visual Alchemist &amp; Creative Director, bridging impossible visual concepts with precision technical execution.</p>
+      </div>
+      <div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:.85rem;text-transform:uppercase;letter-spacing:4px;color:var(--accent-color);margin-bottom:1.25rem;font-weight:500">Navigation</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:.9rem">
+          <li><a href="#about" style="font-family:'Cormorant Garamond',serif;font-size:1rem;letter-spacing:2px;text-transform:uppercase;color:#E0E0E0">About</a></li>
+          <li><a href="#projects" style="font-family:'Cormorant Garamond',serif;font-size:1rem;letter-spacing:2px;text-transform:uppercase;color:#E0E0E0">Projects</a></li>
+          <li><a href="#before-after" style="font-family:'Cormorant Garamond',serif;font-size:1rem;letter-spacing:2px;text-transform:uppercase;color:#E0E0E0">Before &amp; Afters</a></li>
+          <li><a href="#client-work" style="font-family:'Cormorant Garamond',serif;font-size:1rem;letter-spacing:2px;text-transform:uppercase;color:#E0E0E0">Client Work</a></li>
+        </ul>
+      </div>
+      <div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:.85rem;text-transform:uppercase;letter-spacing:4px;color:var(--accent-color);margin-bottom:1.25rem;font-weight:500">Socials</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:.9rem">
+          <li><a href="https://www.instagram.com/mannyvandelight" target="_blank" rel="noopener" style="font-family:'Cormorant Garamond',serif;font-size:1rem;letter-spacing:2px;text-transform:uppercase;color:#E0E0E0">Instagram</a></li>
+          <li><a href="https://x.com/MannyVanDelight" target="_blank" rel="noopener" style="font-family:'Cormorant Garamond',serif;font-size:1rem;letter-spacing:2px;text-transform:uppercase;color:#E0E0E0">Twitter / X</a></li>
+          <li><a href="https://opensea.io/MannyVanDelight" target="_blank" rel="noopener" style="font-family:'Cormorant Garamond',serif;font-size:1rem;letter-spacing:2px;text-transform:uppercase;color:#E0E0E0">OpenSea</a></li>
+          <li><a href="mailto:mannyvandelight@gmail.com" style="font-family:'Cormorant Garamond',serif;font-size:1rem;letter-spacing:2px;text-transform:uppercase;color:#E0E0E0">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div style="padding-top:2.5rem;display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between;align-items:center;font-family:'Montserrat',sans-serif;font-size:.68rem;color:#777777;letter-spacing:2px;text-transform:uppercase">
+      <div>&copy; {{ year }} Manny Van Delight. All rights reserved.</div>
+      <div>Crafted with precision.</div>
+    </div>
+  </div>
+</footer>
+
+<button ref="{{ topRef }}" onClick="{{ scrollTop }}" aria-label="Back to top" style="position:fixed;bottom:1.75rem;right:1.75rem;width:48px;height:48px;border-radius:50%;background:var(--surface-color);border:1px solid var(--border-color);color:var(--text-main);font-size:1.1rem;display:flex;align-items:center;justify-content:center;z-index:90;opacity:0;visibility:hidden;transform:translateY(20px);transition:all .4s cubic-bezier(.19,1,.22,1);box-shadow:0 4px 20px rgba(0,0,0,.08)" style-hover="background:var(--accent-color);color:#FFFFFF;border-color:var(--accent-color)">&#8593;</button>
+
+<div ref="{{ modalRef }}" aria-hidden="{{ modalHidden }}" style="position:fixed;top:0;left:0;width:100%;height:100vh;background:var(--bg-color);z-index:200;overflow-y:auto;overflow-x:hidden;opacity:{{ modalOpacity }};pointer-events:{{ modalPointer }};clip-path:{{ modalClip }};transition:clip-path .8s cubic-bezier(.77,0,.175,1),opacity .4s ease">
+  <button onClick="{{ closeProject }}" style="position:fixed;top:1.25rem;right:1.5rem;font-family:'Montserrat',sans-serif;font-size:.68rem;letter-spacing:3px;text-transform:uppercase;color:var(--text-main);z-index:210;background:var(--surface-color);border:1px solid var(--border-color);padding:.7rem 1.2rem;border-radius:40px;transition:all .3s" style-hover="color:#FFFFFF;background:var(--accent-color);border-color:var(--accent-color)">[ Close ]</button>
+
+  <div style="max-width:1400px;margin:0 auto;padding:0 clamp(1.25rem,4vw,3rem)">
+
+    <article hidden="{{ hideUmami }}">
+      <div style="padding:7rem 0 2.5rem;text-align:center;border-bottom:1px solid var(--border-color)">
+        <span style="display:block;font-family:'Cormorant Garamond',serif;font-size:.8rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent-color);margin-bottom:1rem">The Art of Not Crumbling Under Pressure</span>
+        <h2 style="font-size:clamp(2.6rem,7vw,6rem);font-weight:400;font-style:italic">Umami Origami</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:2rem;margin:2.5rem 0;font-family:'Montserrat',sans-serif;font-size:.82rem;line-height:1.7;color:var(--text-muted);border-bottom:1px solid var(--border-color);padding-bottom:2rem">
+        <div><strong style="display:block;color:var(--accent-color);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:2px;font-size:.7rem">About</strong>A high-fashion dress built entirely from paper, shot across real landscapes, with 3D-rendered origami butterflies added in post.</div>
+        <div><strong style="display:block;color:var(--accent-color);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:2px;font-size:.7rem">Technique</strong>Handcrafted paper couture, on-location photography, VFX compositing, and one AI-generated companion piece.</div>
+        <div><strong style="display:block;color:var(--accent-color);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:2px;font-size:.7rem">Theme</strong>Or, how I metaphorically and literally glued a project together.</div>
+      </div>
+      <div style="max-width:900px;margin:0 auto;padding-bottom:7rem">
+        <figure style="margin:0 0 2.5rem">
+          <img data-img="uoPath" alt="Path Of Delight" loading="lazy" decoding="async" style="width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:4px;border:1px solid var(--border-color);display:block;background-image:repeating-linear-gradient(45deg,var(--stripe-a) 0 9px,var(--stripe-b) 9px 18px)" />
+          <figcaption style="font-family:'Montserrat',sans-serif;font-size:.75rem;line-height:1.6;color:var(--text-muted);margin-top:.6rem;font-style:italic">Path Of Delight — all I need is what I see and all I see is in front of me. Only when we venture out, leaving everything behind, do we allow ourselves to discover what we truly need.</figcaption>
+        </figure>
+        <p style="font-size:1.12rem;line-height:1.8;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">Hello, fellow rascals.</p>
+        <p style="font-size:1.12rem;line-height:1.8;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">There is a quiet pressure in the creative world to keep things tidy. To propose concepts that fit neatly into predictable boxes, follow the path of least resistance, and guarantee a smooth, frictionless production. It's safe, it's comfortable, and it is the fastest way to make sure a piece of work leaves absolutely no impression at all.</p>
+        <p style="font-size:1.12rem;line-height:1.8;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">Personally, I've always found that the most compelling visions live right on the edge of a total logistical collapse.</p>
+        <p style="font-size:1.12rem;line-height:1.8;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">Today, I'm taking you behind the scenes of my latest project: Umami Origami. It's a project born from a simple, slightly unhinged premise: what happens when you mix high fashion, structural engineering challenges, elegant VFX, a dash of AI, and a severe lack of respect for the weather forecast?</p>
+        <p style="text-align:center;font-size:1.7rem;font-style:italic;color:var(--accent-color);margin:2.5rem 0">Spoiler alert: you get magic. But first, you get a lot of stress.</p>
+        <div style="font-family:'Montserrat',sans-serif;font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent-color);font-weight:600;margin:3rem 0 1rem">The Main Event</div>
+        <p style="font-size:1.12rem;line-height:1.8;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">The concept was simple: craft a high-fashion dress entirely out of paper, shoot it across breathtaking landscapes, and add 3D-rendered origami butterflies in post-production. Easy on paper. Not as straightforward in reality.</p>
+        <div style="font-family:'Montserrat',sans-serif;font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent-color);font-weight:600;margin:3rem 0 1rem">The Real-World Struggle (IRL Costs Real Money)</div>
+        <h3 style="font-size:1.8rem;font-weight:400;font-style:italic;color:var(--text-main);margin-bottom:1.1rem">Paper hates the outdoors.</h3>
+        <p style="font-size:1.12rem;line-height:1.8;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">First of all, finding a dressmaker who doesn't immediately throw scissors at you when you say "make it out of paper" is a challenge. Plus it cost a pretty penny to bring to life, and once we got it on set, the universe decided to test my sanity.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;margin:2.25rem 0">
+          <div style="border-top:1px solid var(--border-color);padding-top:.9rem"><strong style="display:block;font-family:'Montserrat',sans-serif;font-size:.75rem;letter-spacing:1px;text-transform:uppercase;color:var(--text-main);margin-bottom:.4rem">Wind</strong><p style="font-size:.95rem;line-height:1.7;color:var(--text-muted)">Every gentle breeze threatened to violently fold the neck piece into oblivion.</p></div>
+          <div style="border-top:1px solid var(--border-color);padding-top:.9rem"><strong style="display:block;font-family:'Montserrat',sans-serif;font-size:.75rem;letter-spacing:1px;text-transform:uppercase;color:var(--text-main);margin-bottom:.4rem">Humidity</strong><p style="font-size:.95rem;line-height:1.7;color:var(--text-muted)">Dampened the paper, making the entire gown heavy, fragile, and prone to melting.</p></div>
+        </div>
+        <p style="font-size:1.12rem;line-height:1.8;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">I had to pull out some serious McGyver moves, reinforcing the structural integrity of the dress mid-shoot while praying to the photography gods it wouldn't show in the final frames. Then there was the model. Bless her soul. Sitting down, moving, or doing literally anything came with a high risk of catastrophic structural failure. But we survived. And the results speak for themselves.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;margin:2rem 0 3rem">
+          <figure style="margin:0">
+            <img data-img="uoAmbling" alt="Ambling Reverie" loading="lazy" decoding="async" style="width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:4px;border:1px solid var(--border-color);display:block;background-image:repeating-linear-gradient(45deg,var(--stripe-a) 0 9px,var(--stripe-b) 9px 18px)" />
+            <figcaption style="font-family:'Montserrat',sans-serif;font-size:.75rem;line-height:1.6;color:var(--text-muted);margin-top:.6rem;font-style:italic">Ambling Reverie — in the tender embrace of dawn, I meander through whispers of light and shadow.</figcaption>
+          </figure>
+          <figure style="margin:0">
+            <img data-img="uoSanctuary" alt="Sanctuary" loading="lazy" decoding="async" style="width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:4px;border:1px solid var(--border-color);display:block;background-image:repeating-linear-gradient(45deg,var(--stripe-a) 0 9px,var(--stripe-b) 9px 18px)" />
+            <figcaption style="font-family:'Montserrat',sans-serif;font-size:.75rem;line-height:1.6;color:var(--text-muted);margin-top:.6rem;font-style:italic">Sanctuary — we are beautiful, we are different, we are attracted to somebody. Often we keep those desires close to heart.</figcaption>
+          </figure>
+        </div>
+        <div style="font-family:'Montserrat',sans-serif;font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent-color);font-weight:600;margin:3rem 0 1rem">Cheating Geography via VFX</div>
+        <p style="font-size:1.12rem;line-height:1.8;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">If you look at the locations, you'll notice they span across New Zealand and Australia. Did I fly the whole crew to every remote peak? Absolutely not — I value my bank account.</p>
+        <p style="font-size:1.12rem;line-height:1.8;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">For a couple of these concepts I leaned heavily into my visual effects background: shot the locations solo, shot the model separately, and merged her into the environments seamlessly. The 3D-rendered origami butterflies aren't pasted on top; they cast accurate shadows, catch the ambient light, and perfectly mimic the colours of her paper dress. To tie the physical world together, I also captured two shots featuring actual fabric dresses, injecting the digital butterflies to blur the line between the ordinary and the extraordinary.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;margin:2rem 0 3rem">
+          <figure style="margin:0">
+            <img data-img="uoFleeting" alt="Fleeting" loading="lazy" decoding="async" style="width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:4px;border:1px solid var(--border-color);display:block;background-image:repeating-linear-gradient(45deg,var(--stripe-a) 0 9px,var(--stripe-b) 9px 18px)" />
+            <figcaption style="font-family:'Montserrat',sans-serif;font-size:.75rem;line-height:1.6;color:var(--text-muted);margin-top:.6rem;font-style:italic">Fleeting — a dance between nature and human presence, where the familiar meets the unknown.</figcaption>
+          </figure>
+          <figure style="margin:0">
+            <img data-img="uoEchoes" alt="Echoes of Delight" loading="lazy" decoding="async" style="width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:4px;border:1px solid var(--border-color);display:block;background-image:repeating-linear-gradient(45deg,var(--stripe-a) 0 9px,var(--stripe-b) 9px 18px)" />
+            <figcaption style="font-family:'Montserrat',sans-serif;font-size:.75rem;line-height:1.6;color:var(--text-muted);margin-top:.6rem;font-style:italic">Echoes of Delight — choose joy, and joy will seek you in the crowd. Declare yourself beautiful, and beauty will mirror your form.</figcaption>
+          </figure>
+        </div>
+        <div style="font-family:'Montserrat',sans-serif;font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent-color);font-weight:600;margin:3rem 0 1rem">Enter the Auramancer (The AI Experiment)</div>
+        <h3 style="font-size:1.8rem;font-weight:400;font-style:italic;color:var(--text-main);margin-bottom:1.1rem">The Gold Dancer.</h3>
+        <p style="font-size:1.12rem;line-height:1.8;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">Because the physical paper dress tried to murder my workflow, I decided to see how the digital gods would handle the pressure. I wanted to design an even more extreme dress for a ballet dancer.</p>
+        <p style="font-size:1.12rem;line-height:1.8;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">If you replace "glass" with "gold" in the word Vitrumancer, you get Auramancer (<em>Aurum</em> = Latin for gold, <em>Mancer</em> = one with control over an element). A Gold Dancer. Instead of spending weeks and a small fortune on a physical dress that would probably break a dancer's legs, I trained AI on exactly what I wanted. It was the only AI contribution to the project, but it proved a point: for scale, speed, and versatility, embracing the machine let me realize a concept that would otherwise be locked behind a budget wall.</p>
+        <figure style="margin:2rem auto 3rem;max-width:640px">
+          <img data-img="uoAuramancer" alt="Auramancer — The Gold Dancer" loading="lazy" decoding="async" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:4px;border:1px solid var(--border-color);display:block;background-image:repeating-linear-gradient(45deg,var(--stripe-a) 0 9px,var(--stripe-b) 9px 18px)" />
+          <figcaption style="font-family:'Montserrat',sans-serif;font-size:.75rem;line-height:1.6;color:var(--text-muted);margin-top:.6rem;font-style:italic">Auramancer — the gold dancer</figcaption>
+        </figure>
+        <div style="font-family:'Montserrat',sans-serif;font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent-color);font-weight:600;margin:3rem 0 1rem">The Peak — Midnight Magic</div>
+        <p style="font-size:1.12rem;line-height:1.8;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">Midnight Magic delves deep into the myriad emotions and experiences that come with immigrating to a new country. At its heart, it is a visual narrative of transformation, resilience, and growth, as one adapts to new circumstances.</p>
+        <p style="font-size:1.12rem;line-height:1.8;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">The art style is divided into distinct elements, each symbolizing a phase of this profound journey. On one hand, there is the night, black and white — the melancholy of leaving one's roots behind, a teary-eyed farewell to family and friends. On the other, the heavy tone is balanced with light-hearted magic: the moon lighting the way, sparkling mist, glowing creatures welcoming us to the new land.</p>
+        <p style="font-size:1.12rem;line-height:1.8;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">It's an immigrant's transformative odyssey — cultural shocks, bittersweet nostalgia, the forging of new bonds, and beauty discovered in the most unexpected times. A piece about the universal human experience of migration, and the ever-unfolding tapestry of cultures that make our world so rich.</p>
+        <p style="text-align:center;font-size:1.6rem;font-style:italic;color:var(--text-main);max-width:700px;margin:3.5rem auto;line-height:1.5">The best work isn't born in a sterile environment where everything goes according to plan. It's born when the paper dress is tearing, the wind is blowing, the locations are thousands of miles apart, and you are forced to use every tool in your arsenal — from VFX to AI to literal sticky tape — to make the vision reality.<span style="display:block;margin-top:1rem;font-family:'Montserrat',sans-serif;font-size:.72rem;font-style:normal;letter-spacing:2px;text-transform:uppercase;color:var(--accent-color)">I am not afraid to break things to make something beautiful.</span></p>
+        <p style="text-align:center;font-style:italic;color:var(--text-main)">Stay delightfully unusual,<br />Manny Van Delight — Creative Director / Visual Alchemist</p>
+        <div style="text-align:center;margin-top:3.5rem"><a href="https://opensea.io/gallery/MannyVanDelight/deead016ab3b4fe685d51bbecf38c238" target="_blank" rel="noopener" style="font-family:'Montserrat',sans-serif;font-size:.85rem;letter-spacing:2px;text-transform:uppercase;font-weight:600;border-bottom:1px solid var(--accent-color);padding-bottom:3px">[ Collect on OpenSea ]</a></div>
+      </div>
+    </article>
+
+    <article hidden="{{ hideMooning }}">
+      <div style="padding:7rem 0 2.5rem;text-align:center;border-bottom:1px solid var(--border-color)">
+        <span style="display:block;font-family:'Cormorant Garamond',serif;font-size:.8rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent-color);margin-bottom:1rem">Animation Loops</span>
+        <h2 style="font-size:clamp(2.6rem,7vw,6rem);font-weight:400;font-style:italic">Mooning The Ignorant</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:2rem;margin:2.5rem 0;font-family:'Montserrat',sans-serif;font-size:.82rem;line-height:1.7;color:var(--text-muted);border-bottom:1px solid var(--border-color);padding-bottom:2rem">
+        <div><strong style="display:block;color:var(--accent-color);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:2px;font-size:.7rem">About</strong>Nine looping animations riffing on the quirks, rituals, and copium of the crypto space.</div>
+        <div><strong style="display:block;color:var(--accent-color);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:2px;font-size:.7rem">Technique</strong>3D animation loops, built for a wall, minted on-chain.</div>
+        <div><strong style="display:block;color:var(--accent-color);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:2px;font-size:.7rem">Theme</strong>Film history and blockchain culture, in the same frame.</div>
+      </div>
+      <div style="max-width:900px;margin:0 auto;padding-bottom:7rem">
+        <p style="font-size:1.12rem;line-height:1.8;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">This project is all about the quirks and features of the crypto space — but it also combines that with my actual passion, which is film and filmmaking. Somewhere between a group chat in-joke and a film studies essay, "Mooning The Ignorant" was born.</p>
+        <p style="font-size:1.12rem;line-height:1.8;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty"><em>When Moon</em> is a direct quote and homage to Georges Méliès' iconic 1902 silent sci-fi film <em>A Trip to the Moon</em>. Blockchain, much like a rocket in the eye of the moon, is a fairly ridiculous idea that happened anyway — and it acts as the foundation every other piece in this collection stands on.</p>
+        <p style="font-size:1.12rem;line-height:1.8;color:var(--text-muted);margin-bottom:2.5rem;text-wrap:pretty">Nine loops. Watch on repeat, laugh a little, maybe recognize yourself in one or two. No advice given, some feelings implied.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.25rem">
+          <sc-for list="{{ loops }}" as="loop" hint-placeholder-count="9">
+            <div>
+              <button data-yt="{{ loop.yt }}" data-title="{{ loop.title }}" onClick="{{ openVideo }}" aria-label="{{ loop.aria }}" style="position:relative;display:block;width:100%;aspect-ratio:16/9;border:1px solid var(--border-color);border-radius:4px;overflow:hidden;padding:0;background:#000;transition:border-color .3s" style-hover="border-color:var(--accent-color)">
+                <img src="{{ loop.thumb }}" alt="" loading="lazy" decoding="async" onError="{{ onMediaError }}" style="width:100%;height:100%;object-fit:cover;opacity:.8;transition:opacity .4s,transform .6s" style-hover="opacity:1;transform:scale(1.03)" />
+                <span style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:48px;height:48px;border-radius:50%;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.75);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.85rem;padding-left:3px">&#9654;</span>
+              </button>
+              <div style="font-family:'Montserrat',sans-serif;font-size:.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent-color);font-weight:600;margin:.9rem 0 .35rem">{{ loop.num }} / {{ loop.title }}</div>
+              <p style="font-size:1rem;line-height:1.7;color:var(--text-muted);text-wrap:pretty">{{ loop.text }}</p>
+            </div>
+          </sc-for>
+        </div>
+        <div style="text-align:center;margin-top:3.5rem"><a href="https://opensea.io/collection/mooning-the-ignorant" target="_blank" rel="noopener" style="font-family:'Montserrat',sans-serif;font-size:.85rem;letter-spacing:2px;text-transform:uppercase;font-weight:600;border-bottom:1px solid var(--accent-color);padding-bottom:3px">[ Collect on OpenSea ]</a></div>
+      </div>
+    </article>
+
+    <article hidden="{{ hideShattered }}">
+      <div style="padding:7rem 0 2.5rem;text-align:center;border-bottom:1px solid var(--border-color)">
+        <span style="display:block;font-family:'Cormorant Garamond',serif;font-size:.8rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent-color);margin-bottom:1rem">Interactive Filmmaking &amp; Community Worldbuilding</span>
+        <h2 style="font-size:clamp(2.6rem,7vw,6rem);font-weight:400;font-style:italic">Shattered Dawn</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:2rem;margin:2.5rem 0;font-family:'Montserrat',sans-serif;font-size:.82rem;line-height:1.7;color:var(--text-muted);border-bottom:1px solid var(--border-color);padding-bottom:2rem">
+        <div><strong style="display:block;color:var(--accent-color);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:2px;font-size:.7rem">About</strong>An interactive sci-fi universe where the audience steps into the director's chair to vote, shape the plot, and forge the destiny of our heroine, Layla.</div>
+        <div><strong style="display:block;color:var(--accent-color);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:2px;font-size:.7rem">Technique</strong>Cinematic VFX compositing, AI concept art wrestling, 3D prop modeling, interactive polling, and Bitcoin Ordinals integration.</div>
+        <div><strong style="display:block;color:var(--accent-color);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:2px;font-size:.7rem">Theme</strong>Who needs a predictable Hollywood script when you can hand the steering wheel to a horde of passionate internet rascals?</div>
+      </div>
+      <div style="max-width:900px;margin:0 auto;padding-bottom:7rem">
+        <figure style="margin:0 0 2.5rem">
+          <img data-img="sdHero" alt="Shattered Dawn key visual" loading="lazy" decoding="async" style="width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:4px;border:1px solid var(--border-color);display:block;background-image:repeating-linear-gradient(45deg,var(--stripe-a) 0 9px,var(--stripe-b) 9px 18px)" />
+          <figcaption style="font-family:'Montserrat',sans-serif;font-size:.75rem;line-height:1.6;color:var(--text-muted);margin-top:.6rem;font-style:italic">Shattered Dawn — where cinema, community choice, and digital lore collide. The audience decides who survives, what gets built, and where the story goes next.</figcaption>
+        </figure>
+        <p style="font-size:1.12rem;line-height:1.8;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">Listen up, fellow rascals.</p>
+        <p style="font-size:1.12rem;line-height:1.8;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">For decades, traditional filmmaking has treated audiences like passive passengers: you sit in a dark room, eat your overpriced popcorn, and watch whatever pre-packaged story a studio executive greenlit three years ago. If a character makes a mind-bogglingly bad decision, you scream at the screen, but nothing changes.</p>
+        <p style="font-size:1.12rem;line-height:1.8;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">I got tired of yelling at the screen. So I thought: <em>What happens if we hand the steering wheel directly to the audience?</em></p>
+        <p style="font-size:1.12rem;line-height:1.8;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">Welcome to <strong style="color:var(--text-main);font-weight:600">Shattered Dawn</strong> — my ongoing sandbox experiment in interactive, community-driven sci-fi filmmaking. It is equal parts cinematic worldbuilding, high-stakes visual effects, relentless AI prompting battles, and raw community democracy.</p>
+        <p style="text-align:center;font-size:1.7rem;font-style:italic;color:var(--accent-color);margin:2.5rem 0">No safety net. No script. Just Layla, the crowd, and whatever chaos we vote into existence.</p>
+        <div style="font-family:'Montserrat',sans-serif;font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent-color);font-weight:600;margin:3rem 0 1rem">The Core Premise — Vote Your Heroine</div>
+        <p style="font-size:1.12rem;line-height:1.8;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">At its heart, <em>Shattered Dawn</em> follows our protagonist, Layla, as she navigates a treacherous dystopian world filled with toxic atmosphere, illegal technology, and rogue factions. But here's the twist: <strong style="color:var(--text-main);font-weight:600">you call the shots</strong>.</p>
+        <p style="font-size:1.12rem;line-height:1.8;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">Through community voting rounds, fans dictate critical narrative forks: from Layla's tactical maneuvers and alliance allegiances down to the literal gear and weapons she crafts to survive. Every single vote bends the trajectory of the storyline, turning story creation into a real-time multiplayer experience.</p>
+        <div style="font-family:'Montserrat',sans-serif;font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent-color);font-weight:600;margin:3rem 0 1rem">Wrestling the Digital Gods (VFX + AI Chaos)</div>
+        <h3 style="font-size:1.8rem;font-weight:400;font-style:italic;color:var(--text-main);margin-bottom:1.1rem">When MidJourney decides every prompt is a suggestion, not an instruction.</h3>
+        <p style="font-size:1.12rem;line-height:1.8;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">Bringing a community-voted story to life at feature-film visual standards in real-time is a glorious, chaotic challenge. Case in point: when the community voted on designing "The Extractor" — a crucial piece of high-tech gear for Layla — I turned to AI tools to iterate fast concepts.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;margin:2.25rem 0">
+          <div style="border-top:1px solid var(--border-color);padding-top:.9rem"><strong style="display:block;font-family:'Montserrat',sans-serif;font-size:.75rem;letter-spacing:1px;text-transform:uppercase;color:var(--text-main);margin-bottom:.4rem">Prompting Mayhem</strong><p style="font-size:.95rem;line-height:1.7;color:var(--text-muted)">MidJourney kept hallucinating sci-fi space-toasters and alien vacuum cleaners instead of sleek extraction tools.</p></div>
+          <div style="border-top:1px solid var(--border-color);padding-top:.9rem"><strong style="display:block;font-family:'Montserrat',sans-serif;font-size:.75rem;letter-spacing:1px;text-transform:uppercase;color:var(--text-main);margin-bottom:.4rem">VFX Refinement</strong><p style="font-size:.95rem;line-height:1.7;color:var(--text-muted)">Taking raw concepts into 3D software and Photoshop to carve out crisp, vote-ready assets fitting cinematic standards.</p></div>
+        </div>
+        <p style="font-size:1.12rem;line-height:1.8;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">I ended up pulling back the curtain in behind-the-scenes vlogs, showing the unvarnished battle between human creative direction and artificial intelligence gone rogue until we achieved three clean options for the community poll. That's the heartbeat of this project: it's transparent, unpredictable, and delightfully unhinged.</p>
+        <div style="font-family:'Montserrat',sans-serif;font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent-color);font-weight:600;margin:3rem 0 1rem">On-Chain Lore &amp; Interactive Ordinals</div>
+        <p style="font-size:1.12rem;line-height:1.8;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">To take co-creation even deeper, <em>Shattered Dawn</em> weaves interactive digital collectibles and Bitcoin Ordinals into the mix. Owning a piece of the universe isn't just about holding digital art; it acts as a pass to influence key story arcs and lock your mark into the official canon forever.</p>
+        <p style="text-align:center;font-size:1.6rem;font-style:italic;color:var(--text-main);max-width:700px;margin:3.5rem auto;line-height:1.5">Shattered Dawn isn't just a film you sit back and watch. It's a living universe we build together — one vote, one render, and one wild plot twist at a time.<span style="display:block;margin-top:1rem;font-family:'Montserrat',sans-serif;font-size:.72rem;font-style:normal;letter-spacing:2px;text-transform:uppercase;color:var(--accent-color)">Democracy has arrived in cinema, and it carries high-voltage VFX.</span></p>
+        <p style="text-align:center;font-style:italic;color:var(--text-main)">Ready to shape the dawn?<br />Manny Van Delight — Visual Alchemist &amp; Storyteller</p>
+        <div style="text-align:center;margin-top:3.5rem"><a href="https://www.vandelight.art/links" target="_blank" rel="noopener" style="font-family:'Montserrat',sans-serif;font-size:.85rem;letter-spacing:2px;text-transform:uppercase;font-weight:600;border-bottom:1px solid var(--accent-color);padding-bottom:3px">[ Cast Your Vote &amp; Explore The Universe ]</a></div>
+      </div>
+    </article>
+
+    <article hidden="{{ hideSoon }}">
+      <div style="min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8rem 0 6rem">
+        <span style="display:block;font-family:'Montserrat',sans-serif;font-size:.7rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent-color);margin-bottom:1.5rem">In Production</span>
+        <h2 style="font-size:clamp(2.6rem,7vw,5.5rem);font-weight:400;font-style:italic;margin-bottom:1.5rem">{{ soonTitle }}</h2>
+        <p style="font-family:'Montserrat',sans-serif;font-size:.78rem;letter-spacing:3px;text-transform:uppercase;color:var(--text-muted);margin-bottom:3rem">{{ soonSub }}</p>
+        <div style="width:100%;max-width:760px;aspect-ratio:16/9;border:1px solid var(--border-color);border-radius:4px;background-image:repeating-linear-gradient(45deg,var(--stripe-a) 0 10px,var(--stripe-b) 10px 20px);display:flex;align-items:center;justify-content:center;font-family:ui-monospace,monospace;font-size:.7rem;letter-spacing:.5px;color:var(--text-muted);text-align:center;padding:1rem">{{ soonSlot }}</div>
+        <p style="font-size:1.15rem;line-height:1.8;color:var(--text-muted);max-width:560px;margin:2.5rem auto 0;text-wrap:pretty">The full case study is being curated. Drop me a line if you'd like an early look at the work in progress.</p>
+        <div style="margin-top:2.5rem"><a href="mailto:mannyvandelight@gmail.com" style="font-family:'Montserrat',sans-serif;font-size:.85rem;letter-spacing:2px;text-transform:uppercase;font-weight:600;border-bottom:1px solid var(--accent-color);padding-bottom:3px">[ Get in touch ]</a></div>
+      </div>
+    </article>
+
+  </div>
+</div>
+
+<div aria-hidden="{{ lbHidden }}" style="position:fixed;inset:0;z-index:300;background:rgba(8,8,8,.94);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:clamp(1rem,5vw,4rem);opacity:{{ lbOpacity }};pointer-events:{{ lbPointer }};transition:opacity .35s ease">
+  <button onClick="{{ closeLightbox }}" aria-label="Close" style="position:absolute;top:1.25rem;right:1.5rem;font-family:'Montserrat',sans-serif;font-size:.68rem;letter-spacing:3px;text-transform:uppercase;color:#F7F7F5;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.25);padding:.7rem 1.2rem;border-radius:40px;transition:all .3s" style-hover="background:var(--accent-color);border-color:var(--accent-color)">[ Close ]</button>
+  <div style="width:100%;max-width:1200px">
+    <sc-if value="{{ lbIsVideo }}" hint-placeholder-val="{{ false }}">
+      <div style="width:100%;aspect-ratio:16/9;border-radius:4px;overflow:hidden;background:#000">
+        <iframe ref="{{ lbFrameRef }}" title="{{ lbTitle }}" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen="allowfullscreen" style="width:100%;height:100%;border:0;display:block"></iframe>
+      </div>
+    </sc-if>
+    <sc-if value="{{ lbIsFile }}" hint-placeholder-val="{{ false }}">
+      <video ref="{{ lbVideoRef }}" controls="controls" playsinline="playsinline" style="display:block;margin:0 auto;width:100%;max-height:78vh;border-radius:4px;background:#000"></video>
+    </sc-if>
+    <sc-if value="{{ lbIsImage }}" hint-placeholder-val="{{ false }}">
+      <img ref="{{ lbImgRef }}" alt="{{ lbTitle }}" style="display:block;margin:0 auto;max-width:100%;max-height:78vh;object-fit:contain;border-radius:4px" />
+    </sc-if>
+    <p style="font-family:'Montserrat',sans-serif;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;color:rgba(247,247,245,.7);text-align:center;margin-top:1.25rem">{{ lbTitle }}</p>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accentColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#38A1FF&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#38A1FF&quot;,&quot;#E4572E&quot;,&quot;#C9A227&quot;,&quot;#8B7CF6&quot;],&quot;section&quot;:&quot;Look&quot;},&quot;defaultTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Look&quot;},&quot;customCursor&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behaviour&quot;},&quot;revealOnScroll&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behaviour&quot;}}">
+class Component extends DCLogic {
+  state = {
+    theme: null,
+    menuOpen: false,
+    isMobile: false,
+    project: null,
+    reelA: false,
+    reelB: false,
+    lb: null
+  };
+
+  progressRef = React.createRef();
+  topRef = React.createRef();
+  modalRef = React.createRef();
+  lbImgRef = React.createRef();
+  lbVideoRef = React.createRef();
+  lbFrameRef = React.createRef();
+
+  /* Case-study stills: assigned imperatively so no request fires before hydration. */
+  csImg = {
+    uoPath: 'assets/UO-PathOfDelight-web-meta.jpg',
+    uoAmbling: 'assets/UO-AmblingReverie-web-meta.jpg',
+    uoSanctuary: 'assets/UO-Sanctuary-web-meta.jpg',
+    uoFleeting: 'assets/UO-Fleeting-web-meta.jpg',
+    uoEchoes: 'assets/UO-Echoes of Delight-web-meta.jpg',
+    uoAuramancer: 'assets/UO-Auramancer-web-meta.jpg',
+    sdHero: 'assets/shattered-dawn-hero.jpg'
+  };
+
+  /* ---------- data ---------- */
+  clients = [
+    ['Amblin', 'amblin'], ['Paramount', 'paramount'], ['Universal', 'universal'], ['Sony', 'sony'],
+    ['The Third Floor', 'thirdfloor'], ['Warner Bros', 'warner'], ['Weta', 'weta'], ['Columbia', 'columbia'],
+    ['Audi', 'audi'], ['Porsche', 'porsche'], ['Toyota', 'toyota'], ['YouTube', 'youtube']
+  ].map(([name, file]) => ({ name, src: 'assets/' + file + '.png' }));
+
+  posters = [
+    ['The Adventures of Tintin', 'assets/tintin.jpg'],
+    ['Wonder Woman', 'assets/wonderwoman.jpg'],
+    ['Mortal Engines', 'assets/mortalengines.JPG'],
+    ['Tomb Raider', 'assets/tombraider.JPG'],
+    ['Avatar: Fire and Ash', 'assets/Avatar.JPG'],
+    ['Horizon Zero Dawn', 'assets/horizon.jpg']
+  ].map(([name, src]) => ({ name, src, slot: src }));
+
+  projects = [
+    { id: 'umami', title: 'Umami Origami', sub: 'Surreal Fashion Portraits', badge: 'Case Study', cover: 'assets/UO-Sanctuary-web-meta.jpg' },
+    { id: 'mooning', title: 'Mooning The Ignorant', sub: 'Animation Loops', badge: 'Case Study', cover: 'assets/1155.jpg' },
+    { id: 'shattered', title: 'Shattered Dawn', sub: 'Vote Your Heroine', badge: 'Case Study', cover: 'assets/ShatteredDawn01.jpg' },
+    { id: 'melodyssey', title: 'Melodyssey', sub: 'Audio-Visual Odyssey', badge: 'In Production', cover: 'assets/melodyssey-cover.jpg' },
+    { id: 'like2like', title: 'Like 2 Like', sub: 'Coming Soon', badge: 'In Production', cover: 'assets/like2like-cover.jpg' },
+    { id: 'colorburst', title: 'Color Burst Fury', sub: 'Coming Soon', badge: 'In Production', cover: 'assets/colorburstfury-cover.jpg' }
+  ].map(p => ({ ...p, slot: p.cover, aria: 'Open ' + p.title }));
+
+  bas = [
+    { title: 'Day to Night Conversion', sub: 'Raw Shoot vs Final Look', before: 'assets/Day-To-Night.mp4_snapshot_00.01.899.jpg', after: 'assets/Day-To-Night.mp4_snapshot_00.01.123.jpg' },
+    { title: 'Digital Car Integration', sub: 'Location Shoot vs Final Look', before: 'assets/HopeRiver-before.jpg', after: 'assets/HopeRiver-after.jpg' },
+    { title: 'Adding Sci-fi VFX', sub: 'RAW Footage vs Final Look', before: 'assets/garage-before.jpg', after: 'assets/garage-after.jpg' },
+    { title: 'Digital Twin Property', sub: 'Empty Lot vs 3D Render', before: 'assets/Arch-Vis-before.jpg', after: 'assets/Arch-Vis-after.jpg' }
+  ];
+
+  loops = [
+    ['01', 'When Moon', '02lmz4Oj9zw', 'Marks a new era, one in which we claim territory that was out of reach before. An homage to A Trip to the Moon — and the foundation all the other pieces stand on.'],
+    ['02', 'Bool Trap', 'LqX-heAaomk', "Whether bull or cat, don't get trapped in wool like that."],
+    ['03', 'Mind Stuck', '0z6q5S3Y-E4', 'Sometimes all you need is the right tool.'],
+    ['04', 'Hard Crack', 'xfLrENjja6w', "It requires high temperatures to get a hard crack. If you can't handle the heat, pull the loop for paper hands."],
+    ['05', 'Game Changer', 'X6zADmv8FrI', 'The table has become part of the ball that ends one game and starts another. Falling into the rabbit hole, infinitely.'],
+    ['06', 'Beace', '8WQpUcAoKiI', 'Blockchain brings peace, as it emerges from the deep.'],
+    ['07', '1155', 'NRKmcUmN18w', 'Protocol, or habit?'],
+    ['08', 'Good Night', 'Y2BCQCgMD6c', 'Sometimes all you need to do is go to bed. GN until GM.'],
+    ['09', 'The Bearg', 'uFlOMGw90Ok', 'Resistance is futile.']
+  ].map(([num, title, yt, text]) => ({
+    num, title, yt, text,
+    thumb: 'https://i.ytimg.com/vi/' + yt + '/hqdefault.jpg',
+    aria: 'Play ' + title
+  }));
+
+  /* Client-work media grid. kind: image | video. yt set for video tiles. */
+  tiles = [
+    { title: 'Haute Couture Runway', sub: 'Editorial Direction', kind: 'image', src: 'assets/client/couture-01.jpg', col: '1/-1', row: 'span 2' },
+    { title: 'Commercial Campaign', sub: 'VFX Supervision & Editing', kind: 'video', src: 'assets/client/campaign-reel.mp4', row: 'span 2' },
+    { title: '', sub: '', kind: 'image', src: 'assets/client/still-01.jpg', row: 'span 1' },
+    { title: '', sub: '', kind: 'image', src: 'assets/client/still-02.jpg', row: 'span 1' },
+    { title: '', sub: '', kind: 'image', src: 'assets/client/still-03.jpg', row: 'span 2' },
+    { title: '', sub: '', kind: 'video', src: 'assets/client/spot-02.mp4', row: 'span 1' },
+    { title: '', sub: '', kind: 'image', src: 'assets/client/still-04.jpg', row: 'span 1' },
+    { title: '', sub: '', kind: 'image', src: 'assets/client/still-05.jpg', row: 'span 1' },
+    { title: '', sub: '', kind: 'image', src: 'assets/client/still-06.jpg', row: 'span 1' }
+  ].map((t, i) => ({
+    ...t,
+    index: i,
+    col: t.col || 'auto',
+    thumb: t.kind === 'video' ? (t.poster || t.src.replace(/\.mp4$/, '-poster.jpg')) : t.src,
+    slot: t.src,
+    kindLabel: t.kind === 'video' ? 'video slot — drop .mp4 + -poster.jpg' : 'image slot',
+    glyph: t.kind === 'video' ? '\u25B6' : '\u2197',
+    noTitle: !t.title,
+    aria: (t.title || 'Client work') + ' — enlarge'
+  }));
+
+  /* ---------- lifecycle ---------- */
+  componentDidMount() {
+    const stored = (() => { try { return localStorage.getItem('mvd-theme'); } catch (e) { return null; } })();
+    const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    this.applyTheme(stored || this.props.defaultTheme || (sysDark ? 'dark' : 'light'));
+    this.applyAccent();
+
+    this.mq = window.matchMedia('(max-width: 1000px)');
+    this.onMQ = () => this.setState({ isMobile: this.mq.matches, menuOpen: false });
+    this.mq.addEventListener('change', this.onMQ);
+    this.setState({ isMobile: this.mq.matches });
+
+    this.onScroll = () => {
+      if (this.rafScroll) return;
+      this.rafScroll = requestAnimationFrame(() => {
+        this.rafScroll = null;
+        const sc = this.scroller();
+        const max = sc.scrollHeight - sc.clientHeight;
+        const y = this.scrollY();
+        const p = max > 0 ? Math.min(1, y / max) : 0;
+        if (this.progressRef.current) this.progressRef.current.style.transform = 'scaleX(' + p + ')';
+        const t = this.topRef.current;
+        if (t) {
+          const show = y > 500;
+          t.style.opacity = show ? '1' : '0';
+          t.style.visibility = show ? 'visible' : 'hidden';
+          t.style.transform = show ? 'translateY(0)' : 'translateY(20px)';
         }
+        this.sweepReveal();
+      });
+    };
+    window.addEventListener('scroll', this.onScroll, { passive: true });
+    window.addEventListener('resize', this.onScroll, { passive: true });
+    document.body.addEventListener('scroll', this.onScroll, { passive: true });
+    this.onScroll();
 
-       // Custom Cursor
-        const cursor = document.getElementById('cursor');
-        const interactiveSelector = '.interactive, a, button, .project-card, .ba-container';
+    this.onKey = (e) => {
+      if (e.key !== 'Escape') return;
+      if (this.state.lb) this.closeLightbox();
+      else if (this.state.project) this.closeProject();
+      else if (this.state.menuOpen) this.setState({ menuOpen: false });
+    };
+    window.addEventListener('keydown', this.onKey);
 
-        document.addEventListener('mousemove', (e) => {
-            if (cursor) {
-                cursor.style.left = e.clientX + 'px';
-                cursor.style.top = e.clientY + 'px';
-            }
+    this.initCursor();
+    this.initReveal();
+    this.initSliders();
+    this.initImages();
+  }
+
+  componentDidUpdate() {
+    this.initSliders();
+    this.initReveal();
+    this.initImages();
+    this.syncLightbox();
+  }
+
+  /* Assign src for plain-markup case-study stills after hydration. */
+  initImages() {
+    document.querySelectorAll('[data-img]').forEach(img => {
+      if (img.dataset.imgSet) return;
+      img.dataset.imgSet = '1';
+      img.onerror = () => { img.style.visibility = 'hidden'; };
+      img.src = this.csImg[img.dataset.img] || '';
+    });
+  }
+
+  syncLightbox() {
+    const lb = this.state.lb;
+    const img = this.lbImgRef.current;
+    const vid = this.lbVideoRef.current;
+    const frame = this.lbFrameRef.current;
+    if (img) {
+      const want = lb && lb.type === 'image' ? lb.src : '';
+      if (want) { if (img.getAttribute('src') !== want) img.src = want; }
+      else img.removeAttribute('src');
+    }
+    if (vid) {
+      const want = lb && lb.type === 'file' ? lb.src : '';
+      if (want) {
+        if (vid.getAttribute('src') !== want) { vid.src = want; const p = vid.play(); if (p && p.catch) p.catch(() => {}); }
+      } else { vid.pause(); vid.removeAttribute('src'); }
+    }
+    if (frame) {
+      const want = lb && lb.type === 'video' ? lb.src : '';
+      if (want) { if (frame.getAttribute('src') !== want) frame.src = want; }
+      else frame.removeAttribute('src');
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.mq) this.mq.removeEventListener('change', this.onMQ);
+    window.removeEventListener('scroll', this.onScroll);
+    window.removeEventListener('resize', this.onScroll);
+    window.removeEventListener('keydown', this.onKey);
+    if (this.io) this.io.disconnect();
+    if (this.moveHandler) window.removeEventListener('mousemove', this.moveHandler);
+    document.documentElement.removeAttribute('data-cursor');
+  }
+
+  /* The page may scroll on <body> (component host) or on the document — support both. */
+  scroller() {
+    const b = document.body;
+    if (b.scrollHeight > b.clientHeight + 2 && getComputedStyle(b).overflowY !== 'visible') return b;
+    return document.scrollingElement || document.documentElement;
+  }
+
+  scrollY() {
+    const sc = this.scroller();
+    return sc === document.body ? sc.scrollTop : (window.scrollY || sc.scrollTop || 0);
+  }
+
+  /* ---------- theme ---------- */
+  applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    this.setState({ theme });
+    try { localStorage.setItem('mvd-theme', theme); } catch (e) {}
+  }
+
+  applyAccent() {
+    const c = this.props.accentColor;
+    if (c) document.documentElement.style.setProperty('--accent-color', c);
+  }
+
+  /* ---------- custom cursor ---------- */
+  initCursor() {
+    const el = document.getElementById('mvd-cursor');
+    if (!el) return;
+    const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const wanted = this.props.customCursor !== false;
+    if (!fine || !wanted) { el.style.display = 'none'; return; }
+    document.documentElement.setAttribute('data-cursor', 'on');
+    let x = 0, y = 0, raf = null;
+    const sel = 'a,button,[data-ba],[role="slider"]';
+    this.moveHandler = (e) => {
+      x = e.clientX; y = e.clientY;
+      const hot = e.target instanceof Element && e.target.closest(sel);
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = null;
+        el.style.opacity = '1';
+        el.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0) translate(-50%,-50%)';
+        if (hot) {
+          el.style.width = '46px'; el.style.height = '46px';
+          el.style.background = 'rgba(56,161,255,.10)';
+          el.style.border = '1px solid var(--accent-color)';
+        } else {
+          el.style.width = '8px'; el.style.height = '8px';
+          el.style.background = 'var(--accent-color)';
+          el.style.border = '0';
+        }
+      });
+    };
+    window.addEventListener('mousemove', this.moveHandler, { passive: true });
+  }
+
+  /* ---------- scroll reveal ---------- */
+  initReveal() {
+    if (this.props.revealOnScroll === false) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!this.io) {
+      this.io = new IntersectionObserver((entries) => {
+        this.ioAlive = true;
+        entries.forEach(en => {
+          if (en.isIntersecting || en.boundingClientRect.top < 0) {
+            en.target.classList.add('shown');
+            this.io.unobserve(en.target);
+          }
         });
+      }, { rootMargin: '0px 0px -6% 0px', threshold: 0.02 });
+    }
+    document.querySelectorAll('[data-reveal]').forEach(el => {
+      if (el.dataset.revealInit) return;
+      el.dataset.revealInit = '1';
+      el.classList.add('armed');
+      this.io.observe(el);
+    });
+    this.sweepReveal();
+    /* Failsafe: never leave content hidden — after a moment everything is shown regardless
+       of scroll plumbing (embeds, print, unusual hosts). */
+    clearTimeout(this.revealFailsafe);
+    this.revealFailsafe = setTimeout(() => {
+      document.querySelectorAll('[data-reveal]').forEach(e => e.classList.add('shown'));
+    }, 2500);
+  }
 
-        document.addEventListener('mouseover', (e) => {
-            if (cursor && e.target.closest(interactiveSelector)) {
-                cursor.classList.add('hovered');
-            }
-        });
+  /* Reveal anything at or above the fold — works for smooth scroll and anchor jumps alike. */
+  sweepReveal() {
+    const pending = document.querySelectorAll('[data-reveal].armed:not(.shown)');
+    if (!pending.length) return;
+    const h = window.innerHeight;
+    pending.forEach(el => {
+      const r = el.getBoundingClientRect();
+      if (r.top < h * 0.92) el.classList.add('shown');
+    });
+  }
 
-        document.addEventListener('mouseout', (e) => {
-            if (!cursor || !e.target.closest(interactiveSelector)) return;
-            const goingTo = e.relatedTarget;
-            if (!goingTo || !goingTo.closest || !goingTo.closest(interactiveSelector)) {
-                cursor.classList.remove('hovered');
-            }
-        });
+  /* ---------- before / after sliders ---------- */
+  initSliders() {
+    document.querySelectorAll('[data-ba]').forEach(c => {
+      if (c.dataset.baInit) return;
+      c.dataset.baInit = '1';
+      const top = c.querySelector('[data-ba-top]');
+      const handle = c.querySelector('[data-ba-handle]');
+      if (!top || !handle) return;
+      let pct = 50;
+      const set = (p) => {
+        pct = Math.max(0, Math.min(100, p));
+        top.style.clipPath = 'inset(0 ' + (100 - pct) + '% 0 0)';
+        handle.style.left = pct + '%';
+        c.setAttribute('aria-valuenow', String(Math.round(pct)));
+      };
+      const fromX = (clientX) => {
+        const r = c.getBoundingClientRect();
+        set(((clientX - r.left) / r.width) * 100);
+      };
+      c.addEventListener('pointerdown', (e) => {
+        c.setPointerCapture(e.pointerId);
+        fromX(e.clientX);
+      });
+      c.addEventListener('pointermove', (e) => {
+        if (!c.hasPointerCapture(e.pointerId)) return;
+        fromX(e.clientX);
+      });
+      c.addEventListener('pointerup', (e) => {
+        if (c.hasPointerCapture(e.pointerId)) c.releasePointerCapture(e.pointerId);
+      });
+      c.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') { set(pct - 4); e.preventDefault(); }
+        if (e.key === 'ArrowRight') { set(pct + 4); e.preventDefault(); }
+        if (e.key === 'Home') { set(0); e.preventDefault(); }
+        if (e.key === 'End') { set(100); e.preventDefault(); }
+      });
+      set(50);
+    });
+  }
 
-        // Collapsible Mobile Menu
-        const navDrawer = document.getElementById('nav-drawer');
-        const menuBtn = document.getElementById('menu-btn');
+  lockScroll(on) {
+    document.body.style.overflow = on ? 'hidden' : '';
+  }
 
-        function toggleMenu() {
-            navDrawer.classList.toggle('open');
-            if (navDrawer.classList.contains('open')) {
-                menuBtn.textContent = '✕';
-            } else {
-                menuBtn.textContent = '☰';
-            }
-        }
+  /* ---------- render ---------- */
+  renderVals() {
+    const s = this.state;
+    const soonMap = {
+      melodyssey: { title: 'Melodyssey', sub: 'Audio-Visual Odyssey', slot: 'assets/melodyssey-cover.jpg' },
+      like2like: { title: 'Like 2 Like', sub: 'Project — Coming Soon', slot: 'assets/like2like-cover.jpg' },
+      colorburst: { title: 'Color Burst Fury', sub: 'Project — Coming Soon', slot: 'assets/colorburstfury-cover.jpg' }
+    };
+    const soon = soonMap[s.project];
+    const lb = s.lb;
 
-        function closeMenu() {
-            navDrawer.classList.remove('open');
-            menuBtn.textContent = '☰';
-        }
+    return {
+      year: new Date().getFullYear(),
+      isDark: s.theme === 'dark',
+      isLight: s.theme !== 'dark',
+      menuIcon: s.menuOpen ? '\u2715' : '\u2630',
+      menuOpen: s.menuOpen,
+      isMobile: s.isMobile,
+      isDesktop: !s.isMobile,
 
-        // Back to Top Button
-        const backToTopBtn = document.getElementById('back-to-top');
+      clients: this.clients,
+      posters: this.posters,
+      projects: this.projects,
+      bas: this.bas,
+      loops: this.loops,
+      tiles: this.tiles,
 
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 400) {
-                backToTopBtn.classList.add('visible');
-            } else {
-                backToTopBtn.classList.remove('visible');
-            }
-        });
+      reelA: s.reelA,
+      reelB: s.reelB,
+      reelAIdle: !s.reelA,
+      reelBIdle: !s.reelB,
 
-        function scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }
+      modalHidden: !s.project,
+      modalOpacity: s.project ? 1 : 0,
+      modalPointer: s.project ? 'all' : 'none',
+      modalClip: s.project ? 'circle(150% at 50% 50%)' : 'circle(0% at 50% 50%)',
+      hideUmami: s.project !== 'umami',
+      hideMooning: s.project !== 'mooning',
+      hideShattered: s.project !== 'shattered',
+      hideSoon: !soon,
+      soonTitle: soon ? soon.title : '',
+      soonSub: soon ? soon.sub : '',
+      soonSlot: soon ? soon.slot : '',
 
-        // Before & After Interactive Sliders
-        document.querySelectorAll('.ba-container').forEach(container => {
-            const afterLayer = container.querySelector('.ba-after');
-            const handle = container.querySelector('.ba-handle');
-            const innerImage = afterLayer.querySelector('.ba-image-layer');
+      lbHidden: !lb,
+      lbOpacity: lb ? 1 : 0,
+      lbPointer: lb ? 'all' : 'none',
+      lbIsVideo: !!lb && lb.type === 'video',
+      lbIsImage: !!lb && lb.type === 'image',
+      lbIsFile: !!lb && lb.type === 'file',
+      lbSrc: lb ? lb.src : '',
+      lbTitle: lb ? lb.title : '',
 
-            function updateSlider(x) {
-                const rect = container.getBoundingClientRect();
-                let position = x - rect.left;
-                
-                if (position < 0) position = 0;
-                if (position > rect.width) position = rect.width;
+      lbImgRef: this.lbImgRef,
+      lbVideoRef: this.lbVideoRef,
+      lbFrameRef: this.lbFrameRef,
+      progressRef: this.progressRef,
+      topRef: this.topRef,
+      modalRef: this.modalRef,
 
-                const percentage = (position / rect.width) * 100;
-                
-                afterLayer.style.width = percentage + '%';
-                handle.style.left = percentage + '%';
-                innerImage.style.width = rect.width + 'px';
-            }
+      toggleTheme: () => this.applyTheme(this.state.theme === 'dark' ? 'light' : 'dark'),
+      toggleMenu: () => this.setState(st => ({ menuOpen: !st.menuOpen })),
+      closeMenu: () => this.setState({ menuOpen: false }),
+      scrollTop: () => { try { this.scroller().scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { this.scroller().scrollTop = 0; } },
+      onMediaError: (e) => {
+        e.target.style.display = 'none';
+        const n = e.target.nextElementSibling;
+        if (n && n.dataset && n.dataset.fallback) n.style.display = 'flex';
+      },
+      playReel: (e) => {
+        const which = e.currentTarget.dataset.reel;
+        this.setState(which === 'A' ? { reelA: true } : { reelB: true });
+      },
+      openProject: (e) => {
+        this.setState({ project: e.currentTarget.dataset.project, menuOpen: false });
+        this.lockScroll(true);
+        requestAnimationFrame(() => { if (this.modalRef.current) this.modalRef.current.scrollTop = 0; });
+      },
+      closeProject: () => {
+        this.setState({ project: null });
+        this.lockScroll(false);
+      },
+      openVideo: (e) => {
+        const d = e.currentTarget.dataset;
+        this.setState({ lb: { type: 'video', src: 'https://www.youtube-nocookie.com/embed/' + d.yt + '?autoplay=1&rel=0&loop=1&playlist=' + d.yt, title: d.title } });
+      },
+      openTile: (e) => {
+        const t = this.tiles[Number(e.currentTarget.dataset.tile)];
+        if (!t) return;
+        this.setState({ lb: { type: t.kind === 'video' ? 'file' : 'image', src: t.src, title: t.title || t.src } });
+      },
+      closeLightbox: () => this.setState({ lb: null })
+    };
+  }
+}
 
-            function syncWidth() {
-                const rect = container.getBoundingClientRect();
-                innerImage.style.width = rect.width + 'px';
-            }
-            syncWidth();
-            window.addEventListener('resize', syncWidth);
-
-            let isDragging = false;
-
-            // Mouse Events
-            container.addEventListener('mousedown', (e) => {
-                isDragging = true;
-                updateSlider(e.clientX);
-            });
-
-            window.addEventListener('mousemove', (e) => {
-                if (!isDragging) return;
-                updateSlider(e.clientX);
-            });
-
-            window.addEventListener('mouseup', () => isDragging = false);
-
-            // Touch Events
-            container.addEventListener('touchstart', (e) => {
-                isDragging = true;
-                updateSlider(e.touches[0].clientX);
-            }, { passive: true });
-
-            window.addEventListener('touchmove', (e) => {
-                if (!isDragging) return;
-                if (e.cancelable) e.preventDefault();
-                updateSlider(e.touches[0].clientX);
-            }, { passive: false });
-
-            window.addEventListener('touchend', () => isDragging = false);
-        });
-
-        /* Project Modal Data */
-        const projectData = {
-            'umami': `
-                <div class="cs-hero">
-                    <div>
-                        <span class="ui-label">The Art of Not Crumbling Under Pressure</span>
-                        <h2>Umami Origami</h2>
-                    </div>
-                </div>
-                <div class="cs-meta-grid">
-                    <div><strong>ABOUT</strong> A high-fashion dress built entirely from paper, shot across real landscapes, with 3D-rendered origami butterflies added in post.</div>
-                    <div><strong>TECHNIQUE</strong> Handcrafted paper couture, on-location photography, VFX compositing, and one AI-generated companion piece.</div>
-                    <div><strong>THEME</strong> Or, how I metaphorically and literally glued a project together.</div>
-                </div>
-                <div class="cs-body">
-                    <div class="cs-gallery single">
-                        <figure>
-                            <img class="cs-img" src="assets/UO-PathOfDelight-web-meta.jpg" alt="Path Of Delight" style="aspect-ratio:16/9;">
-                            <div class="cs-caption">Path Of Delight — all I need is what I see and all I see is in front of me. Only when we venture out, leaving everything behind, do we allow ourselves to discover what we truly need.</div>
-                        </figure>
-                    </div>
-
-                    <p>Hello, fellow rascals.</p>
-                    <p>There is a quiet pressure in the creative world to keep things tidy. To propose concepts that fit neatly into predictable boxes, follow the path of least resistance, and guarantee a smooth, frictionless production. It's safe, it's comfortable, and it is the fastest way to make sure a piece of work leaves absolutely no impression at all.</p>
-                    <p>Personally, I've always found that the most compelling visions live right on the edge of a total logistical collapse.</p>
-                    <p>Today, I'm taking you behind the scenes of my latest project: Umami Origami. It's a project born from a simple, slightly unhinged premise: what happens when you mix high fashion, structural engineering challenges, elegant VFX, a dash of AI, and a severe lack of respect for the weather forecast?</p>
-                    <p style="text-align: center; font-size: 1.8rem; font-style: italic; color: var(--accent-color); margin: 2.5rem 0;">
-                        Spoiler alert: you get magic. But first, you get a lot of stress.
-                    </p>
-
-                    <div class="cs-section-label">The Main Event</div>
-                    <p>The concept was simple: craft a high-fashion dress entirely out of paper, shoot it across breathtaking landscapes, and add 3D-rendered origami butterflies in post-production. Easy on paper. Not as straightforward in reality.</p>
-
-                    <div class="cs-section-label">The Real-World Struggle (IRL Costs Real Money)</div>
-                    <h3 class="cs-h3">Paper hates the outdoors.</h3>
-                    <p>First of all, finding a dressmaker who doesn't immediately throw scissors at you when you say "make it out of paper" is a challenge. Plus it cost a pretty penny to bring to life, and once we got it on set, the universe decided to test my sanity.</p>
-                    <div class="cs-stats">
-                        <div><strong>Wind</strong><p>Every gentle breeze threatened to violently fold the neck piece into oblivion.</p></div>
-                        <div><strong>Humidity</strong><p>Dampened the paper, making the entire gown heavy, fragile, and prone to melting.</p></div>
-                    </div>
-                    <p>I had to pull out some serious McGyver moves, reinforcing the structural integrity of the dress mid-shoot while praying to the photography gods it wouldn't show in the final frames. Then there was the model. Bless her soul. Sitting down, moving, or doing literally anything came with a high risk of catastrophic structural failure. But we survived. And the results speak for themselves.</p>
-
-                    <div class="cs-gallery">
-                        <figure>
-                            <img class="cs-img" src="assets/UO-AmblingReverie-web-meta.jpg" alt="Ambling Reverie">
-                            <div class="cs-caption">Ambling Reverie — in the tender embrace of dawn, I meander through whispers of light and shadow.</div>
-                        </figure>
-                        <figure>
-                            <img class="cs-img" src="assets/UO-Sanctuary-web-meta.jpg" alt="Sanctuary">
-                            <div class="cs-caption">Sanctuary — we are beautiful, we are different, we are attracted to somebody. Often we keep those desires close to heart.</div>
-                        </figure>
-                    </div>
-
-                    <div class="cs-section-label">Cheating Geography via VFX</div>
-                    <p>If you look at the locations, you'll notice they span across New Zealand and Australia. Did I fly the whole crew to every remote peak? Absolutely not — I value my bank account.</p>
-                    <p>For a couple of these concepts I leaned heavily into my visual effects background: shot the locations solo, shot the model separately, and merged her into the environments seamlessly. The 3D-rendered origami butterflies aren't pasted on top; they cast accurate shadows, catch the ambient light, and perfectly mimic the colours of her paper dress. To tie the physical world together, I also captured two shots featuring actual fabric dresses, injecting the digital butterflies to blur the line between the ordinary and the extraordinary.</p>
-
-                    <div class="cs-gallery">
-                        <figure>
-                            <img class="cs-img" src="assets/UO-Fleeting-web-meta.jpg" alt="Fleeting">
-                            <div class="cs-caption">Fleeting — a dance between nature and human presence, where the familiar meets the unknown.</div>
-                        </figure>
-                        <figure>
-                            <img class="cs-img" src="assets/UO-Echoes of Delight-web-meta.jpg" alt="Echoes of Delight">
-                            <div class="cs-caption">Echoes of Delight — choose joy, and joy will seek you in the crowd. Declare yourself beautiful, and beauty will mirror your form.</div>
-                        </figure>
-                    </div>
-
-                    <div class="cs-section-label">Enter the Auramancer (The AI Experiment)</div>
-                    <h3 class="cs-h3">The Gold Dancer.</h3>
-                    <p>Because the physical paper dress tried to murder my workflow, I decided to see how the digital gods would handle the pressure. I wanted to design an even more extreme dress for a ballet dancer.</p>
-                    <p>If you replace "glass" with "gold" in the word Vitrumancer, you get Auramancer (<em>Aurum</em> = Latin for gold, <em>Mancer</em> = one with control over an element). A Gold Dancer. Instead of spending weeks and a small fortune on a physical dress that would probably break a dancer's legs, I trained AI on exactly what I wanted. It was the only AI contribution to the project, but it proved a point: for scale, speed, and versatility, embracing the machine let me realize a concept that would otherwise be locked behind a budget wall.</p>
-                    <div class="cs-gallery single">
-                        <figure>
-                            <img class="cs-img" src="assets/UO-Auramancer-web-meta.jpg" alt="Auramancer — The Gold Dancer">
-                            <div class="cs-caption">Auramancer — the gold dancer</div>
-                        </figure>
-                    </div>
-
-                    <div class="cs-section-label">The Peak — Midnight Magic</div>
-                    <p>Midnight Magic delves deep into the myriad emotions and experiences that come with immigrating to a new country. At its heart, it is a visual narrative of transformation, resilience, and growth, as one adapts to new circumstances.</p>
-                    <p>The art style is divided into distinct elements, each symbolizing a phase of this profound journey. On one hand, there is the night, black and white — the melancholy of leaving one's roots behind, a teary-eyed farewell to family and friends. On the other, the heavy tone is balanced with light-hearted magic: the moon lighting the way, sparkling mist, glowing creatures welcoming us to the new land.</p>
-                    <p>It's an immigrant's transformative odyssey — cultural shocks, bittersweet nostalgia, the forging of new bonds, and beauty discovered in the most unexpected times. A piece about the universal human experience of migration, and the ever-unfolding tapestry of cultures that make our world so rich.</p>
-
-                    <p class="cs-pull-quote">
-                        The best work isn't born in a sterile environment where everything goes according to plan. It's born when the paper dress is tearing, the wind is blowing, the locations are thousands of miles apart, and you are forced to use every tool in your arsenal — from VFX to AI to literal sticky tape — to make the vision reality.
-                        <span>I am not afraid to break things to make something beautiful.</span>
-                    </p>
-                    <p style="text-align:center; font-style:italic; color: var(--text-main);">Stay delightfully unusual,<br>Manny Van Delight — Creative Director / Visual Alchemist</p>
-
-                    <div class="cs-cta">
-                        <a href="https://opensea.io/gallery/MannyVanDelight/deead016ab3b4fe685d51bbecf38c238" class="interactive">[ Collect on OpenSea ]</a>
-                    </div>
-                </div>
-            `,
-            'mooning': `
-                <div class="cs-hero">
-                    <div>
-                        <span class="ui-label">Animation Loops</span>
-                        <h2>Mooning The Ignorant</h2>
-                    </div>
-                </div>
-                <div class="cs-meta-grid">
-                    <div><strong>ABOUT</strong> Nine looping animations riffing on the quirks, rituals, and copium of the crypto space.</div>
-                    <div><strong>TECHNIQUE</strong> 3D animation loops, built for a wall, minted on-chain.</div>
-                    <div><strong>THEME</strong> Film history and blockchain culture, in the same frame.</div>
-                </div>
-                <div class="cs-body">
-                    <p>This project is all about the quirks and features of the crypto space — but it also combines that with my actual passion, which is film and filmmaking. Somewhere between a group chat in-joke and a film studies essay, "Mooning The Ignorant" was born.</p>
-                    <p><em>When Moon</em> is a direct quote and homage to Georges Méliès' iconic 1902 silent sci-fi film <em>A Trip to the Moon</em>. Blockchain, much like a rocket in the eye of the moon, is a fairly ridiculous idea that happened anyway — and it acts as the foundation every other piece in this collection stands on.</p>
-                    <p>Nine loops. Watch on repeat, laugh a little, maybe recognize yourself in one or two. No advice given, some feelings implied.</p>
-
-                    <div class="cs-gallery single">
-                        <figure>
-                            <img class="cs-img" src="assets/MTI-Collection-preview.jpg" alt="Keyframes from all nine Mooning The Ignorant loops" style="aspect-ratio:16/9;">
-                            <div class="cs-caption">Keyframes from the nine loops — the whole ignorant little universe, at a glance.</div>
-                        </figure>
-                    </div>
-
-                    <div class="cs-section-label">01 / When Moon</div>
-                    <p>Marks a new era, one in which we claim territory that was out of reach before. Blockchain truly is a big step for mankind. This piece is an homage to <em>A Trip to the Moon</em> and to the crypto space itself — the idea behind it is the foundation all the other pieces in this collection stand on.</p>
-                    <div class="cs-video"><iframe src="https://www.youtube.com/embed/02lmz4Oj9zw" title="When Moon" loading="lazy" allowfullscreen></iframe></div>
-
-                    <div class="cs-section-label">02 / Bool Trap</div>
-                    <p>Whether bull or cat, don't get trapped in wool like that.</p>
-                    <div class="cs-video"><iframe src="https://www.youtube.com/embed/LqX-heAaomk" title="Bool Trap" loading="lazy" allowfullscreen></iframe></div>
-
-                    <div class="cs-section-label">03 / Mind Stuck</div>
-                    <p>Sometimes all you need is the right tool.</p>
-                    <div class="cs-video"><iframe src="https://www.youtube.com/embed/0z6q5S3Y-E4" title="Mind Stuck" loading="lazy" allowfullscreen></iframe></div>
-
-                    <div class="cs-section-label">04 / Hard Crack</div>
-                    <p>It requires high temperatures to get a hard crack. If you can't handle the heat, pull the loop for paper hands.</p>
-                    <div class="cs-video"><iframe src="https://www.youtube.com/embed/xfLrENjja6w" title="Hard Crack" loading="lazy" allowfullscreen></iframe></div>
-
-                    <div class="cs-section-label">05 / Game Changer</div>
-                    <p>The game has changed. The table has become part of the ball that ends one game and starts another. Falling into the rabbit hole, infinitely.</p>
-                    <div class="cs-video"><iframe src="https://www.youtube.com/embed/X6zADmv8FrI" title="Game Changer" loading="lazy" allowfullscreen></iframe></div>
-
-                    <div class="cs-section-label">06 / Beace</div>
-                    <p>Blockchain brings peace, as it emerges from the deep.</p>
-                    <div class="cs-video"><iframe src="https://www.youtube.com/embed/8WQpUcAoKiI" title="Beace" loading="lazy" allowfullscreen></iframe></div>
-
-                    <div class="cs-section-label">07 / 1155</div>
-                    <p>Protocol, or habit?</p>
-                    <div class="cs-video"><iframe src="https://www.youtube.com/embed/NRKmcUmN18w" title="1155" loading="lazy" allowfullscreen></iframe></div>
-
-                    <div class="cs-section-label">08 / Good Night</div>
-                    <p>Sometimes all you need to do is go to bed. GN until GM.</p>
-                    <div class="cs-video"><iframe src="https://www.youtube.com/embed/Y2BCQCgMD6c" title="Good Night" loading="lazy" allowfullscreen></iframe></div>
-
-                    <div class="cs-section-label">09 / The Bearg</div>
-                    <p>Resistance is futile.</p>
-                    <div class="cs-video"><iframe src="https://www.youtube.com/embed/uFlOMGw90Ok" title="The Bearg" loading="lazy" allowfullscreen></iframe></div>
-
-                    <div class="cs-cta">
-                        <a href="https://opensea.io/collection/mooning-the-ignorant" class="interactive">[ Collect on OpenSea ]</a>
-                    </div>
-                </div>
-            `,
-            'shattered': `
-                <div class="cs-hero">
-                    <div>
-                        <span class="ui-label">Interactive Filmmaking & Community Worldbuilding</span>
-                        <h2>Shattered Dawn</h2>
-                    </div>
-                </div>
-                <div class="cs-meta-grid">
-                    <div><strong>ABOUT</strong> An interactive sci-fi universe where the audience steps into the director's chair to vote, shape the plot, and forge the destiny of our heroine, Layla.</div>
-                    <div><strong>TECHNIQUE</strong> Cinematic VFX compositing, AI concept art wrestling, 3D prop modeling, interactive polling, and Bitcoin Ordinals integration.</div>
-                    <div><strong>THEME</strong> Who needs a predictable Hollywood script when you can hand the steering wheel to a horde of passionate internet rascals?</div>
-                </div>
-                <div class="cs-body">
-                    <div class="cs-gallery single">
-                        <figure>
-                            <img class="cs-img" src="assets/shattered-dawn-hero.jpg" alt="Shattered Dawn Key Visual" style="aspect-ratio:16/9;" onerror="this.src='https://via.placeholder.com/1200x675?text=Shattered+Dawn+Key+Visual'">
-                            <div class="cs-caption">Shattered Dawn — where cinema, community choice, and digital lore collide. The audience decides who survives, what gets built, and where the story goes next.</div>
-                        </figure>
-                    </div>
-
-                    <p>Listen up, fellow rascals.</p>
-                    <p>For decades, traditional filmmaking has treated audiences like passive passengers: you sit in a dark room, eat your overpriced popcorn, and watch whatever pre-packaged story a studio executive greenlit three years ago. If a character makes a mind-bogglingly bad decision, you scream at the screen, but nothing changes.</p>
-                    <p>I got tired of yelling at the screen. So I thought: <em>What happens if we hand the steering wheel directly to the audience?</em></p>
-                    <p>Welcome to <strong>Shattered Dawn</strong> — my ongoing sandbox experiment in interactive, community-driven sci-fi filmmaking. It is equal parts cinematic worldbuilding, high-stakes visual effects, relentless AI prompting battles, and raw community democracy.</p>
-
-                    <p>Welcome to <strong>Shattered Dawn</strong> — my ongoing sandbox experiment in interactive, community-driven sci-fi filmmaking. It is equal parts cinematic worldbuilding, high-stakes visual effects, relentless AI prompting battles, and raw community democracy.</p>
-
-                    <p style="text-align: center; font-size: 1.8rem; font-style: italic; color: var(--accent-color); margin: 2.5rem 0;">
-                        No safety net. No script. Just Layla, the crowd, and whatever chaos we vote into existence.
-                    </p>
-
-                    <div class="cs-section-label">The Core Premise — Vote Your Heroine</div>
-
-                    <div class="cs-section-label">The Core Premise — Vote Your Heroine</div>
-                    <p>At its heart, <em>Shattered Dawn</em> follows our protagonist, Layla, as she navigates a treacherous dystopian world filled with toxic atmosphere, illegal technology, and rogue factions. But here's the twist: <strong>you call the shots</strong>.</p>
-                    <p>Through community voting rounds, fans dictate critical narrative forks: from Layla's tactical maneuvers and alliance allegiances down to the literal gear and weapons she crafts to survive. Every single vote bends the trajectory of the storyline, turning story creation into a real-time multiplayer experience.</p>
-
-                    <div class="cs-section-label">Wrestling the Digital Gods (VFX + AI Chaos)</div>
-                    <h3 class="cs-h3">When MidJourney decides every prompt is a suggestion, not an instruction.</h3>
-                    <p>Bringing a community-voted story to life at feature-film visual standards in real-time is a glorious, chaotic challenge. Case in point: when the community voted on designing "The Extractor" — a crucial piece of high-tech gear for Layla — I turned to AI tools to iterate fast concepts.</p>
-
-                    <div class="cs-stats">
-                        <div><strong>Prompting Mayhem</strong><p>MidJourney kept hallucinating sci-fi space-toasters and alien vacuum cleaners instead of sleek extraction tools.</p></div>
-                        <div><strong>VFX Refinement</strong><p>Taking raw concepts into 3D software and Photoshop to carve out crisp, vote-ready assets fitting cinematic standards.</p></div>
-                    </div>
-
-                    <p>I ended up pulling back the curtain in behind-the-scenes vlogs, showing the unvarnished battle between human creative direction and artificial intelligence gone rogue until we achieved three clean options for the community poll. That's the heartbeat of this project: it’s transparent, unpredictable, and delightfully unhinged.</p>
-
-                    <div class="cs-section-label">On-Chain Lore & Interactive Ordinals</div>
-                    <p>To take co-creation even deeper, <em>Shattered Dawn</em> weaves interactive digital collectibles and Bitcoin Ordinals into the mix. Owning piece of the universe isn't just about holding digital art; it acts as a pass to influence key story arcs and lock your mark into the official canon forever.</p>
-
-                    <p class="cs-pull-quote">
-                        Shattered Dawn isn't just a film you sit back and watch. It's a living universe we build together — one vote, one render, and one wild plot twist at a time.
-                        <span>Democracy has arrived in cinema, and it carries high-voltage VFX.</span>
-                    </p>
-
-                    <p style="text-align:center; font-style:italic; color: var(--text-main);">Ready to shape the dawn?<br>Manny Van Delight — Visual Alchemist & Storyteller</p>
-
-                    <div class="cs-cta">
-                        <a href="https://www.vandelight.art/links" target="_blank" class="interactive">[ Cast Your Vote & Explore The Universe ]</a>
-                    </div>
-                </div>
-            `,
-            'generic': `
-                <div class="cs-hero">
-                    <h2>Coming Soon</h2>
-                </div>
-                <div class="cs-body" style="padding-bottom: 8rem;">
-                    <p style="text-align: center; font-size: 1.3rem;">Full case study breakdown is currently being curated.</p>
-                </div>
-            `
-        };
-
-        const modal = document.getElementById('project-modal');
-        const modalContent = document.getElementById('project-content');
-        
-        function openProject(projectId) {
-            modalContent.innerHTML = projectData[projectId] || projectData['generic'];
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-            modal.scrollTop = 0;
-        }
-
-        function closeProject() {
-            modal.classList.remove('active');
-            setTimeout(() => {
-                document.body.style.overflow = 'auto';
-                modalContent.innerHTML = '';
-            }, 800);
-        }
-    </script>
+</script>
 </body>
 </html>
