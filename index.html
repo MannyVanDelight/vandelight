@@ -105,10 +105,10 @@
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:2.5rem clamp(2rem,4vw,4rem);max-width:1150px;margin-bottom:4.5rem">
       <div>
         <p style="font-size:1.35rem;line-height:1.55;color:var(--text-main);margin-bottom:1.4rem;text-wrap:pretty">A creative rascal. A world-builder. A storyteller who turns distant lands and bold ideas into engaging art. Guided by my inner child as my true north, I fuse photography, film, and visual effects magic into powerful, immersive experiences.</p>
-        <p style="font-size:1.1rem;line-height:1.7;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">For decades, I crafted visuals for the world's biggest brands — Audi, Porsche, Toyota — and contributed to films like Avatar, Tintin, Wonder Woman, Tomb Raider, and games like Horizon Zero Dawn. But beyond the industry, I found my true passion: creating my own art, where storytelling and technology collide.</p>
+        <p style="font-size:1.1rem;line-height:1.7;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">For decades, I crafted visuals for the world's biggest brands like Audi, Porsche, Toyota and contributed to films like Avatar, Tintin, Wonder Woman, Tomb Raider, and games like Horizon Zero Dawn. But beyond the industry, I found my true passion: creating my own art, where storytelling and technology collide.</p>
       </div>
       <div>
-        <p style="font-size:1.1rem;line-height:1.7;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">Now, I'm pushing the boundaries of interactive filmmaking — blending visuals, narrative, and cutting-edge tech to create stories where the audience plays a role. My work isn't just something to watch; it's something to experience and shape. Through community-driven storytelling, I invite people to vote and influence the narrative, making them an integral part of the creative process.</p>
+        <p style="font-size:1.1rem;line-height:1.7;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">Now, I'm pushing the boundaries of interactive filmmaking, blending visuals, narrative, and cutting-edge tech to create stories where the audience plays a role. My work isn't just something to watch; it's something to experience and shape. Through community-driven storytelling, I invite people to vote and influence the narrative, making them an integral part of the creative process.</p>
         <p style="font-family:'Montserrat',sans-serif;font-size:.75rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent-color)">— MvD</p>
       </div>
     </div>
@@ -410,8 +410,10 @@
         <span style="display:block;font-family:'Montserrat',sans-serif;font-size:.7rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent-color);margin-bottom:1.5rem">In Production</span>
         <h2 style="font-size:clamp(2.6rem,7vw,5.5rem);font-weight:400;font-style:italic;margin-bottom:1.5rem">{{ soonTitle }}</h2>
         <p style="font-family:'Montserrat',sans-serif;font-size:.78rem;letter-spacing:3px;text-transform:uppercase;color:var(--text-muted);margin-bottom:3rem">{{ soonSub }}</p>
-        <div style="width:100%;max-width:760px;aspect-ratio:16/9;border:1px solid var(--border-color);border-radius:4px;background-image:repeating-linear-gradient(45deg,var(--stripe-a) 0 10px,var(--stripe-b) 10px 20px);display:flex;align-items:center;justify-content:center;font-family:ui-monospace,monospace;font-size:.7rem;letter-spacing:.5px;color:var(--text-muted);text-align:center;padding:1rem">{{ soonSlot }}</div>
-        <p style="font-size:1.15rem;line-height:1.8;color:var(--text-muted);max-width:560px;margin:2.5rem auto 0;text-wrap:pretty">The full case study is being curated. Drop me a line if you'd like an early look at the work in progress.</p>
+      <div style="width:fit-content;max-width:min(760px,100%);border:1px solid var(--border-color);border-radius:4px;overflow:hidden;background-image:repeating-linear-gradient(45deg,var(--stripe-a) 0 10px,var(--stripe-b) 10px 20px)">
+        <img src="{{ soonSlot }}" alt="{{ soonTitle }}" loading="eager" decoding="async" style="display:block;max-width:100%;max-height:70vh;width:auto;height:auto">
+      </div> 
+       <p style="font-size:1.15rem;line-height:1.8;color:var(--text-muted);max-width:560px;margin:2.5rem auto 0;text-wrap:pretty">The full case study is being curated. Drop me a line if you'd like an early look at the work in progress.</p>
         <div style="margin-top:2.5rem"><a href="mailto:mannyvandelight@gmail.com" style="font-family:'Montserrat',sans-serif;font-size:.85rem;letter-spacing:2px;text-transform:uppercase;font-weight:600;border-bottom:1px solid var(--accent-color);padding-bottom:3px">[ Get in touch ]</a></div>
       </div>
     </article>
