@@ -371,7 +371,7 @@
                 <img src="{{ loop.thumb }}" alt="" loading="lazy" decoding="async" onError="{{ onMediaError }}" style="width:100%;height:100%;object-fit:cover;opacity:.8;transition:opacity .4s,transform .6s" style-hover="opacity:1;transform:scale(1.03)">
                 <span style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:48px;height:48px;border-radius:50%;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.75);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.85rem;padding-left:3px">▶</span>
               </button>
-              <div style="font-family:'Montserrat',sans-serif;font-size:.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent-color);font-weight:600;margin:.9rem 0 .35rem">{{ loop.num }} / {{ loop.title }}</div>
+              <div style="font-family:'Montserrat',sans-serif;font-size:.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent-color);font-weight:600;margin:.9rem 0 .35rem">{{ loop.title }}</div>
               <p style="font-size:1rem;line-height:1.7;color:var(--text-muted);text-wrap:pretty">{{ loop.text }}</p>
             </div>
           </sc-for>
@@ -518,17 +518,17 @@ class Component extends DCLogic {
   ];
 
   loops = [
-    ['01', 'When Moon', '02lmz4Oj9zw', 'Marks a new era, one in which we claim territory that was out of reach before. An homage to A Trip to the Moon — and the foundation all the other pieces stand on.'],
-    ['02', 'Bool Trap', 'LqX-heAaomk', "Whether bull or cat, don't get trapped in wool like that."],
-    ['03', 'Mind Stuck', '0z6q5S3Y-E4', 'Sometimes all you need is the right tool.'],
-    ['04', 'Hard Crack', 'xfLrENjja6w', "It requires high temperatures to get a hard crack. If you can't handle the heat, pull the loop for paper hands."],
-    ['05', 'Game Changer', 'X6zADmv8FrI', 'The table has become part of the ball that ends one game and starts another. Falling into the rabbit hole, infinitely.'],
-    ['06', 'Beace', '8WQpUcAoKiI', 'Blockchain brings peace, as it emerges from the deep.'],
-    ['07', '1155', 'NRKmcUmN18w', 'Protocol, or habit?'],
-    ['08', 'Good Night', 'Y2BCQCgMD6c', 'Sometimes all you need to do is go to bed. GN until GM.'],
-    ['09', 'The Bearg', 'uFlOMGw90Ok', 'Resistance is futile.']
-  ].map(([num, title, yt, text]) => ({
-    num, title, yt, text,
+    ['When Moon', 'X6zADmv8FrI', 'Marks a new era, one in which we claim territory that was out of reach before. An homage to A Trip to the Moon — and the foundation all the other pieces stand on.'],
+    ['Bool Trap', '8WQpUcAoKiI', "Whether bull or cat, don't get trapped in wool like that."],
+    ['Mind Stuck', 'xfLrENjja6w', 'Sometimes all you need is the right tool.'],
+    ['Hard Crack', 'NRKmcUmN18w', "It requires high temperatures to get a hard crack. If you can't handle the heat, pull the loop for paper hands."],
+    ['Game Changer', '0z6q5S3Y-E4', 'The table has become part of the ball that ends one game and starts another. Falling into the rabbit hole, infinitely.'],
+    ['Beace', 'LqX-heAaomk', 'Blockchain brings peace, as it emerges from the deep.'],
+    ['1155', '02lmz4Oj9zw', 'Protocol, or habit?'],
+    ['Good Night', 'Y2BCQCgMD6c', 'Sometimes all you need to do is go to bed. GN until GM.'],
+    ['The Bearg', 'uFlOMGw90Ok', 'Resistance is futile.']
+  ].map(([title, yt, text]) => ({
+    title, yt, text,
     thumb: 'https://i.ytimg.com/vi/' + yt + '/hqdefault.jpg',
     aria: 'Play ' + title
   }));
