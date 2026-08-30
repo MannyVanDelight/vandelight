@@ -243,24 +243,28 @@
   <!-- three pillars -->
   <!-- explainer video -->
   <div data-reveal style="opacity: 0; transform: translateY(22px); transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1); margin-top: clamp(44px, 6.5vw, 76px);">
-    <span style="display: block; color: #c5a059; text-transform: uppercase; letter-spacing: 2.4px; font-size: 0.78rem; font-weight: 800; margin-bottom: 14px;">The Open Home</span>
-    <h3 style="font-family: 'Spectral', Georgia, serif; font-size: clamp(1.5rem, 3vw, 2.1rem); line-height: 1.22; letter-spacing: -0.01em; margin: 0 0 14px 0; text-wrap: balance;">An open home for a house that is not built yet.</h3>
-    <p style="color: #555555; font-size: 1.02rem; margin: 0 0 26px 0; max-width: 62ch; text-wrap: pretty;">A plan tells people what a house measures. It does not tell them what it feels like to stand in the living room. This is how we give investors and approving authorities that experience before ground is broken.</p>
+    <span style="display: block; color: #c5a059; text-transform: uppercase; letter-spacing: 2.4px; font-size: 0.78rem; font-weight: 800; margin-bottom: 20px;">The Open Home</span>
   </div>
 
-  <figure data-reveal data-cursor="Watch" data-video="YOUR_VIDEO_ID" onclick="gfPlayVideo(this)" style="opacity: 0; transform: translateY(22px); transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1); margin: 0; position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: #0e0e0f; border: 1px solid #eaeaea; border-left: 3px solid #c5a059; cursor: pointer;">
-    <img src="assets/explainer-poster.jpg" alt="Glimmerfell explainer: how a 1:1 scale digital twin closes off-plan sales" width="1600" height="900" loading="lazy" decoding="async" style="display: block; width: 100%; height: 100%; object-fit: cover;">
-    <span style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(14,14,15,0.22); transition: background .4s ease;">
-      <span style="width: 74px; height: 74px; border-radius: 50%; background: #c5a059; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.35);">
-        <svg viewBox="0 0 24 24" width="26" height="26" fill="#111111" style="margin-left: 4px;"><path d="M8 5v14l11-7z"/></svg>
-      </span>
-    </span>
+  <figure data-reveal data-cursor="Watch" data-video="YOUR_VIDEO_ID" onclick="gfPlayVideo(this)" class="gfh14" style="opacity: 0; transform: translateY(22px); transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1), box-shadow .4s ease; margin: 0; cursor: pointer; position: relative; overflow: hidden; border-radius: 4px; box-shadow: 0 15px 35px rgba(0,0,0,0.15); background: #000000; aspect-ratio: 16 / 9;">
+    <img src="assets/explainer-poster.jpg" alt="Glimmerfell explainer: what an open home feels like for an off-plan build" width="1600" height="900" loading="lazy" decoding="async" onerror="this.style.opacity=0" class="gfh15" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.7; transition: opacity .3s ease, transform .6s ease;">
+    <div style="position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 24px; color: #ffffff; pointer-events: none;">
+      <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; width: 70px; height: 70px; min-width: 70px; min-height: 70px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+        <div style="width: 0; height: 0; border-top: 11px solid transparent; border-bottom: 11px solid transparent; border-left: 18px solid #ffffff; margin-left: 4px;"></div>
+      </div>
+      <h3 style="color: #ffffff; font-size: clamp(1.15rem, 2.6vw, 1.7rem); margin: 0 0 8px 0; letter-spacing: -0.01em; text-wrap: balance;">An open home for a house that is not built yet</h3>
+      <p style="color: rgba(255,255,255,0.9); font-size: 0.9rem; max-width: 380px; margin: 0;">What buyers and approving authorities cannot experience until the build is finished</p>
+    </div>
   </figure>
+
+  <p data-reveal style="opacity: 0; transform: translateY(22px); transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1); color: #555555; font-size: 1.02rem; margin: 22px 0 0 0; max-width: 62ch; text-wrap: pretty;">A plan tells people what a house measures. It does not tell them what it feels like to stand in the living room. This is how we give investors and approving authorities that experience before ground is broken.</p>
+
   <script>
     function gfPlayVideo(el) {
       var id = el.getAttribute('data-video');
       el.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0&playsinline=1" title="Glimmerfell explainer" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0;"></iframe>';
       el.style.cursor = 'default';
+      el.removeAttribute('data-cursor');
     }
   </script>
 
