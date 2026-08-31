@@ -1,0 +1,1104 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>WhenMoon — point engine</title>
+<style>
+  html,body{margin:0;height:100%;background:#000;color:#c8c8c8;
+    font:12px/1.5 ui-monospace,Menlo,Consolas,monospace;overflow:hidden}
+  canvas{display:block;width:100vw;height:100vh;cursor:grab}
+  canvas.drag{cursor:grabbing}
+  #panel{position:fixed;left:20px;top:20px;width:296px;max-height:calc(100vh - 40px);
+    overflow-y:auto;background:rgba(8,8,9,.72);backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,.09);border-radius:11px;
+    box-shadow:0 12px 40px rgba(0,0,0,.55);transition:width .22s,padding .22s}
+  #panel::-webkit-scrollbar{width:0}
+  .head{display:flex;align-items:baseline;gap:9px;padding:15px 17px 13px;
+    border-bottom:1px solid rgba(255,255,255,.07);cursor:pointer}
+  .head h1{margin:0;font:600 14px/1.2 ui-monospace,Menlo,Consolas,monospace;
+    color:#f0e6d6;letter-spacing:.02em}
+  .head .sub{font-size:10px;color:#38c6ff;letter-spacing:.13em;
+    text-transform:uppercase}
+  .artist{color:#38c6ff}
+  .pend{color:#5f5952;font-style:italic}
+  details{border-bottom:1px solid rgba(255,255,255,.055)}
+  details:last-of-type{border-bottom:0}
+  summary{list-style:none;cursor:pointer;padding:10px 17px;font-size:10.5px;
+    letter-spacing:.13em;text-transform:uppercase;color:#7e7364;
+    display:flex;align-items:center;justify-content:space-between;
+    transition:color .15s}
+  summary:hover{color:#d9922f}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:'+';font-size:13px;color:#5c5449;line-height:1}
+  details[open] summary::after{content:'–'}
+  details[open] summary{color:#c9a06a}
+  .body{padding:2px 17px 15px;font-size:11.5px;line-height:1.65;color:#a89e92}
+  .kv{display:flex;justify-content:space-between;gap:12px;padding:2px 0}
+  .kv span:first-child{color:#6f665b}
+  .kv span:last-child{color:#cfc4b4;font-variant-numeric:tabular-nums}
+  .desc{color:#b0a597;font-style:italic;line-height:1.7}
+  #barwrap{padding:11px 17px 14px;border-top:1px solid rgba(255,255,255,.07)}
+  .barrow{display:flex;align-items:center;gap:10px}
+  #bar{flex:1;height:3px;background:rgba(255,255,255,.10);border-radius:2px;
+    overflow:hidden}
+  #barfill{height:100%;width:0;background:linear-gradient(90deg,#8a5f22,#f0b74e);
+    border-radius:2px}
+  #barlab{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+    color:#6f665b;min-width:74px}
+  .btn{margin-top:10px;width:100%;background:rgba(255,255,255,.045);
+    color:#c9a06a;border:1px solid rgba(255,255,255,.11);border-radius:6px;
+    padding:7px 10px;font:inherit;font-size:10.5px;letter-spacing:.1em;
+    text-transform:uppercase;cursor:pointer;transition:all .15s}
+  .btn:hover{background:rgba(217,146,47,.14);border-color:rgba(217,146,47,.4);
+    color:#f0b74e}
+  .btn.off{color:#6f665b}
+  #panel.min{width:auto}
+  #panel.min details,#panel.min #barwrap{display:none}
+  #hint{position:fixed;left:0;right:0;bottom:20px;text-align:center;
+    color:#4e4a44;pointer-events:none;letter-spacing:.14em;font-size:10px;
+    text-transform:uppercase}
+  b{color:#d9922f;font-weight:600}
+  .t{color:#6a6a6a}
+</style>
+<canvas id=c></canvas>
+<div id=panel>
+  <div class=head id=phead>
+    <h1>When Moon</h1><span class=sub>Manny&nbsp;Van&nbsp;Delight</span>
+  </div>
+  <details open>
+    <summary>About</summary>
+    <div class="body desc">Marks a new era, one in which we claim territory
+      that was out of reach before. An homage to <i>A Trip to the Moon</i> —
+      and the foundation all the other pieces stand on.</div>
+  </details>
+  <details>
+    <summary>Work</summary>
+    <div class=body>
+      <div class=kv><span>Collection</span><span>Mooning The Ignorant</span></div>
+      <div class=kv><span>Title</span><span>When Moon</span></div>
+      <div class=kv><span>Artist</span><span class=artist>Manny Van Delight</span></div>
+      <div class=kv><span>Edition</span><span>1 of 9</span></div>
+      <div class=kv><span>Reference</span><span>Méliès, 1902</span></div>
+    </div>
+  </details>
+  <details>
+    <summary>Provenance</summary>
+    <div class=body>
+      <div class=kv><span>Inscription</span><span id=vIns class=pend>on inscription</span></div>
+      <div class=kv><span>Sat</span><span id=vSat class=pend>on inscription</span></div>
+      <div class=kv><span>Collection parent</span><span id=vPar class=pend>on inscription</span></div>
+      <div class=kv><span>Artist parent</span><span id=vArt class=pend>on inscription</span></div>
+      <div class=kv><span>Inscribed</span><span id=vDate class=pend>—</span></div>
+    </div>
+  </details>
+  <div id=barwrap>
+    <div class=barrow>
+      <span id=barlab>Auto in</span>
+      <div id=bar><div id=barfill></div></div>
+    </div>
+    <button class=btn id=autoBtn>Auto transition: on</button>
+  </div>
+</div>
+<div id=hint>click to transition · drag to orbit · scroll to zoom</div>
+<script src="payload.js?v=3"></script>
+<script>
+// ---------------------------------------------------------------- helpers
+const b64=s=>{const r=atob(s),a=new Uint8Array(r.length);
+  for(let i=0;i<r.length;i++)a[i]=r.charCodeAt(i);return a;};
+const hex=h=>[parseInt(h.slice(1,3),16)/255,parseInt(h.slice(3,5),16)/255,
+              parseInt(h.slice(5,7),16)/255];
+let seed=12345>>>0;
+const rnd=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
+const nrm=v=>{const L=Math.hypot(v[0],v[1],v[2])||1;return [v[0]/L,v[1]/L,v[2]/L];};
+const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+const dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+const add=(a,b)=>[a[0]+b[0],a[1]+b[1],a[2]+b[2]];
+const mul=(a,k)=>[a[0]*k,a[1]*k,a[2]*k];
+
+// ------------------------------------------------------------- the parent
+const HF=b64(PARENT.hf), HN=PARENT.hfN;
+const hAt=(u,v)=>{
+  const fi=(u+1)/2*HN-.5, fj=(v+1)/2*HN-.5;
+  const i0=Math.floor(fi),j0=Math.floor(fj),tu=fi-i0,tv=fj-j0;
+  const g=(i,j)=>HF[Math.max(0,Math.min(HN-1,i))*HN+Math.max(0,Math.min(HN-1,j))];
+  const a=g(i0,j0)*(1-tu)+g(i0+1,j0)*tu,b=g(i0,j0+1)*(1-tu)+g(i0+1,j0+1)*tu;
+  return PARENT.hMin+(a*(1-tv)+b*tv)/255*(PARENT.hMax-PARENT.hMin);
+};
+const d2uv=d=>{const rho=Math.acos(Math.max(-1,Math.min(1,-d[2])))/(Math.PI/2);
+  const s=Math.hypot(d[0],d[1]);return s<1e-9?[0,0]:[rho*d[0]/s,rho*d[1]/s];};
+const uv2d=(u,v)=>{const rho=Math.hypot(u,v),th=rho*(Math.PI/2);
+  const st=Math.sin(th),ct=Math.cos(th);
+  return rho<1e-9?[0,0,-1]:[st*u/rho,st*v/rho,-ct];};
+const surfR=d=>{const [u,v]=d2uv(d);return hAt(u,v);};
+
+// -------------------------------------------------------------- the child
+const GEO=b64(CHILD.geom),PS=CHILD.posScale;
+let gp=0;
+const rI=()=>{const v=(GEO[gp]|GEO[gp+1]<<8);gp+=2;return((v&0x8000)?v-65536:v)/PS;};
+const rU=()=>{const v=(GEO[gp]|GEO[gp+1]<<8);gp+=2;return v/PS;};
+const rN=()=>{const v=(GEO[gp]|GEO[gp+1]<<8);gp+=2;return((v&0x8000)?v-65536:v)/32767;};
+const parts=[];
+while(gp<GEO.length-6){
+  const k=GEO[gp++];
+  if(k===1)parts.push({k:'sphere',c:[rI(),rI(),rI()],r:rU()});
+  else if(k===2){const c=[rI(),rI(),rI()],a=[rN(),rN(),rN()];
+    const h0=rI(),h1=rI(),n=GEO[gp++],mx=rU(),prof=[];
+    for(let i=0;i<n;i++)prof.push(GEO[gp++]/255*mx);
+    parts.push({k:'lathe',c,a,h0,h1,prof});}
+  else if(k===3){parts.push({k:'plane',c:[rI(),rI(),rI()],n:[rN(),rN(),rN()],
+    t:[rN(),rN(),rN()],eu:rU(),ev:rU(),df:rU()});}
+  else break;
+}
+const gaze=nrm([rN(),rN(),rN()]);
+const NAMES=['can','pole','poleTop','flag','eye'];
+const P={};parts.forEach((p,i)=>P[NAMES[i]||('x'+i)]=p);
+const FRONT=[0,0,-1];
+
+// ----------------------------------------------------------- glyph masks
+function mask(draw,S){
+  S=S||320;const cv=document.createElement('canvas');cv.width=cv.height=S;
+  const x=cv.getContext('2d');
+  x.fillStyle='#000';x.fillRect(0,0,S,S);x.fillStyle='#fff';draw(x,S);
+  const d=x.getImageData(0,0,S,S).data,m=new Uint8Array(S*S);
+  for(let i=0;i<S*S;i++)m[i]=d[i*4];
+  return {m,S};
+}
+// Drawn from paths, not type. A heavy geometric B with the strokes appearing
+// only as stubs above and below the letter -- and no dependency on a system
+// font being present, which an inscription cannot assume.
+const BTC=mask((x,S)=>{
+  const u=v=>v*S;
+  // proportions taken off the reference mark: letter ~0.82 as wide as tall,
+  // strokes overhanging ~23% of cap height at each end
+  // measured off the coin in back.jpg: letter 0.654 as wide as tall, strokes
+  // overhanging 14% of cap height (not 23%, which read too tall)
+  const CAP=0.220, BASE=0.780, MID=0.492;
+  const SL=0.317, SR=0.409;                 // stem left / right
+  const UR=0.610, LR=0.683;                 // bowl right edges
+  // right-rounded slab
+  const slab=(x1,y1,x2,y2,r)=>{
+    x.beginPath();
+    x.moveTo(u(x1),u(y1));
+    x.lineTo(u(x2-r),u(y1));
+    x.arcTo(u(x2),u(y1),u(x2),u(y1+r),u(r));
+    x.lineTo(u(x2),u(y2-r));
+    x.arcTo(u(x2),u(y2),u(x2-r),u(y2),u(r));
+    x.lineTo(u(x1),u(y2));
+    x.closePath();x.fill();
+  };
+  x.fillRect(u(SL),u(CAP),u(SR-SL),u(BASE-CAP));   // stem
+  slab(SL,CAP,UR,MID+0.004,0.104);                 // upper bowl
+  slab(SL,MID-0.004,LR,BASE,0.116);                // lower bowl
+  // counters
+  x.globalCompositeOperation='destination-out';
+  slab(SR,CAP+0.062,0.537,MID-0.060,0.056);
+  slab(SR,MID+0.060,0.606,BASE-0.060,0.062);
+  x.globalCompositeOperation='source-over';
+  // the two strokes: stubs only, top and bottom -- they do not cross the letter
+  const BW=0.051, OV=0.078;
+  for(const cx of [0.372,0.493]){
+    x.fillRect(u(cx-BW/2),u(CAP-OV),u(BW),u(OV+0.002));
+    x.fillRect(u(cx-BW/2),u(BASE-0.002),u(BW),u(OV+0.002));
+  }
+},384);
+// A real circuit board rather than a maze: 45-degree traces, pads, vias,
+// component footprints and fine bus runs.
+function pcb(sd,dens){
+  return mask((x,S)=>{
+    const G=S/34;
+    let s2=sd>>>0;
+    const r=()=>(s2=(Math.imul(s2,1664525)+1013904223)>>>0)/4294967296;
+    x.lineCap='round';x.lineJoin='round';x.strokeStyle='#fff';
+    // fine parallel bus runs in a couple of bands
+    x.lineWidth=S*0.0045;
+    for(let b=0;b<3;b++){
+      const y0=r()*S, n=5+Math.floor(r()*7), vert=r()<0.5;
+      const x0=r()*S*0.5;
+      for(let i=0;i<n;i++){
+        const o=i*G*0.42;
+        x.beginPath();
+        if(vert){x.moveTo(x0+o,y0);x.lineTo(x0+o,y0+G*(4+r()*8));}
+        else{x.moveTo(y0,x0+o);x.lineTo(y0+G*(4+r()*8),x0+o);}
+        x.stroke();
+      }
+    }
+    // routed traces with 45-degree bends and a pad at each end
+    x.lineWidth=S*0.0085;
+    const DX=[1,1,0,-1,-1,-1,0,1],DY=[0,1,1,1,0,-1,-1,-1];
+    for(let i=0;i<Math.round(78*dens);i++){
+      let px=Math.round(r()*34)*G,py=Math.round(r()*34)*G;
+      x.beginPath();x.arc(px,py,S*0.0125,0,7);x.fill();
+      x.beginPath();x.moveTo(px,py);
+      const segs=2+Math.floor(r()*4);
+      for(let j=0;j<segs;j++){
+        const d=Math.floor(r()*8),L=(1+Math.floor(r()*4))*G;
+        px+=DX[d]*L;py+=DY[d]*L;x.lineTo(px,py);
+      }
+      x.stroke();
+      x.beginPath();x.arc(px,py,S*0.0125,0,7);x.fill();
+    }
+    // surface-mount footprints: a body with two end caps
+    for(let i=0;i<Math.round(30*dens);i++){
+      const px=r()*S,py=r()*S,w=G*(1.4+r()*2.4),h=G*0.62;
+      x.save();x.translate(px,py);if(r()<0.5)x.rotate(Math.PI/2);
+      x.fillRect(-w/2,-h/2,w,h);
+      x.fillRect(-w/2-G*0.28,-h*0.8,G*0.28,h*1.6);
+      x.fillRect(w/2,-h*0.8,G*0.28,h*1.6);
+      x.restore();
+    }
+    // vias
+    for(let i=0;i<Math.round(150*dens);i++){
+      x.beginPath();x.arc(r()*S,r()*S,S*0.0055,0,7);x.fill();
+    }
+  },384);
+}
+const CIRC=pcb(0x5eed,1.0);          // reverse face
+const CIRC2=pcb(0xA17E,0.55);        // obverse field, quieter under the mark
+
+// Chamfer distance transform. The reference coin's field is not plain
+// concentric turning -- the rings are contours that echo the B's outline.
+function distField(mk){
+  const S=mk.S, D=new Float32Array(S*S), INF=1e9;
+  for(let i=0;i<S*S;i++) D[i]=mk.m[i]>127?0:INF;
+  for(let y=0;y<S;y++)for(let x=0;x<S;x++){
+    const i=y*S+x; let d=D[i];
+    if(x>0)d=Math.min(d,D[i-1]+1);
+    if(y>0)d=Math.min(d,D[i-S]+1);
+    if(x>0&&y>0)d=Math.min(d,D[i-S-1]+1.4142);
+    if(x<S-1&&y>0)d=Math.min(d,D[i-S+1]+1.4142);
+    D[i]=d;
+  }
+  for(let y=S-1;y>=0;y--)for(let x=S-1;x>=0;x--){
+    const i=y*S+x; let d=D[i];
+    if(x<S-1)d=Math.min(d,D[i+1]+1);
+    if(y<S-1)d=Math.min(d,D[i+S]+1);
+    if(x<S-1&&y<S-1)d=Math.min(d,D[i+S+1]+1.4142);
+    if(x>0&&y<S-1)d=Math.min(d,D[i+S-1]+1.4142);
+    D[i]=d;
+  }
+  return {D,S};
+}
+const BTCD=distField(BTC);
+
+// Relief for the coin's obverse, lifted from the reference photograph by
+// tools/coin_relief.py. Carries the mark, the contour field, the legend and
+// the traces together -- procedural approximations of it read as flat.
+const CRD=PARENT.cr?b64(PARENT.cr):null, CRN=PARENT.crN||0;
+const crAt=(u,v)=>{                       // bilinear, u/v in -1..1
+  if(!CRD) return 0.5;
+  const fi=(-u+1)/2*CRN-0.5, fj=(1-(v+1)/2)*CRN-0.5;
+  const i0=Math.floor(fi), j0=Math.floor(fj), tu=fi-i0, tv=fj-j0;
+  const g=(i,j)=>CRD[Math.max(0,Math.min(CRN-1,j))*CRN+Math.max(0,Math.min(CRN-1,i))]/255;
+  const a=g(i0,j0)*(1-tu)+g(i0+1,j0)*tu, b=g(i0,j0+1)*(1-tu)+g(i0+1,j0+1)*tu;
+  return a*(1-tv)+b*tv;
+};
+const crGrad=(u,v)=>{const e=2.4/CRN;
+  return [crAt(u+e,v)-crAt(u-e,v), crAt(u,v+e)-crAt(u,v-e)];};
+const dAt=(df,u,v,flip)=>{
+  const uu=flip?-u:u;
+  const i=Math.min(df.S-1,Math.max(0,Math.floor((uu+1)/2*df.S)));
+  const j=Math.min(df.S-1,Math.max(0,Math.floor((1-(v+1)/2)*df.S)));
+  return df.D[j*df.S+i]/df.S;              // normalised 0..~1
+};
+
+// legend struck around the rim, following the circle
+const RING=mask((x,S)=>{
+  const cx=S/2, cy=S/2, R=S*0.428;
+  x.font='bold '+(S*0.042)+'px ui-monospace,Menlo,Consolas,monospace';
+  x.textAlign='center'; x.textBaseline='middle';
+  const arc=(txt,centre,dir)=>{
+    const step=0.052;
+    let a=centre-dir*step*(txt.length-1)/2;
+    for(const ch of txt){
+      x.save();
+      x.translate(cx+Math.cos(a)*R, cy+Math.sin(a)*R);
+      x.rotate(a+(dir>0?Math.PI/2:-Math.PI/2));
+      x.fillText(ch,0,0);
+      x.restore();
+      a+=step*dir;
+    }
+  };
+  arc('MOONING THE IGNORANT · WHEN MOON', -Math.PI/2, 1);
+  arc('ONE OF NINE · MANNY VAN DELIGHT',  Math.PI/2, -1);
+},384);
+const mAt=(mk,u,v,flip)=>{
+  const uu=flip?-u:u;
+  const i=Math.min(mk.S-1,Math.max(0,Math.floor((uu+1)/2*mk.S)));
+  const j=Math.min(mk.S-1,Math.max(0,Math.floor((1-(v+1)/2)*mk.S)));
+  return mk.m[j*mk.S+i]/255;
+};
+// gradient of a mask, used to bevel struck edges so they catch the light
+const mGrad=(mk,u,v,flip)=>{
+  const e=2.2/mk.S;
+  return [ (mAt(mk,u+e,v,flip)-mAt(mk,u-e,v,flip)),
+           (mAt(mk,u,v+e,flip)-mAt(mk,u,v-e,flip)) ];
+};
+
+// ------------------------------------------------------------------ craters
+const CRAT=[];
+for(let i=0;i<150;i++){
+  let d;do{d=nrm([rnd()*2-1,rnd()*2-1,-rnd()]);}while(d[2]>-0.05);
+  const big=rnd()<0.16;
+  CRAT.push({d,r:big?0.10+rnd()*0.13:0.018+rnd()*0.055,deep:0.45+rnd()*0.55});
+}
+function craterShade(dir){
+  let dark=0,rimv=0;
+  for(let i=0;i<CRAT.length;i++){
+    const c=CRAT[i],cs=dot(dir,c.d);
+    if(cs<0.55)continue;
+    const ang=Math.acos(Math.min(1,cs));
+    if(ang<c.r){const f=ang/c.r;
+      dark=Math.max(dark,(1-f*f)*c.deep);
+      if(f>0.80)rimv=Math.max(rimv,(f-0.80)/0.20*0.5);}
+  }
+  return {dark,rimv};
+}
+
+// ----------------------------------------------------------- point arrays
+// kind 0 body · 1 cloth · 2 coin · 3 star · 4 streak · 5 eye
+const pos=[],nml=[],col=[],e1a=[],e2a=[],misc=[],fuv=[];
+function emit(p,n,c,kind,extra){
+  pos.push(p[0],p[1],p[2]);
+  const nn=nrm(n);nml.push(nn[0],nn[1],nn[2]);
+  col.push(c[0],c[1],c[2]);
+  if(kind===4){
+    const e=extra;
+    e1a.push(e.e1[0],e.e1[1],e.e1[2]);e2a.push(e.e2[0],e.e2[1],e.e2[2]);
+    misc.push(e.a,e.b,rnd(),kind);
+  } else {
+    // aM.x carries the baked cast shadow for everything that is not a streak
+    e1a.push(0,0,0);e2a.push(0,0,0);
+    misc.push(extra&&extra.sh!==undefined?extra.sh:1.0,
+              rnd()*Math.PI*2,rnd(),kind);
+  }
+  fuv.push(extra&&extra.uv?extra.uv[0]:-1,extra&&extra.uv?extra.uv[1]:-1);
+}
+
+const PAL=CHILD.pal,GP=PARENT.pal;
+const mLight=hex(PAL.moonLight),mDark=hex(PAL.moonDark);
+const gB=hex(GP.goldBright),gM=hex(GP.goldMid),gD=hex(GP.goldDeep);
+const sc=(c,k)=>[c[0]*k,c[1]*k,c[2]*k];
+
+// ------------------------------------------------------------- the rig
+// Shared placement for the can and the flag. Both the geometry builders and
+// the shadow tracer read from here, so they can never drift apart.
+function latheBasis(a){
+  const ref=Math.abs(a[1])>.9?[1,0,0]:[0,1,0];
+  const u=nrm(cross(a,ref));return [u,nrm(cross(a,u))];
+}
+// Key light, object space. Equal x and y put it exactly 45 degrees off the
+// top-left on screen (view-right is world -x), which is what the shadows and
+// the diffuse term both have to agree on.
+// The rocket juts out along (0.868, 0.368, -0.333) -- up and to the left on
+// screen. A light from the upper-left sits nearly parallel to it, so the
+// rocket hid its own shadow. Swung overhead with a left bias: still keys the
+// face from above-left, but now throws the shadow down across open surface.
+const LIGHT=nrm([0.26,0.90,-0.35]);
+const RIG={};
+{
+  const p=P.can,[u,v]=latheBasis(p.a);
+  const e0=add(p.c,mul(p.a,p.h0)),e1=add(p.c,mul(p.a,p.h1));
+  const outerH=Math.hypot(...e1)>Math.hypot(...e0)?p.h1:p.h0;
+  const innerH=outerH===p.h1?p.h0:p.h1;
+  const outSgn=outerH===p.h1?1:-1;
+  const rOut=outerH===p.h1?p.prof[p.prof.length-1]:p.prof[0];
+  const rIn=innerH===p.h0?p.prof[0]:p.prof[p.prof.length-1];
+  // Where the can breaks the moon's surface. Only the part beyond this can
+  // cast: the buried section was intercepting rays from points on the LIT
+  // side, throwing shadow onto the wrong side of the rocket entirely.
+  const ca=dot(p.c,p.a), cc=dot(p.c,p.c), disc=ca*ca-cc+1;
+  let hExit=Math.min(innerH,outerH);
+  if(disc>0){
+    const s=Math.sqrt(disc), lo=Math.min(innerH,outerH), hi=Math.max(innerH,outerH);
+    const cand=[-ca-s,-ca+s].filter(r=>r>=lo&&r<=hi);
+    if(cand.length) hExit=outSgn>0?Math.max(...cand):Math.min(...cand);
+  }
+  RIG.can={p,u,v,outerH,innerH,outSgn,rOut,rIn,hExit,
+           rMax:Math.max(...p.prof),
+           LEN:Math.abs(p.h1-p.h0)*0.114,      // thruster: 33% shorter again
+           rThroat:rOut*0.31, rBell:rOut*0.62};
+  const fp=P.flag, dir=nrm(fp.c);
+  let sd=cross(dir,FRONT);
+  if(Math.hypot(...sd)<1e-3)sd=cross(dir,[0,1,0]);
+  sd=nrm(sd);
+  if(dot(cross(dir,sd),FRONT)>0)sd=mul(sd,-1);
+  RIG.flag={dir,base:surfR(dir)-0.05,up:dir.slice(),sd,fwd:nrm(cross(dir,sd)),
+            H:0.52,POLE_R:0.0009,T0:0.42,T1:0.92,CW:0.30};
+}
+
+// ------------------------------------------------------------- shadowing
+// The light and the casters are all fixed in object space, so shadows are
+// static: trace them once here rather than paying for a shadow map pass.
+function rayCyl(O,D,C,A,R,h0,h1,tMax){
+  const oc=[O[0]-C[0],O[1]-C[1],O[2]-C[2]];
+  const dA=dot(D,A), oA=dot(oc,A);
+  const d=[D[0]-A[0]*dA,D[1]-A[1]*dA,D[2]-A[2]*dA];
+  const o=[oc[0]-A[0]*oA,oc[1]-A[1]*oA,oc[2]-A[2]*oA];
+  const a=dot(d,d); if(a<1e-12) return false;
+  const b=2*dot(o,d), c=dot(o,o)-R*R;
+  const disc=b*b-4*a*c; if(disc<0) return false;
+  const sq=Math.sqrt(disc);
+  for(const t of [(-b-sq)/(2*a),(-b+sq)/(2*a)]){
+    if(t<=1e-4) continue;
+    if(tMax!==undefined && t>tMax) continue;   // truncate the shadow's throw
+    const h=oA+t*dA;
+    if(h>=Math.min(h0,h1)&&h<=Math.max(h0,h1)) return true;
+  }
+  return false;
+}
+function rayQuad(O,D,C,N,U,V,eu,ev){
+  const dn=dot(D,N); if(Math.abs(dn)<1e-7) return false;
+  const t=dot([C[0]-O[0],C[1]-O[1],C[2]-O[2]],N)/dn;
+  if(t<=1e-4) return false;
+  const hp=[O[0]+D[0]*t-C[0],O[1]+D[1]*t-C[1],O[2]+D[2]*t-C[2]];
+  return Math.abs(dot(hp,U))<=eu && Math.abs(dot(hp,V))<=ev;
+}
+// One direction only. Jittering the ray gave a soft edge but also splayed the
+// shadows -- a directional light must cast every shadow along the same vector.
+// Softness comes from testing the caster at two radii instead.
+// One tone, one direction. The earlier two-tier hard/soft test read as two
+// separate shadows; a single directional source casts a single density.
+// Returned as a multiplier on the DIFFUSE term, not the albedo -- crushing
+// the albedo also killed the ambient, which is why the cast shadow came out
+// darker than the rocket's own unlit side.
+const SHADOW=0.34;
+const THROW=0.30;                 // max shadow length: two thirds shorter
+function shadowAt(pt){
+  const c=RIG.can, f=RIG.flag, L=LIGHT;
+  const poleBase=mul(f.dir,f.base);
+  const blocked =
+    rayCyl(pt,L,c.p.c,c.p.a,c.rMax,c.hExit,c.outerH,THROW) ||
+    rayCyl(pt,L,c.p.c,c.p.a,c.rBell,c.outerH,c.outerH+c.outSgn*c.LEN,THROW) ||
+    // only the EXPOSED pole below the cloth casts. Above T0 the cloth is in
+    // front of it anyway, and its shadow was running far past the flag's.
+    rayCyl(pt,L,poleBase,f.up,f.POLE_R*2.6,-0.03*f.H,f.H*f.T0,THROW);
+  return blocked ? SHADOW : 1.0;
+}
+
+// -------------------------------------------------------------- the moon
+const N_MOON=62000;
+{
+  const TOTAL=Math.ceil(N_MOON*2.06);
+  for(let i=0;i<TOTAL;i++){
+    const k=i+0.5;
+    const ph=Math.acos(Math.max(-1,Math.min(1,1-2*k/TOTAL)));
+    const th=Math.PI*(1+Math.sqrt(5))*k;
+    const d=[Math.cos(th)*Math.sin(ph),Math.sin(th)*Math.sin(ph),Math.cos(ph)];
+    if(d[2]>-0.004)continue;
+    const [u,v]=d2uv(d),r=hAt(u,v);
+    const p=[d[0]*r,d[1]*r,d[2]*r];
+    const e=0.005;
+    const at=(uu,vv)=>{const dd=uv2d(uu,vv),rr=hAt(uu,vv);
+      return [dd[0]*rr,dd[1]*rr,dd[2]*rr];};
+    const pu=at(u+e,v),mu=at(u-e,v),pv=at(u,v+e),mv=at(u,v-e);
+    let n=cross([pu[0]-mu[0],pu[1]-mu[1],pu[2]-mu[2]],
+                [pv[0]-mv[0],pv[1]-mv[1],pv[2]-mv[2]]);
+    if(dot(n,p)<0)n=n.map(q=>-q);
+    let lm=0;const RR=0.05;
+    for(let k2=0;k2<8;k2++){const a=k2/8*Math.PI*2;
+      lm+=hAt(u+Math.cos(a)*RR,v+Math.sin(a)*RR);}
+    lm/=8;
+    const cav=Math.max(-1,Math.min(1,(r-lm)/0.020));
+    let shade=0.42+0.58*Math.pow(0.5+0.5*cav,0.9);
+    const cr=craterShade(d);
+    shade*=(1-0.62*cr.dark);shade+=cr.rimv*0.20;
+    shade=Math.max(0.06,Math.min(1.25,shade));
+    const g=0.93+0.14*rnd();
+    let base=shade<1
+      ?[mDark[0]+(mLight[0]-mDark[0])*shade,mDark[1]+(mLight[1]-mDark[1])*shade,
+        mDark[2]+(mLight[2]-mDark[2])*shade]
+      :sc(mLight,shade);
+    // cast shadow from the rocket and the pole, traced once at build time and
+    // carried through as a factor so it dims the key light, not the albedo
+    const sh = dot(n,LIGHT)>-0.05 ? shadowAt(p) : 1.0;
+    emit(p,n,sc(base,g),0,{sh});
+  }
+}
+
+// --------------------------------------------------------------- the can
+{
+  const R=RIG.can, p=R.p, u=R.u, v=R.v, mx=R.rMax;
+  const {outerH,innerH,outSgn,rOut,rIn,LEN,rThroat,rBell}=R;
+  const body=hex(PAL.canBody),stripe=hex(PAL.canStripe),drk=hex(PAL.canDark);
+  let fr=nrm([FRONT[0]-p.a[0]*dot(FRONT,p.a),FRONT[1]-p.a[1]*dot(FRONT,p.a),
+              FRONT[2]-p.a[2]*dot(FRONT,p.a)]);
+  const frAng=Math.atan2(dot(fr,v),dot(fr,u));
+  // Per the reference the can is FLUTED ALONG ITS LENGTH -- long vertical
+  // ridges, with only two or three rings around it. Circumferential banding
+  // was the wrong axis and produced the stepped artefacts.
+  const FLUTES=30;
+  const RINGS=[0.16,0.55,0.87];               // just a few, narrow
+  const RING_W=0.018;
+  // barrel: ribbed drawn-metal shell with panel seams and a bare Bitcoin mark
+  for(let n=0;n<40000;n++){
+    let h,r,f;
+    do{f=rnd();h=p.h0+(p.h1-p.h0)*f;
+      const x=f*(p.prof.length-1),i0=Math.min(p.prof.length-2,Math.floor(x));
+      r=p.prof[i0]+(p.prof[i0+1]-p.prof[i0])*(x-i0);
+    }while(rnd()>r/mx);
+    const a=rnd()*Math.PI*2,cs=Math.cos(a),sn=Math.sin(a);
+    const rad=[u[0]*cs+v[0]*sn,u[1]*cs+v[1]*sn,u[2]*cs+v[2]*sn];
+    const along=(h-innerH)/(outerH-innerH);
+    // longitudinal fluting: a smooth tangential normal tilt, no stepping
+    const fl=Math.sin(a*FLUTES);
+    const flC=Math.cos(a*FLUTES);
+    const tang=[-u[0]*sn+v[0]*cs,-u[1]*sn+v[1]*cs,-u[2]*sn+v[2]*cs];
+    let nv=nrm(add(mul(rad,1.0),mul(tang,flC*0.42)));
+    let rr=r*(1+0.0045*fl);
+    let shadeF=0.74+0.34*(0.5+0.5*fl);
+    // a couple of rings around the body
+    let ringHit=0;
+    for(const R0 of RINGS){
+      const d=Math.abs(along-R0);
+      if(d<RING_W){ ringHit=1-d/RING_W; }
+    }
+    if(ringHit>0){
+      rr*=1+0.016*ringHit;
+      nv=nrm(add(mul(nv,1.0),mul(p.a,(along<0.5?-1:1)*ringHit*0.5)));
+      shadeF*=0.80+0.45*ringHit;
+    }
+    const pt=add(add(p.c,mul(p.a,h)),mul(rad,rr));
+    let c=sc(body,shadeF);
+    let da=a-frAng;while(da>Math.PI)da-=2*Math.PI;while(da<-Math.PI)da+=2*Math.PI;
+    const gu=-da/1.24, gv=(along-0.50)/0.44;
+    if(Math.abs(gu)<1&&Math.abs(gv)<1&&mAt(BTC,gu,gv,true)>0.5)
+      c=sc(stripe,0.86+0.26*(0.5+0.5*fl));
+    emit(pt,nv,c,0);
+  }
+  // buried end cap
+  for(let n=0;n<2600;n++){
+    const rr=Math.sqrt(rnd())*rIn,a=rnd()*Math.PI*2,cs=Math.cos(a),sn=Math.sin(a);
+    emit(add(add(p.c,mul(p.a,innerH)),mul([u[0]*cs+v[0]*sn,u[1]*cs+v[1]*sn,
+      u[2]*cs+v[2]*sn],rr)),mul(p.a,-outSgn),sc(drk,0.8+0.2*rnd()),0);
+  }
+  // ---- thruster, 33% smaller again, sealed at the base and lined inside
+  const bellR=s=>rThroat+(rBell-rThroat)*s*s;
+  for(let n=0;n<4200;n++){                      // annulus barrel -> bell
+    const rr=rThroat+(rOut-rThroat)*Math.sqrt(rnd()),a=rnd()*Math.PI*2;
+    const cs=Math.cos(a),sn=Math.sin(a);
+    emit(add(add(p.c,mul(p.a,outerH)),mul([u[0]*cs+v[0]*sn,u[1]*cs+v[1]*sn,
+      u[2]*cs+v[2]*sn],rr)),mul(p.a,outSgn),sc(body,0.6+0.35*rnd()),0);
+  }
+  for(let n=0;n<10000;n++){
+    const s=rnd(),a=rnd()*Math.PI*2,cs=Math.cos(a),sn=Math.sin(a);
+    const rad=[u[0]*cs+v[0]*sn,u[1]*cs+v[1]*sn,u[2]*cs+v[2]*sn];
+    const rr=bellR(s);
+    const base=add(p.c,mul(p.a,outerH+outSgn*LEN*s));
+    if(rnd()<0.5){
+      const flute=0.5+0.5*Math.sin(a*16.0);
+      emit(add(base,mul(rad,rr)),
+           nrm(add(mul(rad,0.9),mul(p.a,outSgn*0.35))),
+           sc(drk,(0.55+0.7*s)*(0.75+0.5*flute)),0);
+    } else {
+      emit(add(base,mul(rad,rr*0.955)),
+           nrm(add(mul(rad,-0.9),mul(p.a,outSgn*0.3))),
+           sc([1.0,0.55,0.22],0.26+0.5*(1.0-s)),0);
+    }
+  }
+  for(let n=0;n<2400;n++){                      // throat floor
+    const rr=Math.sqrt(rnd())*rThroat,a=rnd()*Math.PI*2,cs=Math.cos(a),sn=Math.sin(a);
+    emit(add(add(p.c,mul(p.a,outerH+outSgn*LEN*0.06)),
+      mul([u[0]*cs+v[0]*sn,u[1]*cs+v[1]*sn,u[2]*cs+v[2]*sn],rr)),
+      mul(p.a,outSgn),sc([1.0,0.5,0.18],0.45+0.5*rnd()),0);
+  }
+  for(let n=0;n<2600;n++){                      // bell lip
+    const a=rnd()*Math.PI*2,cs=Math.cos(a),sn=Math.sin(a);
+    const rad=[u[0]*cs+v[0]*sn,u[1]*cs+v[1]*sn,u[2]*cs+v[2]*sn];
+    emit(add(add(p.c,mul(p.a,outerH+outSgn*LEN)),mul(rad,rBell*(1+0.03*rnd()))),
+         rad,sc(body,0.7+0.3*rnd()),0);
+  }
+}
+
+// --------------------------------------------------------------- the eye
+// emitted as kind 5 so the iris can be steered per frame on the GPU
+const EYE={};
+{
+  const p=P.eye;
+  const white=hex(PAL.eyeWhite);
+  const eOut=nrm(p.c);
+  const eRef=Math.abs(eOut[1])>.9?[1,0,0]:[0,1,0];
+  const eH=nrm(cross(eOut,eRef)),eV=nrm(cross(eOut,eH));
+  EYE.out=eOut; EYE.h=eH; EYE.v=eV;
+  // three look positions. The lean is kept small enough that the pupil stays
+  // inside the lid opening -- at 0.62 it rolled far enough to hide.
+  const gH=nrm([gaze[0]-eOut[0]*dot(gaze,eOut),gaze[1]-eOut[1]*dot(gaze,eOut),
+                gaze[2]-eOut[2]*dot(gaze,eOut)]);
+  EYE.centre = p.c.slice();                    // eyeball centre, for tracking
+  EYE.left  = nrm(add(eOut, mul(gH, 0.30)));   // at the rocket
+  EYE.mid   = eOut.slice();                    // straight ahead
+  EYE.right = nrm(add(eOut, mul(gH,-0.19)));   // a brief glance away
+  EYE.base  = EYE.left;
+  const APH=0.52,APV=0.235;
+  let made=0,guard=0;
+  while(made<13000&&guard<1400000){
+    guard++;
+    const z=1-2*rnd(),rr=Math.sqrt(Math.max(0,1-z*z)),a=rnd()*Math.PI*2;
+    const dr=[rr*Math.cos(a),rr*Math.sin(a),z];
+    const pt=add(p.c,mul(dr,p.r));
+    if(pt[2]>-0.02)continue;
+    if(Math.hypot(...pt)<surfR(nrm(pt))-0.006)continue;
+    if(dot(dr,eOut)<0.02)continue;
+    const hA=Math.asin(Math.max(-1,Math.min(1,dot(dr,eH))));
+    const vA=Math.asin(Math.max(-1,Math.min(1,dot(dr,eV))));
+    if((hA/APH)*(hA/APH)+(vA/APV)*(vA/APV)>1)continue;
+    made++;
+    emit(pt,dr,sc(white,0.92+0.16*rnd()),5);
+  }
+}
+
+// -------------------------------------------------------------- the flag
+{
+  const {dir,base,up,sd,fwd,H,POLE_R,T0,T1,CW}=RIG.flag;
+  const at=(t,s,f)=>add(add(add(mul(dir,base),mul(up,H*t)),mul(sd,s)),mul(fwd,f));
+  const poleC=hex(PAL.pole);
+  for(let n=0;n<5200;n++){
+    const t=-0.14+rnd()*1.14,a=rnd()*Math.PI*2;
+    const rad=add(mul(sd,Math.cos(a)),mul(fwd,Math.sin(a)));
+    emit(at(t,Math.cos(a)*POLE_R,Math.sin(a)*POLE_R),rad,
+         sc(poleC,0.85+0.3*rnd()),0);
+  }
+  // cloth hangs from the pole across its whole height, top just below the tip
+  const cloth=hex(PAL.flagCloth),logo=hex(PAL.flagLogo);
+  for(let n=0;n<17000;n++){
+    const s=rnd(), t=rnd();
+    const pt=at(T0+(T1-T0)*t, POLE_R+s*CW, 0);
+    const inB=mAt(BTC,(s-0.5)*2.2,(t-0.5)*2.3,false);   // unmirrored
+    emit(pt,fwd,sc(inB>.5?logo:cloth,0.9+0.2*rnd()),1,{uv:[s,t]});
+  }
+}
+const N_BODY=pos.length/3;
+
+// -------------------------------------------------------------- the coin
+// denser, and with struck relief: milled rings, bevelled glyph edges, a
+// brushed field. Flat normals were what made it read as a decal.
+const CT=0.070, CR=0.985;
+const N_COIN=210000;
+for(let i=0;i<N_COIN;i++){
+  let x,y,rr;const roll=rnd();
+  if(roll<0.44){                                 // B face, from the reference
+    do{x=rnd()*2-1;y=rnd()*2-1;rr=Math.hypot(x,y);}while(rr>1.0);
+    const hgt=crAt(x,y);
+    const g=crGrad(x,y);
+    const cham=Math.max(0,(rr-0.93)/0.07);
+    // relief drives the normal, the height and the metal's tone together
+    // relief at a quarter strength: the full-gain version read as noise
+    let n=nrm([-g[0]*1.15, -g[1]*1.15, -1+cham*0.55]);
+    if(cham>0) n=nrm([n[0]+x/(rr||1)*cham*1.7,n[1]+y/(rr||1)*cham*1.7,n[2]]);
+    const t=Math.max(0,Math.min(1,(hgt-0.34)/0.50));
+    // one alloy from deep to mid gold. Topping out at goldBright blew the
+    // struck faces into a flat yellow highlight.
+    const c=[gD[0]+(gM[0]-gD[0])*t, gD[1]+(gM[1]-gD[1])*t, gD[2]+(gM[2]-gD[2])*t];
+    emit([x*CR,y*CR,-CT*(1-cham*0.30)-0.0075*t],n,
+         sc(c,0.70+0.34*t+0.07*rnd()),2);
+  } else if(roll<0.90){                           // circuit-board reverse
+    let tries=0,hit=false;
+    do{x=rnd()*2-1;y=rnd()*2-1;rr=Math.hypot(x,y);
+       hit=mAt(CIRC,x,y,false)>.5;tries++;}
+    while((rr>1.0||(!hit&&rr<0.90&&rnd()<.66))&&tries<40);
+    const g=mGrad(CIRC,x,y,false);
+    const cham=Math.max(0,(rr-0.93)/0.07);
+    const n=nrm([-g[0]*2.4+x/(rr||1)*cham*1.7,
+                 -g[1]*2.4+y/(rr||1)*cham*1.7, 1-cham*0.55]);
+    emit([x*CR,y*CR,CT*(1-cham*0.30)+(hit?0.014:0)],n,
+         hit?sc(gB,0.80+0.24*rnd()):sc(gD,0.34+0.20*rnd()),2);
+  } else {                                        // milled rim
+    const a=rnd()*Math.PI*2;
+    const mill=Math.sin(a*130.0);
+    const n=nrm([Math.cos(a)+0.30*mill*-Math.sin(a),
+                 Math.sin(a)+0.30*mill*Math.cos(a), 0]);
+    emit([Math.cos(a)*CR,Math.sin(a)*CR,(rnd()*2-1)*CT],n,
+         sc(gM,0.62+0.42*(0.5+0.5*mill)),2);
+  }
+}
+
+// ------------------------------------------------------------- the stars
+const N_STAR=900;
+for(let i=0;i<N_STAR;i++){
+  const z=1-2*rnd(),rr=Math.sqrt(Math.max(0,1-z*z)),a=rnd()*Math.PI*2;
+  const R=16+rnd()*26;
+  const b=0.35+rnd()*0.65;
+  emit([R*rr*Math.cos(a),R*rr*Math.sin(a)*0.75,R*z],[0,0,-1],
+       [b*0.82,b*0.86,b*0.95],3);
+}
+
+// --------------------------------------------------- orbital streaks (20)
+const N_STREAK=20,SEG=64;
+for(let s=0;s<N_STREAK;s++){
+  const tilt=(rnd()*2-1)*0.40,node=rnd()*Math.PI*2;
+  const ax=nrm([Math.sin(tilt)*Math.cos(node),Math.cos(tilt),Math.sin(tilt)*Math.sin(node)]);
+  const ref=Math.abs(ax[1])>0.9?[1,0,0]:[0,1,0];
+  const e1=nrm(cross(ax,ref)),e2=nrm(cross(ax,e1));
+  const R=1.06+rnd()*0.62;
+  const spd=1.7+rnd()*2.3;
+  const ph0=rnd()*Math.PI*2;
+  const arc=0.55+rnd()*0.85;
+  for(let j=0;j<SEG;j++){
+    const f=j/(SEG-1);
+    const bright=Math.pow(1-f,1.5);
+    emit([R,ph0,f*arc],[0,0,-1],sc(f<0.22?gB:gM,0.30+1.6*bright),4,
+         {e1,e2,a:spd,b:arc/(SEG-1)});
+  }
+}
+const NP=pos.length/3;
+
+// peel order, for the fade-in sweep
+for(let i=0;i<NP;i++){
+  const k=misc[i*4+3];
+  if(k<1.5||k>4.5){
+    const ph=(Math.atan2(pos[i*3],pos[i*3+2])+Math.PI)/(Math.PI*2);
+    misc[i*4+1]=ph*Math.PI*2+misc[i*4+1]*0.10;
+  }
+}
+
+// ------------------------------------------------------------------ WebGL
+const cv=document.getElementById('c');
+const gl=cv.getContext('webgl',{antialias:true,alpha:false});
+const sh=(t,s)=>{const o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);
+  if(!gl.getShaderParameter(o,gl.COMPILE_STATUS))throw gl.getShaderInfoLog(o);return o;};
+const VS=`
+attribute vec3 aP; attribute vec3 aN; attribute vec3 aC;
+attribute vec3 aE1; attribute vec3 aE2; attribute vec4 aM;
+attribute vec2 aFV; attribute float aS;
+uniform float uVis,uVisP,uAng,uAngP,uT,uTP,uPass,uPS,uSpin;
+uniform mat4 uVP; uniform vec3 uGM,uGB;
+uniform vec3 uGaze,uIris,uPupil;
+uniform vec3 uFC,uFN,uFU,uFV; uniform vec2 uFE;
+varying vec3 vC; varying float vGlow,vCut;
+vec3 rotY(vec3 p,float a){float c=cos(a),s=sin(a);
+  return vec3(c*p.x+s*p.z,p.y,-s*p.x+c*p.z);}
+
+// The flag waves, so its shadow cannot be baked with the rocket's. Traced
+// live against the same wave the cloth uses -- ~15 instructions, no extra data.
+float flagShadow(vec3 p,vec3 L,float tt){
+  float dn=dot(L,uFN);
+  if(abs(dn)<1e-4) return 1.0;
+  float t=dot(uFC-p,uFN)/dn;
+  if(t<=0.0) return 1.0;
+  vec3 h=p+L*t-uFC;
+  float su=dot(h,uFU);
+  if(abs(su)>uFE.x*1.3||abs(dot(h,uFV))>uFE.y*1.3) return 1.0;
+  float s=clamp(su/uFE.x*0.5+0.5,0.0,1.0);
+  float w=sin(s*6.2-tt*3.1)*0.05*s+sin(s*3.3+tt*1.9)*0.026*s;
+  t=dot(uFC+uFN*w-p,uFN)/dn;
+  h=p+L*t-uFC;
+  return (abs(dot(h,uFU))<=uFE.x&&abs(dot(h,uFV))<=uFE.y)?0.34:1.0;   // == SHADOW
+}
+
+vec3 place(float vis,float ang,float tt,out float asmOut){
+  float kind=aM.w;
+  if(kind>3.5&&kind<4.5){                        // orbital streak
+    float th=aP.y+ang*aM.x-aP.z-(aS>0.5?aM.y:0.0);
+    asmOut=1.0;
+    return aP.x*(cos(th)*aE1+sin(th)*aE2);
+  }
+  if(kind>1.5&&kind<3.5){asmOut=1.0;return rotY(aP,ang);}   // coin, star
+  // body / cloth / eye: no scatter. They fade in place, swept in spin order.
+  float band=0.45;
+  float a=clamp((vis-(1.0-band)*fract(aM.y/6.2831853))/band,0.0,1.0);
+  asmOut=a*a*(3.0-2.0*a);
+  vec3 home=aP;
+  if(kind>0.5&&kind<1.5&&aFV.x>=0.0){
+    float s=aFV.x;
+    float w=sin(s*6.2-tt*3.1)*0.05*s+sin(s*3.3+tt*1.9+aFV.y*2.0)*0.026*s;
+    home+=aN*w;
+  }
+  return rotY(home,ang);
+}
+void main(){
+  float a0,a1;
+  vec3 p =place(uVis, uAng, uT, a0);
+  vec3 pp=place(uVisP,uAngP,uTP,a1);
+  float kind=aM.w;
+  bool streak=kind>3.5&&kind<4.5;
+  bool star  =kind>2.5&&kind<3.5;
+  bool coin  =kind>1.5&&kind<2.5;
+  bool solid =!streak&&!star;
+
+  float scale=1.0;
+  if(streak){
+    // grow in and shrink out with the transition instead of popping
+    scale=smoothstep(0.0,0.35,uSpin);
+    if(uSpin<0.004){vCut=1.0;gl_Position=vec4(2.0);return;}
+  } else if(!coin&&!star){
+    scale=a0;                                    // body fades in place
+    if(a0<0.012){vCut=1.0;gl_Position=vec4(2.0);return;}
+  }
+  bool additive=streak||(star&&uSpin>0.02);
+  vCut=(((uPass<0.5)==additive))?1.0:0.0;
+
+  vec3 v=(aS>0.5)?pp:p;
+  gl_Position=uVP*vec4(v,1.0);
+  gl_PointSize=clamp(uPS/max(0.35,gl_Position.w),1.4,26.0)*
+               (streak?(0.5+1.1*scale):1.0);
+  if(star)gl_PointSize=clamp(140.0/gl_Position.w,1.0,2.6);
+
+  // KEY LIGHT LIVES IN OBJECT SPACE -- it turns with the piece, so the face
+  // keeps its three-quarter modelling at every angle instead of flattening.
+  vec3 n=normalize(aN);
+  vec3 L=normalize(vec3(0.26,0.90,-0.35));  // must match LIGHT on the CPU
+  float diff=max(dot(n,L),0.0);
+  float spec=pow(max(dot(reflect(-L,n),vec3(0.0,0.0,-1.0)),0.0),18.0);
+  float rim=pow(1.0-abs(dot(n,vec3(0.0,0.0,1.0))),3.0)*0.10;
+
+  if(streak){vC=aC;vGlow=(1.1+2.2*uSpin)*scale;}
+  else if(star){vC=aC;vGlow=1.0+2.0*uSpin;}
+  else{
+    vec3 albedo=aC;
+    if(kind>4.5){
+      // gaze direction is resolved on the CPU: saccade loop when left alone,
+      // tracking the cursor when the viewer moves it
+      vec3 g=normalize(uGaze);
+      float ga=acos(clamp(dot(n,g),-1.0,1.0));
+      if(ga<0.19)      albedo=uPupil;
+      else if(ga<0.40) albedo=uIris;
+      else if(ga<0.44) albedo=uIris*1.7;
+    }
+    // baked (rocket, pole) x live (waving flag), both dimming the key only
+    float sh=aM.x;
+    if(kind<0.5||kind>4.5) sh*=flagShadow(aP,L,uT);
+    vC=albedo*(0.26+(0.95*diff*diff+0.30*diff)*sh+rim)+vec3(spec*0.35*sh);
+    vGlow=scale;
+  }
+}`;
+const FS=`precision mediump float;varying vec3 vC;varying float vGlow,vCut;
+void main(){if(vCut>0.5)discard;gl_FragColor=vec4(vC*vGlow,1.0);}`;
+const pr=gl.createProgram();
+gl.attachShader(pr,sh(gl.VERTEX_SHADER,VS));
+gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,FS));
+gl.linkProgram(pr);gl.useProgram(pr);
+if(!gl.getProgramParameter(pr,gl.LINK_STATUS))throw gl.getProgramInfoLog(pr);
+
+const dupN=(src,n)=>{const o=new Float32Array(NP*2*n);
+  for(let i=0;i<NP;i++)for(let k=0;k<n;k++){
+    o[i*2*n+k]=src[i*n+k];o[i*2*n+n+k]=src[i*n+k];}return o;};
+const side=new Float32Array(NP*2);
+for(let i=0;i<NP;i++){side[i*2]=0;side[i*2+1]=1;}
+const bind=(nm,data,n)=>{const b=gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,data,gl.STATIC_DRAW);
+  const l=gl.getAttribLocation(pr,nm);if(l<0)return;
+  gl.enableVertexAttribArray(l);gl.vertexAttribPointer(l,n,gl.FLOAT,false,0,0);};
+bind('aP',dupN(new Float32Array(pos),3),3);
+bind('aN',dupN(new Float32Array(nml),3),3);
+bind('aC',dupN(new Float32Array(col),3),3);
+bind('aE1',dupN(new Float32Array(e1a),3),3);
+bind('aE2',dupN(new Float32Array(e2a),3),3);
+bind('aM',dupN(new Float32Array(misc),4),4);
+bind('aFV',dupN(new Float32Array(fuv),2),2);
+bind('aS',side,1);
+const U=n=>gl.getUniformLocation(pr,n);
+gl.uniform3f(U('uGM'),...gM);gl.uniform3f(U('uGB'),...gB);
+gl.uniform3f(U('uIris'),...hex(PAL.eyeIris));
+gl.uniform3f(U('uPupil'),...sc(hex(PAL.eyeIris),0.22));
+{
+  const f=RIG.flag;
+  const ct=f.T0+(f.T1-f.T0)*0.5, cs=f.POLE_R+f.CW*0.5;
+  const cCen=add(add(mul(f.dir,f.base),mul(f.up,f.H*ct)),mul(f.sd,cs));
+  gl.uniform3f(U('uFC'),...cCen);
+  gl.uniform3f(U('uFN'),...f.fwd);
+  gl.uniform3f(U('uFU'),...f.sd);
+  gl.uniform3f(U('uFV'),...f.up);
+  gl.uniform2f(U('uFE'),f.CW*0.5,f.H*(f.T1-f.T0)*0.5);
+}
+gl.blendFunc(gl.SRC_ALPHA,gl.ONE);
+gl.depthFunc(gl.LEQUAL);
+
+// ------------------------------------------------------------ camera + UI
+let yaw=0,pitch=0.10,dist=4.6,drag=null,moved=0;
+let vYaw=0,vPitch=0,held=false,downAt=0;      // flick momentum + press-hold
+let curX=0,curY=0,curFresh=0;                 // cursor, for the gaze
+
+cv.addEventListener('mousedown',e=>{
+  drag=[e.clientX,e.clientY];moved=0;held=true;downAt=performance.now();
+  vYaw=vPitch=0; cv.classList.add('drag');});
+addEventListener('mouseup',()=>{
+  const quick=performance.now()-downAt<320;
+  // a short click transitions; a long press was a hold, so just resume
+  if(drag&&moved<5&&quick&&tIn<0) trigger();
+  drag=null;held=false;cv.classList.remove('drag');});
+addEventListener('mousemove',e=>{
+  curX=e.clientX;curY=e.clientY;curFresh=1;
+  if(!drag)return;
+  const dx=e.clientX-drag[0],dy=e.clientY-drag[1];
+  moved+=Math.abs(dx)+Math.abs(dy);
+  yaw+=dx*0.006;pitch+=dy*0.006;
+  vYaw=dx*0.006;vPitch=dy*0.006;             // carried on release
+  pitch=Math.max(-1.45,Math.min(1.45,pitch));drag=[e.clientX,e.clientY];});
+cv.addEventListener('wheel',e=>{e.preventDefault();
+  dist=Math.max(1.6,Math.min(14,dist*(1+Math.sign(e.deltaY)*0.1)));},{passive:false});
+addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();trigger();}});
+
+function mat(){
+  const w=cv.width,h=cv.height,f=1/Math.tan(0.62/2),a=w/h;
+  const cy=Math.cos(yaw),sy=Math.sin(yaw),cp=Math.cos(pitch),sp=Math.sin(pitch);
+  const eye=[dist*cp*sy,dist*sp,-dist*cp*cy];
+  const z=nrm(eye),x=nrm(cross([0,1,0],z)),y=cross(z,x);
+  const n=0.05,fa=90;
+  const V=[x[0],y[0],z[0],0,x[1],y[1],z[1],0,x[2],y[2],z[2],0,
+    -dot(x,eye),-dot(y,eye),-dot(z,eye),1];
+  const Pm=[f/a,0,0,0,0,f,0,0,0,0,(fa+n)/(n-fa),-1,0,0,2*fa*n/(n-fa),0];
+  const M=new Float32Array(16);
+  for(let i=0;i<4;i++)for(let j=0;j<4;j++){let s=0;
+    for(let k=0;k<4;k++)s+=Pm[k*4+j]*V[i*4+k];M[i*4+j]=s;}
+  return M;
+}
+
+// ------------------------------------------------------- the state machine
+const SLOW=-0.055;                  // rad/s, clockwise seen from the front
+const TURNS=4; let TDUR=4.2;
+const IDLE_AFTER=26;                // seconds untouched before it self-plays
+let angle=0,vis=0,target=0,tIn=-1;
+let angPrev=0,visPrev=0,spin=0,idle=0;
+let angFrom=0,angSweep=0;
+function trigger(){
+  if(tIn>=0)return;
+  tIn=0; target=vis>0.5?0:1; idle=0;
+  // land exactly front-facing: four turns, plus whatever is needed to bring
+  // the drift back to a multiple of a full revolution
+  angFrom=angle;
+  const TAU=Math.PI*2;
+  let end=angFrom-TURNS*TAU;
+  end=Math.round(end/TAU)*TAU;
+  if(end>angFrom-TURNS*TAU+TAU*0.5)end-=TAU;
+  angSweep=end-angFrom;
+}
+const sstep=(a,b,t)=>{const x=Math.max(0,Math.min(1,(t-a)/(b-a)));return x*x*(3-2*x);};
+
+// measured figures: what would actually be inscribed, not the base64-inflated
+// dev files on disk (payload.js carries BOTH parent and child data, and
+// whenmoon.html is the engine -- which lives in the parent)
+// Provenance is resolved from the recursive endpoints once inscribed; until
+// then these stay marked pending rather than showing engine internals.
+(async()=>{
+  try{
+    const id=(document.currentScript&&document.currentScript.src||location.pathname)
+      .match(/([0-9a-f]{64}i\d+)/i);
+    if(!id) return;
+    const r=await fetch('/r/inscription/'+id[1]); if(!r.ok) return;
+    const j=await r.json();
+    const set=(el,v)=>{ if(v){ el.textContent=v; el.classList.remove('pend'); } };
+    set(vIns,id[1].slice(0,10)+'…'+id[1].slice(-4));
+    set(vSat,j.sat!=null?String(j.sat):'');
+    set(vPar,(j.parents&&j.parents[0])?j.parents[0].slice(0,10)+'…':'');
+    if(j.timestamp) set(vDate,new Date(j.timestamp*1000).toISOString().slice(0,10));
+  }catch(e){}
+})();
+
+let autoOn=true;
+autoBtn.onclick=e=>{
+  e.stopPropagation();
+  autoOn=!autoOn; idle=0;
+  autoBtn.textContent='Auto transition: '+(autoOn?'on':'off');
+  autoBtn.classList.toggle('off',!autoOn);
+};
+phead.onclick=()=>panel.classList.toggle('min');
+panel.addEventListener('mousedown',e=>e.stopPropagation());
+panel.addEventListener('wheel',e=>e.stopPropagation());
+
+// ------------------------------------------------------------- the gaze
+// The eye watches the rocket on a saccade loop, but notices the cursor when
+// it moves and follows it, then drifts back to the rocket once you stop.
+let gazeCur=EYE.left.slice(), attn=0, lastCur=[-1,-1];
+function saccade(t){
+  const c=t%7.4, w=0.13, sm=(a,b,x)=>{const q=Math.max(0,Math.min(1,x/w));
+    const s=q*q*(3-2*q);
+    return [a[0]+(b[0]-a[0])*s,a[1]+(b[1]-a[1])*s,a[2]+(b[2]-a[2])*s];};
+  if(c<3.1) return EYE.left;
+  if(c<3.1+w) return sm(EYE.left,EYE.mid,c-3.1);
+  if(c<5.2) return EYE.mid;
+  if(c<5.2+w) return sm(EYE.mid,EYE.right,c-5.2);
+  if(c<6.3) return EYE.right;
+  if(c<6.3+w) return sm(EYE.right,EYE.left,c-6.3);
+  return EYE.left;
+}
+function cursorGaze(){
+  // unproject the cursor onto a plane through the origin facing the camera,
+  // then bring it into object space so the eye aims at the real thing
+  const nx=(curX/innerWidth)*2-1, ny=1-(curY/innerHeight)*2;
+  const f=Math.tan(0.62/2), a=innerWidth/innerHeight;
+  const cy=Math.cos(yaw),sy=Math.sin(yaw),cp=Math.cos(pitch),sp=Math.sin(pitch);
+  const eye=[dist*cp*sy,dist*sp,-dist*cp*cy];
+  const z=nrm(eye), xa=nrm(cross([0,1,0],z)), ya=cross(z,xa);
+  const dir=nrm([ -z[0]+xa[0]*nx*f*a+ya[0]*ny*f,
+                  -z[1]+xa[1]*nx*f*a+ya[1]*ny*f,
+                  -z[2]+xa[2]*nx*f*a+ya[2]*ny*f ]);
+  const P=[eye[0]+dir[0]*dist, eye[1]+dir[1]*dist, eye[2]+dir[2]*dist];
+  const c2=Math.cos(-angle), s2=Math.sin(-angle);   // undo the object spin
+  const O=[c2*P[0]+s2*P[2], P[1], -s2*P[0]+c2*P[2]];
+  let g=nrm([O[0]-EYE.centre[0],O[1]-EYE.centre[1],O[2]-EYE.centre[2]]);
+  // Clamp inside the lid opening so the pupil never rolls out of sight.
+  // Decompose in the eye's own orthonormal frame and rebuild -- scaling the
+  // components in place and renormalising does not preserve the constraint.
+  let h=dot(g,EYE.h), v=dot(g,EYE.v);
+  const k=Math.hypot(h/0.40, v/0.19);
+  if(k>1){ h/=k; v/=k; }
+  const o=Math.sqrt(Math.max(0.04, 1-h*h-v*v));
+  return nrm([EYE.h[0]*h+EYE.v[0]*v+EYE.out[0]*o,
+              EYE.h[1]*h+EYE.v[1]*v+EYE.out[1]*o,
+              EYE.h[2]*h+EYE.v[2]*v+EYE.out[2]*o]);
+}
+
+let last=performance.now(),fps=60;
+function frame(now){
+  const dt=Math.min(0.05,(now-last)/1000);last=now;
+  fps+=((1/Math.max(1e-3,dt))-fps)*0.08;
+  angPrev=angle;visPrev=vis;
+
+  // flick momentum: the orbit keeps going after release, then settles
+  if(!drag&&(Math.abs(vYaw)>1e-5||Math.abs(vPitch)>1e-5)){
+    yaw+=vYaw; pitch+=vPitch;
+    pitch=Math.max(-1.45,Math.min(1.45,pitch));
+    const k=Math.pow(0.945,dt*60);
+    vYaw*=k; vPitch*=k;
+  }
+  if(tIn>=0){
+    // press and hold suspends the transition so it can be examined mid-flight
+    if(!held) tIn+=dt;
+    const x=Math.min(1,tIn/TDUR);
+    // integral of (1-cos 2pi x): smooth start and stop, exact total sweep
+    const S=x-Math.sin(2*Math.PI*x)/(2*Math.PI);
+    angle=angFrom+angSweep*S;
+    const from=target>0.5?0:1;
+    vis=from+(target-from)*sstep(0.18,0.86,x);
+    spin=Math.sin(Math.PI*x);
+    if(x>=1){tIn=-1;vis=target;spin=0;angle=angFrom+angSweep;}
+  } else {
+    angle+=SLOW*dt; spin=0; idle+=dt;
+    if(autoOn && idle>IDLE_AFTER) trigger();
+  }
+
+  cv.width=innerWidth;cv.height=innerHeight;
+  gl.viewport(0,0,cv.width,cv.height);
+  gl.clearColor(0,0,0,1);
+  gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+  gl.uniformMatrix4fv(U('uVP'),false,mat());
+  gl.uniform1f(U('uVis'),vis);gl.uniform1f(U('uVisP'),visPrev);
+  gl.uniform1f(U('uAng'),angle);gl.uniform1f(U('uAngP'),angPrev);
+  gl.uniform1f(U('uT'),now/1000);gl.uniform1f(U('uTP'),now/1000-dt);
+  gl.uniform1f(U('uSpin'),spin);
+  gl.uniform1f(U('uPS'),cv.height*0.019);
+
+  // gaze: snap attention to the cursor when it moves, release it slowly
+  if(curX!==lastCur[0]||curY!==lastCur[1]){ attn=1; lastCur=[curX,curY]; }
+  else attn=Math.max(0,attn-dt/2.6);
+  const want = attn>0.02 ? cursorGaze() : saccade(now/1000);
+  const rate = attn>0.02 ? 1-Math.pow(0.001,dt) : 1-Math.pow(0.02,dt);
+  gazeCur=nrm([gazeCur[0]+(want[0]-gazeCur[0])*rate,
+               gazeCur[1]+(want[1]-gazeCur[1])*rate,
+               gazeCur[2]+(want[2]-gazeCur[2])*rate]);
+  gl.uniform3f(U('uGaze'),...gazeCur);
+
+  gl.enable(gl.DEPTH_TEST);gl.depthMask(true);gl.disable(gl.BLEND);
+  gl.uniform1f(U('uPass'),0);
+  gl.drawArrays(gl.POINTS,0,NP*2);
+  gl.depthMask(false);gl.enable(gl.BLEND);
+  gl.uniform1f(U('uPass'),1);
+  gl.drawArrays(gl.LINES,0,NP*2);
+  gl.drawArrays(gl.POINTS,0,NP*2);
+  gl.depthMask(true);
+
+  if(tIn>=0){ barfill.style.width='100%'; barlab.textContent='Transition'; }
+  else if(!autoOn){ barfill.style.width='0%'; barlab.textContent='Manual'; }
+  else { barfill.style.width=(100*Math.min(1,idle/IDLE_AFTER)).toFixed(1)+'%';
+         barlab.textContent='Auto in '+Math.max(0,Math.ceil(IDLE_AFTER-idle))+'s'; }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
