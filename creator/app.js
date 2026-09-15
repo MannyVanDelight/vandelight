@@ -6,7 +6,7 @@
 // Setup: request a free access key at https://web3forms.com using the inbox that
 // should receive messages, and paste it below. The key is meant to be public;
 // it can only deliver to the address it was issued for.
-const WEB3FORMS_ACCESS_KEY = "";
+const WEB3FORMS_ACCESS_KEY = "55e6abd7-f534-4e44-bc1c-caa9ac73a7a8";
 
 (() => {
   const form = document.getElementById("contact-form");
