@@ -99,8 +99,9 @@
     </section>
 
     <!-- 02 — SELECTED WORK
-         Each card lists Audience, Objective and Outcome. Cards without a
-         confirmed Outcome figure leave that row out until one is added. -->
+         Media links open in the in-page viewer (data-viewer); the href stays as
+         a fallback for modifier-clicks and visitors without JavaScript.
+         Cards without a confirmed Outcome figure leave that row out until one is added. -->
     <section id="work" class="work-section" aria-labelledby="work-title">
       <div class="section-head">
         <h2 id="work-title" class="display section-title">Selected work</h2>
@@ -109,9 +110,11 @@
 
       <div class="work">
         <article class="work-card">
-          <a class="work-media r-16-10" href="https://www.youtube.com/watch?v=iGc5jKxJBVs" target="_blank" rel="noopener" aria-label="Watch “Virtual reality in medical visualisation” on YouTube (opens in a new tab)">
+          <a class="work-media r-16-10" href="https://www.youtube.com/watch?v=iGc5jKxJBVs" target="_blank" rel="noopener"
+             data-viewer="youtube" data-video="iGc5jKxJBVs" data-orientation="landscape" data-title="Virtual reality in medical visualisation"
+             aria-label="Play video: Virtual reality in medical visualisation">
             <img src="https://img.youtube.com/vi/iGc5jKxJBVs/maxresdefault.jpg" alt="" loading="lazy" decoding="async">
-            <span class="work-pill" aria-hidden="true">Watch on YouTube ↗</span>
+            <span class="work-pill" aria-hidden="true">▶ Play video</span>
           </a>
           <div class="work-body">
             <span class="label accent">YouTube · medical visualisation</span>
@@ -125,9 +128,11 @@
         </article>
 
         <article class="work-card">
-          <a class="work-media r-16-10" href="https://youtu.be/JPchLI3F4HA" target="_blank" rel="noopener" aria-label="Watch “Flying an old plane — the Tiger Moth” on YouTube (opens in a new tab)">
+          <a class="work-media r-16-10" href="https://youtu.be/JPchLI3F4HA" target="_blank" rel="noopener"
+             data-viewer="youtube" data-video="JPchLI3F4HA" data-orientation="landscape" data-title="Flying an old plane — the Tiger Moth"
+             aria-label="Play video: Flying an old plane — the Tiger Moth">
             <img src="https://i.ytimg.com/vi/JPchLI3F4HA/maxresdefault.jpg" alt="" loading="lazy" decoding="async">
-            <span class="work-pill" aria-hidden="true">Watch on YouTube ↗</span>
+            <span class="work-pill" aria-hidden="true">▶ Play video</span>
           </a>
           <div class="work-body">
             <span class="label accent">Aviation · documentary</span>
@@ -141,9 +146,11 @@
         </article>
 
         <article class="work-card">
-          <a class="work-media r-4-5" href="https://www.youtube.com/shorts/euA4yQkouio" target="_blank" rel="noopener" aria-label="Watch “Fast-cut teaser for a visual effects workshop” on YouTube (opens in a new tab)">
+          <a class="work-media r-4-5" href="https://www.youtube.com/shorts/euA4yQkouio" target="_blank" rel="noopener"
+             data-viewer="youtube" data-video="euA4yQkouio" data-orientation="portrait" data-title="Fast-cut teaser for a visual effects workshop"
+             aria-label="Play video: Fast-cut teaser for a visual effects workshop">
             <img src="https://img.youtube.com/vi/euA4yQkouio/hq720.jpg" alt="" loading="lazy" decoding="async">
-            <span class="work-pill" aria-hidden="true">Watch on YouTube ↗</span>
+            <span class="work-pill" aria-hidden="true">▶ Play video</span>
           </a>
           <div class="work-body">
             <span class="label accent">YouTube Shorts · short-form</span>
@@ -157,9 +164,12 @@
         </article>
 
         <article class="work-card">
-          <div class="work-media r-4-5">
-            <img src="../assets/IMG_6565.JPG" alt="Campaign promotion for the Cancer Society" loading="lazy" decoding="async">
-          </div>
+          <a class="work-media work-media--contain r-9-16" href="cancer-society.jpg" target="_blank" rel="noopener"
+             data-viewer="image" data-title="Campaign promotion for the Cancer Society"
+             aria-label="View full image: Campaign promotion for the Cancer Society">
+            <img src="cancer-society.jpg" width="2250" height="4000" alt="Campaign promotion for the Cancer Society" loading="lazy" decoding="async">
+            <span class="work-pill" aria-hidden="true">View full image</span>
+          </a>
           <div class="work-body">
             <span class="label accent">Promotional · Cancer Society</span>
             <h3 class="display work-title">Campaign promotion for the Cancer Society</h3>
@@ -172,9 +182,11 @@
         </article>
 
         <article class="work-card">
-          <a class="work-media r-9-16" href="https://www.youtube.com/watch?v=a3EBBT8I0Sk" target="_blank" rel="noopener" aria-label="Watch “A fun skit about telling stories on social” on YouTube (opens in a new tab)">
+          <a class="work-media r-9-16" href="https://www.youtube.com/watch?v=a3EBBT8I0Sk" target="_blank" rel="noopener"
+             data-viewer="youtube" data-video="a3EBBT8I0Sk" data-orientation="portrait" data-title="A fun skit about telling stories on social"
+             aria-label="Play video: A fun skit about telling stories on social">
             <img src="https://i.ytimg.com/vi/a3EBBT8I0Sk/frame0.jpg" alt="" loading="lazy" decoding="async">
-            <span class="work-pill" aria-hidden="true">Watch on YouTube ↗</span>
+            <span class="work-pill" aria-hidden="true">▶ Play video</span>
           </a>
           <div class="work-body">
             <span class="label accent">Social · storytelling</span>
@@ -188,9 +200,11 @@
         </article>
 
         <article class="work-card">
-          <a class="work-media r-9-16" href="https://www.youtube.com/shorts/fnwBKa-6aow" target="_blank" rel="noopener" aria-label="Watch “From photoshoot to final delivery” on YouTube (opens in a new tab)">
+          <a class="work-media r-9-16" href="https://www.youtube.com/shorts/fnwBKa-6aow" target="_blank" rel="noopener"
+             data-viewer="youtube" data-video="fnwBKa-6aow" data-orientation="portrait" data-title="From photoshoot to final delivery"
+             aria-label="Play video: From photoshoot to final delivery">
             <img src="https://img.youtube.com/vi/fnwBKa-6aow/oar2.jpg" alt="" loading="lazy" decoding="async">
-            <span class="work-pill" aria-hidden="true">Watch on YouTube ↗</span>
+            <span class="work-pill" aria-hidden="true">▶ Play video</span>
           </a>
           <div class="work-body">
             <span class="label accent">Photography · VFX</span>
@@ -210,7 +224,7 @@
       <div class="exp-col">
         <span class="label label--wide muted">03 — Experience</span>
         <h2 id="experience-title" class="display experience-title">Marketing lead, and a feature-film pedigree.</h2>
-        <a class="pill-link" href="https://vandelight.art/" target="_blank" rel="noopener">vandelight.art ↗</a>
+        <a class="pill-link" href="https://vandelight.art/" target="_blank" rel="noopener" data-viewer="page" data-title="vandelight.art — portfolio">vandelight.art ↗</a>
         <span class="label muted mt14">Pre &amp; production</span>
         <p class="exp-text">Research and scripting, storyboarding, shot planning, camera, lighting and sound — on location or in a controlled setup.</p>
       </div>
@@ -228,7 +242,7 @@
         <h2 id="contact-title" class="display contact-title">Tell me what<br>needs explaining.</h2>
         <p class="contact-text">Full reel, extended case studies and references available on request. Send a note and I'll reply from my own address.</p>
         <div class="contact-links">
-          <a class="btn btn--light" href="https://vandelight.art/" target="_blank" rel="noopener">Showreel — vandelight.art</a>
+          <a class="btn btn--light" href="https://vandelight.art/" target="_blank" rel="noopener" data-viewer="page" data-title="vandelight.art — showreel">Showreel — vandelight.art</a>
         </div>
       </div>
 
@@ -270,5 +284,17 @@
   </footer>
 
 </div>
+
+<!-- In-page viewer for videos, images and the portfolio site -->
+<dialog id="viewer" class="viewer" aria-labelledby="viewer-title">
+  <div class="viewer-box">
+    <div class="viewer-bar">
+      <span id="viewer-title" class="viewer-title"></span>
+      <a class="viewer-external" href="#" target="_blank" rel="noopener" data-viewer-external hidden></a>
+      <button type="button" class="viewer-close" data-viewer-close aria-label="Close viewer">×</button>
+    </div>
+    <div class="viewer-stage" data-viewer-stage></div>
+  </div>
+</dialog>
 </body>
 </html>
