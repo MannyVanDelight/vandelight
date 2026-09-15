@@ -139,7 +139,7 @@ body { margin: 0; background: #0d0e10; }
 }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 
-/* 01 — Who am I */
+/* 01: Who am I */
 .intro-row { max-width: 1240px; margin: 12px auto 0; }
 .intro {
   background: #f4efe9;
@@ -192,7 +192,17 @@ body { margin: 0; background: #0d0e10; }
 .fact-text { margin: 0; font-size: 14.5px; line-height: 1.55; color: #9aa3ae; }
 .fact--blue .fact-text { color: #c3d3e6; }
 
-/* 02 — Selected work */
+.fact-sub {
+  display: block;
+  margin-bottom: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #d6dce4;
+}
+
+/* 02: Selected work */
 .work-section { max-width: 1240px; margin: 56px auto 0; }
 .section-head {
   display: flex;
@@ -280,7 +290,7 @@ a.work-media:hover .work-pill { border-color: #f26a2e; }
 .work-stats dd { margin: 0; }
 .work-stats .work-outcome { color: #d6dce4; }
 
-/* 03 — Experience */
+/* 03: Experience */
 .experience {
   box-sizing: border-box;
   max-width: 1240px;
@@ -289,9 +299,94 @@ a.work-media:hover .work-pill { border-color: #f26a2e; }
   border: 1px solid #23262d;
   border-radius: 6px;
   padding: clamp(24px, 3.5vw, 44px);
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.exp-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
   gap: 28px;
+}
+/* Tag lists (toolkit, competencies) */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .06em;
+}
+.tags li { border: 1px solid #3a4150; border-radius: 20px; padding: 6px 12px; color: #c3cad3; }
+.tags--light li { border-color: #d6cabd; color: #5a4a3f; background: rgba(255,255,255,.55); }
+
+/* Case study: light panel under Experience */
+.case-study {
+  box-sizing: border-box;
+  max-width: 1240px;
+  margin: 12px auto 0;
+  background: #f4efe9;
+  color: #14161a;
+  border-radius: 6px;
+  padding: clamp(28px, 4.5vw, 56px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(24px, 3vw, 36px);
+}
+.case-head {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr));
+  gap: 18px 48px;
+  align-items: end;
+}
+.case-head-main { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.case-title { font-size: clamp(30px, 4.2vw, 54px); line-height: .98; text-wrap: balance; }
+.case-lede { margin: 0; font-size: 17px; line-height: 1.6; color: #3a3f47; text-wrap: pretty; }
+.case-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+  gap: 12px;
+}
+.case-block {
+  background: #fff;
+  border: 1px solid #e4ddd4;
+  border-radius: 6px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+.case-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .14em;
+  color: #a8461d;
+}
+.case-block-title { margin: 0; font-size: 19px; font-weight: 600; }
+.case-block p { margin: 0; font-size: 14.5px; line-height: 1.6; color: #3a3f47; }
+.case-foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px 24px; }
+.case-foot .tags { flex: 1 1 420px; }
+
+/* Featured work card: spans the grid, video and toolkit beside the write-up */
+.work-card--feature {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(440px, 100%), 1fr));
+}
+.feature-side { display: flex; flex-direction: column; min-width: 0; }
+.feature-tools { padding: 24px; display: flex; flex-direction: column; gap: 12px; }
+.feature-body { padding: clamp(24px, 3vw, 36px); gap: 16px; }
+.feature-title { font-size: clamp(28px, 3.2vw, 40px); line-height: 1.02; }
+.feature-lede { margin: 0; font-size: 16px; line-height: 1.6; color: #c3cad3; max-width: 64ch; text-wrap: pretty; }
+.feature-body .work-stats { font-size: 14.5px; line-height: 1.6; }
+.feature-body .work-stats > div { grid-template-columns: 104px 1fr; }
+/* Narrow screens: labels sit above their text so long rows stay readable */
+@media (max-width: 480px) {
+  .feature-body .work-stats > div { grid-template-columns: 1fr; gap: 2px; }
 }
 .exp-col { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 .exp-col + .exp-col { gap: 14px; }

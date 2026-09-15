@@ -58,7 +58,7 @@ const WEB3FORMS_ACCESS_KEY = "55e6abd7-f534-4e44-bc1c-caa9ac73a7a8";
       return;
     }
     if (Date.now() - loadedAt < MIN_FILL_MS) {
-      showError("That was too quick — take a moment and send again.");
+      showError("That was too quick. Take a moment and send again.");
       return;
     }
     const answer = field("check").toLowerCase();
