@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en-NZ">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AI starter kit for site and office teams</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #F4F6F5;
+  --slip: #FFFFFF;
+  --ink: #1B2A35;
+  --ink-soft: #4C5D69;
+  --line: #C4CDD2;
+  --grid: rgba(36, 92, 128, 0.07);
+  --hivis: #D8F03A;
+  --on-hivis: #1B2A35;
+  --blue: #245C80;
+  --ok: #2F7A4E;
+  --amber: #9A620F;
+  --stop: #B03A3A;
+  --font: "Archivo", "Helvetica Neue", Arial, system-ui, sans-serif;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #121C24; --slip: #18242E; --ink: #E4EBEF; --ink-soft: #A3B2BC;
+    --line: #33434F; --grid: rgba(141, 190, 224, 0.06); --blue: #8DBEE0;
+    --ok: #6CC08F; --amber: #E0A84B; --stop: #E88787; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #121C24; --slip: #18242E; --ink: #E4EBEF; --ink-soft: #A3B2BC;
+  --line: #33434F; --grid: rgba(141, 190, 224, 0.06); --blue: #8DBEE0;
+  --ok: #6CC08F; --amber: #E0A84B; --stop: #E88787; color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: inherit; }
+html { scroll-padding-top: env(safe-area-inset-top, 0px); -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  font-family: var(--font);
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--ink);
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+a { color: var(--blue); text-underline-offset: 2px; }
+mark { background: var(--hivis); color: var(--on-hivis); padding: 0 .15em; border-radius: 2px; }
+
+/* Drawing-sheet frame */
+.sheet {
+  max-width: 960px;
+  margin: 28px auto 40px;
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  outline: 1px solid var(--ink);
+  outline-offset: 6px;
+}
+@media (max-width: 640px) {
+  .sheet { margin: 14px 10px 24px; outline-offset: 4px; }
+}
+
+/* Header */
+.head { padding: clamp(1.25rem, 4vw, 2.5rem) clamp(1rem, 4vw, 2.5rem) 1.5rem; }
+h1 {
+  margin: 0;
+  font-stretch: 72%;
+  font-weight: 800;
+  font-size: clamp(3rem, 12vw, 6.25rem);
+  line-height: .9;
+  letter-spacing: -0.01em;
+}
+.lede { margin: 1rem 0 0; max-width: 36rem; font-size: 1.15rem; color: var(--ink-soft); }
+
+/* Title block, like an engineering drawing */
+.titleblock {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 1fr 1.6fr;
+  border-top: 1.5px solid var(--ink);
+  border-bottom: 1.5px solid var(--ink);
+}
+.titleblock div { padding: .6rem 1rem .7rem; border-right: 1px solid var(--ink); min-width: 0; }
+.titleblock div:last-child { border-right: 0; }
+.titleblock dt { font-size: .78rem; color: var(--ink-soft); }
+.titleblock dd { margin: 0; font-weight: 600; font-size: .95rem; }
+@media (max-width: 640px) {
+  .titleblock { grid-template-columns: 1fr 1fr; }
+  .titleblock div:nth-child(2) { border-right: 0; }
+  .titleblock div:nth-child(-n+2) { border-bottom: 1px solid var(--ink); }
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--line);
+  padding: 0 clamp(.5rem, 3vw, 1.5rem);
+  overflow-x: auto;
+}
+.tab {
+  font: inherit;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--ink-soft);
+  background: none;
+  border: 0;
+  padding: 1rem 1rem .9rem;
+  min-height: 48px;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: inset 0 -4px 0 transparent;
+}
+.tab[aria-selected="true"] { color: var(--ink); font-weight: 750; box-shadow: inset 0 -4px 0 var(--ink); }
+.tab:hover { color: var(--ink); }
+
+.panel { padding: clamp(1rem, 4vw, 2.5rem); }
+.panel[hidden] { display: none; }
+h2 { font-stretch: 80%; font-weight: 750; font-size: clamp(1.6rem, 4.5vw, 2.1rem); line-height: 1.1; margin: 0 0 .5rem; }
+.intro { margin: 0 0 1.5rem; max-width: 40rem; color: var(--ink-soft); }
+
+/* Filters */
+.filters { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1rem; }
+.chip {
+  font: inherit;
+  font-size: .95rem;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--slip);
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+  padding: .45rem .95rem;
+  min-height: 44px;
+  cursor: pointer;
+}
+.chip:hover { border-color: var(--ink); }
+.chip[aria-pressed="true"] { background: var(--hivis); color: var(--on-hivis); border-color: var(--on-hivis); }
+.searchrow { display: flex; flex-wrap: wrap; gap: .75rem 1.5rem; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+.search { flex: 1 1 260px; max-width: 360px; }
+.search label { display: block; font-size: .85rem; color: var(--ink-soft); margin-bottom: .25rem; }
+.search input {
+  width: 100%;
+  font: inherit;
+  color: var(--ink);
+  background: var(--slip);
+  border: 1.5px solid var(--line);
+  border-radius: 2px;
+  padding: .6rem .75rem;
+  min-height: 44px;
+}
+.search input:focus { border-color: var(--ink); }
+.count { font-size: .95rem; color: var(--ink-soft); margin: 0; }
+
+/* Prompt schedule */
+.schedule { list-style: none; margin: 0; padding: 0; border-top: 1.5px solid var(--ink); }
+.item { padding: 1.25rem 0 1.4rem; border-bottom: 1px solid var(--line); }
+.item-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .25rem 1rem; }
+.item h3 { margin: 0; font-size: 1.2rem; font-weight: 700; line-height: 1.25; }
+.role { font-size: .85rem; color: var(--ink-soft); }
+.when { margin: .25rem 0 .8rem; color: var(--ink-soft); max-width: 44rem; }
+.promptbox {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: .75rem 1rem;
+  align-items: start;
+  background: var(--slip);
+  border: 1.5px dashed var(--ink-soft);
+  border-radius: 2px;
+  padding: .9rem 1rem;
+}
+.prompt { margin: 0; max-width: 46rem; font-size: 1.02rem; }
+.btn {
+  font: inherit;
+  font-weight: 650;
+  font-size: .95rem;
+  color: var(--ink);
+  background: transparent;
+  border: 1.5px solid var(--ink);
+  border-radius: 2px;
+  padding: .5rem .9rem;
+  min-height: 44px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn:hover { background: var(--ink); color: var(--paper); }
+.btn.is-copied, .btn.is-copied:hover { background: var(--hivis); color: var(--on-hivis); border-color: var(--on-hivis); }
+@media (max-width: 560px) {
+  .promptbox { grid-template-columns: 1fr; }
+  .btn.copy { justify-self: start; }
+}
+details { margin-top: .7rem; }
+summary { cursor: pointer; font-weight: 600; color: var(--blue); min-height: 32px; padding: .2rem 0; }
+.notes { display: grid; grid-template-columns: 9.5rem 1fr; gap: .4rem 1rem; margin: .6rem 0 0; max-width: 46rem; }
+.notes dt { font-weight: 650; }
+.notes dd { margin: 0; color: var(--ink-soft); }
+@media (max-width: 560px) {
+  .notes { grid-template-columns: 1fr; }
+  .notes dd { margin-bottom: .5rem; }
+}
+.empty { padding: 2rem 0; border-bottom: 1px solid var(--line); }
+.empty p { margin: 0 0 .75rem; }
+
+/* Safe use */
+.zones { display: grid; grid-template-columns: repeat(3, 1fr); border: 1.5px solid var(--ink); margin-bottom: 2.25rem; }
+.zone { padding: 1rem 1.1rem 1.2rem; border-right: 1px solid var(--ink); }
+.zone:last-child { border-right: 0; }
+.zone h3 { display: flex; align-items: center; gap: .5rem; margin: 0 0 .5rem; font-size: 1.1rem; }
+.zone ul { margin: 0; padding-left: 1.1rem; }
+.zone li { margin-bottom: .35rem; }
+.sym { display: inline-block; width: 1rem; height: 1rem; flex: none; }
+.zone.ok .sym { background: var(--ok); border-radius: 50%; }
+.zone.amber .sym { border: 2.5px solid var(--amber); border-radius: 50%; background: linear-gradient(90deg, var(--amber) 50%, transparent 50%); }
+.zone.stop .sym { background: var(--stop); clip-path: polygon(20% 0, 50% 30%, 80% 0, 100% 20%, 70% 50%, 100% 80%, 80% 100%, 50% 70%, 20% 100%, 0 80%, 30% 50%, 0 20%); }
+@media (max-width: 720px) {
+  .zones { grid-template-columns: 1fr; }
+  .zone { border-right: 0; border-bottom: 1px solid var(--ink); }
+  .zone:last-child { border-bottom: 0; }
+}
+.policy { font-size: .95rem; color: var(--ink-soft); margin: -1.5rem 0 2.25rem; }
+.checks { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem 2rem; }
+@media (max-width: 720px) { .checks { grid-template-columns: 1fr; } }
+fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+legend { font-weight: 700; font-size: 1.1rem; padding: 0; margin-bottom: .5rem; }
+.check { display: flex; gap: .75rem; align-items: flex-start; padding: .55rem 0; border-top: 1px solid var(--line); cursor: pointer; }
+.check input { width: 1.3rem; height: 1.3rem; margin: .12rem 0 0; accent-color: var(--ink); flex: none; cursor: pointer; }
+.progress { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.25rem; margin-top: 1.5rem; padding-top: 1rem; border-top: 1.5px solid var(--ink); }
+.progress p { margin: 0; font-weight: 650; }
+
+/* Session plan */
+.need { margin: 0 0 2rem; max-width: 44rem; }
+.need strong { font-weight: 700; }
+.plan { list-style: none; margin: 0 0 2.25rem; padding: 0; border-top: 1.5px solid var(--ink); counter-reset: step; }
+.plan li { display: grid; grid-template-columns: 7.5rem 1fr; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--line); counter-increment: step; }
+.plan .time { font-stretch: 75%; font-weight: 750; font-size: 1.35rem; line-height: 1.2; }
+.plan .time small { display: block; font-stretch: 100%; font-weight: 500; font-size: .85rem; color: var(--ink-soft); }
+.plan h3 { margin: 0 0 .2rem; font-size: 1.1rem; }
+.plan p { margin: 0; color: var(--ink-soft); max-width: 40rem; }
+@media (max-width: 520px) { .plan li { grid-template-columns: 1fr; gap: .25rem; } }
+.tips h3 { font-size: 1.15rem; margin: 0 0 .5rem; }
+.tips ul { margin: 0; padding-left: 1.1rem; max-width: 44rem; }
+.tips li { margin-bottom: .45rem; }
+
+.foot { padding: 1rem clamp(1rem, 4vw, 2.5rem) 1.25rem; border-top: 1.5px solid var(--ink); font-size: .9rem; color: var(--ink-soft); }
+.foot p { margin: 0; }
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+<main class="sheet">
+  <header class="head">
+    <h1>AI starter kit</h1>
+    <p class="lede">Ready-to-use prompts for site and office teams. Pick your role, copy a prompt, then check what comes back.</p>
+  </header>
+
+  <dl class="titleblock">
+    <div><dt>For</dt><dd>Site and office teams</dd></div>
+    <div><dt>Prepared by</dt><dd><a href="https://vandelight.art">Manny</a></dd></div>
+    <div><dt>Revision</dt><dd>A, October 2026</dd></div>
+    <div><dt>Status</dt><dd>Work sample. All names and figures are fictional.</dd></div>
+  </dl>
+
+  <nav class="tabs" role="tablist" aria-label="Kit sections">
+    <button class="tab" role="tab" id="tab-prompts" aria-controls="panel-prompts" aria-selected="true">Prompts</button>
+    <button class="tab" role="tab" id="tab-safe" aria-controls="panel-safe" aria-selected="false" tabindex="-1">Safe use</button>
+    <button class="tab" role="tab" id="tab-session" aria-controls="panel-session" aria-selected="false" tabindex="-1">Run a session</button>
+  </nav>
+
+  <!-- Prompts -->
+  <section class="panel" id="panel-prompts" role="tabpanel" aria-labelledby="tab-prompts">
+    <h2>Prompts for everyday work</h2>
+    <p class="intro">Copy a prompt into your approved AI tool and replace the highlighted parts with your own details. Open each one to see what you'll get and what to check.</p>
+
+    <div class="filters" role="group" aria-label="Filter by role" id="filters"></div>
+    <div class="searchrow">
+      <div class="search">
+        <label for="q">Search prompts</label>
+        <input id="q" type="search" placeholder="e.g. quote, email, toolbox" autocomplete="off">
+      </div>
+      <p class="count" id="count" aria-live="polite"></p>
+    </div>
+    <ul class="schedule" id="list"></ul>
+  </section>
+
+  <!-- Safe use -->
+  <section class="panel" id="panel-safe" role="tabpanel" aria-labelledby="tab-safe" hidden>
+    <h2>Use AI safely</h2>
+    <p class="intro">Before you paste anything, sort it into one of these three groups.</p>
+
+    <div class="zones">
+      <div class="zone ok">
+        <h3><span class="sym" aria-hidden="true"></span>Usually fine</h3>
+        <ul>
+          <li>Your own rough notes and drafts</li>
+          <li>General questions and how-tos</li>
+          <li>Public information</li>
+          <li>Templates you'd share with any colleague</li>
+        </ul>
+      </div>
+      <div class="zone amber">
+        <h3><span class="sym" aria-hidden="true"></span>Remove details first</h3>
+        <ul>
+          <li>Names of people, clients and suppliers</li>
+          <li>Project names and addresses</li>
+          <li>Rates and prices, if your policy allows them at all</li>
+        </ul>
+      </div>
+      <div class="zone stop">
+        <h3><span class="sym" aria-hidden="true"></span>Keep out</h3>
+        <ul>
+          <li>Personal details such as health, HR or contact information</li>
+          <li>Passwords and access details</li>
+          <li>Anything under a confidentiality agreement</li>
+          <li>Incident details that identify a person</li>
+        </ul>
+      </div>
+    </div>
+    <p class="policy">This is a general guide. Your organisation's AI policy always comes first.</p>
+
+    <div class="checks" id="checks">
+      <fieldset>
+        <legend>Before you paste</legend>
+        <label class="check"><input type="checkbox"> <span>I'm using an approved AI tool.</span></label>
+        <label class="check"><input type="checkbox"> <span>I've removed names and details the task doesn't need.</span></label>
+        <label class="check"><input type="checkbox"> <span>I know what I want back, and roughly how long it should be.</span></label>
+      </fieldset>
+      <fieldset>
+        <legend>Before you use the answer</legend>
+        <label class="check"><input type="checkbox"> <span>I've checked facts, numbers and dates against the source.</span></label>
+        <label class="check"><input type="checkbox"> <span>I've read the original for anything that creates an obligation.</span></label>
+        <label class="check"><input type="checkbox"> <span>I'd be happy to put my name to it.</span></label>
+      </fieldset>
+    </div>
+    <div class="progress">
+      <p id="progress" aria-live="polite">0 of 6 checked</p>
+      <button class="btn" type="button" id="clearChecks">Clear ticks</button>
+    </div>
+  </section>
+
+  <!-- Session -->
+  <section class="panel" id="panel-session" role="tabpanel" aria-labelledby="tab-session" hidden>
+    <h2>Run a 30-minute session</h2>
+    <p class="intro">A plan any AI champion can run with a team of six to twelve people. No slides needed.</p>
+    <p class="need"><strong>You'll need:</strong> a shared screen, the approved AI tool open, this kit, and two or three tasks the team does every week that involve no sensitive data.</p>
+
+    <ol class="plan">
+      <li>
+        <div class="time">0–5<small>minutes</small></div>
+        <div><h3>Start with their work</h3><p>Ask what eats the team's time each week. Write three answers where everyone can see them.</p></div>
+      </li>
+      <li>
+        <div class="time">5–12<small>minutes</small></div>
+        <div><h3>Show one live example</h3><p>Run a prompt from this kit on one of those tasks. Point out something the AI got wrong and how you caught it.</p></div>
+      </li>
+      <li>
+        <div class="time">12–22<small>minutes</small></div>
+        <div><h3>Try it in pairs</h3><p>Each pair picks a prompt for their role and runs it on a real, non-sensitive task.</p></div>
+      </li>
+      <li>
+        <div class="time">22–27<small>minutes</small></div>
+        <div><h3>Share what happened</h3><p>Each pair says what worked and what they had to fix.</p></div>
+      </li>
+      <li>
+        <div class="time">27–30<small>minutes</small></div>
+        <div><h3>Safe use and one next step</h3><p>Walk through the Safe use checklist. Ask everyone to name one task they'll try this week.</p></div>
+      </li>
+    </ol>
+
+    <div class="tips">
+      <h3>Tips for the facilitator</h3>
+      <ul>
+        <li>Let the AI make a mistake in the demo. It builds trust faster than a perfect run.</li>
+        <li>Use the team's own words for their tasks, not AI jargon.</li>
+        <li>Note every use case people mention and pass it to your AI team, so it can become a new prompt in this kit.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <p>These prompts work in most chat-based AI tools. Always follow your organisation's AI policy.</p>
+  </footer>
+</main>
+
+<script>
+(function () {
+  var ROLES = [
+    ["all", "All roles"],
+    ["site", "Site lead"],
+    ["est", "Estimator"],
+    ["pm", "Project manager"],
+    ["hs", "Health and safety"],
+    ["admin", "Admin and support"]
+  ];
+  var ROLE_NAME = {};
+  ROLES.forEach(function (r) { ROLE_NAME[r[0]] = r[1]; });
+
+  var PROMPTS = [
+    { role: "site", title: "Write up the daily site diary",
+      when: "You've got rough notes or a voice memo from the day.",
+      prompt: "Turn these rough notes into a tidy daily site diary entry. Use headings for weather, crew and plant on site, work completed, delays, and issues to follow up. Keep my wording where it's specific, and don't add anything that isn't in the notes. Notes: [paste your notes]",
+      get: "A diary entry under clear headings, ready to paste into your system.",
+      check: "Quantities, times and names match what happened. Delete anything the AI filled in." },
+    { role: "site", title: "Plan a toolbox talk",
+      when: "You need a short, focused talk for the morning briefing.",
+      prompt: "Write a five-minute toolbox talk on [topic, e.g. working near live traffic] for a roading crew. Use plain language and short sentences. Give three key points and finish with two questions to ask the crew.",
+      get: "A talk you can read out or adapt, with questions to start a discussion.",
+      check: "It matches your site's safe work methods. If it differs, your procedures win." },
+    { role: "site", title: "Make a message crew-friendly",
+      when: "An instruction needs to land with people reading on a phone.",
+      prompt: "Rewrite this message so a crew can understand it in 30 seconds on a phone. Keep every instruction, cut the jargon, and put the key action first: [paste message]",
+      get: "A few short lines saying what's changing, from when, and what to do.",
+      check: "No instruction has been dropped or softened." },
+    { role: "est", title: "Check a quote's maths",
+      when: "A supplier or subcontractor quote has just come in.",
+      prompt: "Check every line of this quote. Show any line where quantity × rate doesn't match the line total, and confirm the overall total: [paste quote]",
+      get: "Lines that don't add up. Example: 85 m × $22.00 should be $1,870.00, not $1,780.00.",
+      check: "Recheck any flagged line yourself. AI can get maths wrong too." },
+    { role: "est", title: "Find gaps in a quote",
+      when: "You want to know what isn't in the price.",
+      prompt: "This is a quote for [type of job]. List items usually included in this kind of work that aren't here, and any terms I should confirm, such as GST, validity period or exclusions: [paste quote]",
+      get: "Questions to raise. Example: no traffic management, no disposal of old kerb, GST and validity not stated.",
+      check: "Treat these as questions for the supplier, not facts." },
+    { role: "est", title: "Compare two quotes",
+      when: "You have an earlier quote for similar work.",
+      prompt: "Compare the rates in these two quotes for similar work. Flag any line that has changed by more than 10%, and any item that appears in one but not the other. Quote A: [paste] Quote B: [paste]",
+      get: "A short table of changed lines and missing items.",
+      check: "Compare like with like on scope, quantities and dates. Use your own past quotes, not AI's idea of market rates." },
+    { role: "pm", title: "Turn meeting notes into actions",
+      when: "After any meeting with more than a couple of decisions.",
+      prompt: "Turn these meeting notes into a list of actions. For each one, give the owner, the due date and a one-line description. Write 'not stated' where the notes don't say. List decisions separately. Notes: [paste notes]",
+      get: "An action list you can paste into an email or tracker, with gaps clearly marked.",
+      check: "Fill in the 'not stated' gaps yourself rather than letting AI guess." },
+    { role: "pm", title: "Draft a stakeholder update",
+      when: "An update is due and you have the facts but not the time.",
+      prompt: "Draft a short update email to [stakeholder] about [project]. Cover progress this week, what's next, and one risk with how we're managing it. Keep it plain, friendly and under 150 words. Facts: [paste key points]",
+      get: "A ready-to-edit email in your own facts.",
+      check: "Every fact comes from your notes. Read it as the recipient would before you send it." },
+    { role: "pm", title: "Summarise a long document",
+      when: "You need the gist of a report, specification or contract section.",
+      prompt: "Summarise this [document type] in plain language in under 200 words. Then list anything that creates an obligation or deadline for us, with the section or clause number: [paste text]",
+      get: "A plain summary plus a list of obligations you can trace back to the source.",
+      check: "Read the original clause before acting on it. Summaries can miss conditions." },
+    { role: "hs", title: "Write up a near miss for a bulletin",
+      when: "A near miss is worth sharing so other teams can learn from it.",
+      prompt: "Summarise this near-miss report for a safety bulletin. Cover what happened, why it matters, and what we're changing, in under 120 words: [paste report with names and identifying details removed]",
+      get: "A short, clear bulletin item.",
+      check: "Remove names before you paste. Then make sure nobody can be identified and the facts match the investigation." },
+    { role: "hs", title: "Spot hazards that are easy to miss",
+      when: "Before a pre-start meeting or a risk assessment review.",
+      prompt: "We're about to [task, e.g. replace a culvert beside a busy road]. List hazards that are easy to overlook, grouped under people, plant, environment and the public.",
+      get: "A prompt list to start discussion with the crew.",
+      check: "Use it to prompt discussion only. Your risk assessment process still decides the controls." },
+    { role: "admin", title: "Reply to a tricky email",
+      when: "You need to say no, ask for more time or chase something politely.",
+      prompt: "Help me reply to this email. I want to [say no / ask for more time / confirm details], politely and clearly, in under 120 words. Email: [paste email]",
+      get: "A short draft in a tone you can adjust.",
+      check: "It sounds like you, and any dates or promises are ones you can keep." },
+    { role: "admin", title: "Explain a spreadsheet formula",
+      when: "You've inherited a spreadsheet and a formula makes no sense.",
+      prompt: "Explain what this Excel formula does in plain English, step by step. Then suggest a simpler version if there is one: [paste formula]",
+      get: "A step-by-step explanation and, sometimes, a simpler formula.",
+      check: "Test any new formula on a copy of the sheet first." }
+  ];
+
+  var state = { role: "all", q: "" };
+  var filtersEl = document.getElementById("filters");
+  var listEl = document.getElementById("list");
+  var countEl = document.getElementById("count");
+  var qEl = document.getElementById("q");
+
+  function esc(s) {
+    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+  function withMarks(s) {
+    return esc(s).replace(/\[([^\]]+)\]/g, "<mark>[$1]</mark>");
+  }
+
+  function renderFilters() {
+    filtersEl.innerHTML = ROLES.map(function (r) {
+      return '<button type="button" class="chip" data-role="' + r[0] + '" aria-pressed="' + (state.role === r[0]) + '">' + esc(r[1]) + "</button>";
+    }).join("");
+  }
+
+  function matches(p) {
+    if (state.role !== "all" && p.role !== state.role) return false;
+    if (!state.q) return true;
+    var hay = (p.title + " " + p.when + " " + p.prompt + " " + ROLE_NAME[p.role]).toLowerCase();
+    return state.q.split(/\s+/).every(function (w) { return hay.indexOf(w) !== -1; });
+  }
+
+  function renderList() {
+    var shown = PROMPTS.map(function (p, i) { return { p: p, i: i }; }).filter(function (x) { return matches(x.p); });
+    var n = shown.length;
+    var label = n === 1 ? "1 prompt" : n + " prompts";
+    countEl.textContent = state.role === "all" ? "Showing " + label : "Showing " + label + " for " + ROLE_NAME[state.role].toLowerCase();
+
+    if (!n) {
+      listEl.innerHTML = '<li class="empty"><p>No prompts match \u201c' + esc(state.q) + '\u201d' +
+        (state.role !== "all" ? " for " + esc(ROLE_NAME[state.role].toLowerCase()) : "") +
+        '. Try another word, or show every prompt.</p><button type="button" class="btn" id="showAll">Show all prompts</button></li>';
+      return;
+    }
+
+    listEl.innerHTML = shown.map(function (x) {
+      var p = x.p, id = "p" + x.i;
+      return '<li class="item">' +
+        '<div class="item-head"><h3 id="' + id + '-t">' + esc(p.title) + '</h3><span class="role">' + esc(ROLE_NAME[p.role]) + "</span></div>" +
+        '<p class="when">' + esc(p.when) + "</p>" +
+        '<div class="promptbox"><p class="prompt" id="' + id + '-p">' + withMarks(p.prompt) + "</p>" +
+        '<button type="button" class="btn copy" data-i="' + x.i + '" aria-describedby="' + id + '-t">Copy prompt</button></div>' +
+        "<details><summary>What you'll get and what to check</summary>" +
+        '<dl class="notes"><dt>What you\u2019ll get</dt><dd>' + esc(p.get) + "</dd><dt>Check before you use it</dt><dd>" + esc(p.check) + "</dd></dl></details>" +
+        "</li>";
+    }).join("");
+  }
+
+  filtersEl.addEventListener("click", function (e) {
+    var b = e.target.closest(".chip");
+    if (!b) return;
+    state.role = b.getAttribute("data-role");
+    renderFilters();
+    renderList();
+  });
+
+  qEl.addEventListener("input", function () {
+    state.q = qEl.value.trim().toLowerCase();
+    renderList();
+  });
+
+  function fallbackCopy(text) {
+    try {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.top = "0";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      return ok;
+    } catch (err) { return false; }
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text).then(function () { return true; }, function () { return fallbackCopy(text); });
+    }
+    return Promise.resolve(fallbackCopy(text));
+  }
+
+  listEl.addEventListener("click", function (e) {
+    if (e.target.id === "showAll") {
+      state.role = "all"; state.q = ""; qEl.value = "";
+      renderFilters(); renderList(); qEl.focus();
+      return;
+    }
+    var b = e.target.closest(".copy");
+    if (!b) return;
+    var i = +b.getAttribute("data-i");
+    copyText(PROMPTS[i].prompt).then(function (ok) {
+      if (ok) {
+        b.textContent = "Copied";
+        b.classList.add("is-copied");
+      } else {
+        var pEl = document.getElementById("p" + i + "-p");
+        var range = document.createRange();
+        range.selectNodeContents(pEl);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        b.textContent = "Selected, now copy";
+      }
+      clearTimeout(b._t);
+      b._t = setTimeout(function () {
+        b.textContent = "Copy prompt";
+        b.classList.remove("is-copied");
+      }, 2200);
+    });
+  });
+
+  // Tabs
+  var tabs = Array.prototype.slice.call(document.querySelectorAll(".tab"));
+  function selectTab(tab, focus) {
+    tabs.forEach(function (t) {
+      var on = t === tab;
+      t.setAttribute("aria-selected", on);
+      t.tabIndex = on ? 0 : -1;
+      document.getElementById(t.getAttribute("aria-controls")).hidden = !on;
+    });
+    if (focus) tab.focus();
+  }
+  tabs.forEach(function (t, idx) {
+    t.addEventListener("click", function () { selectTab(t, false); });
+    t.addEventListener("keydown", function (e) {
+      var next = null;
+      if (e.key === "ArrowRight") next = tabs[(idx + 1) % tabs.length];
+      if (e.key === "ArrowLeft") next = tabs[(idx - 1 + tabs.length) % tabs.length];
+      if (e.key === "Home") next = tabs[0];
+      if (e.key === "End") next = tabs[tabs.length - 1];
+      if (next) { e.preventDefault(); selectTab(next, true); }
+    });
+  });
+
+  // Checklist
+  var boxes = Array.prototype.slice.call(document.querySelectorAll("#checks input"));
+  var progressEl = document.getElementById("progress");
+  function updateProgress() {
+    var done = boxes.filter(function (b) { return b.checked; }).length;
+    progressEl.textContent = done === boxes.length ? "All 6 checked. You're good to go." : done + " of " + boxes.length + " checked";
+  }
+  boxes.forEach(function (b) { b.addEventListener("change", updateProgress); });
+  document.getElementById("clearChecks").addEventListener("click", function () {
+    boxes.forEach(function (b) { b.checked = false; });
+    updateProgress();
+  });
+
+  renderFilters();
+  renderList();
+  updateProgress();
+})();
+</script>
+</body>
+</html>
