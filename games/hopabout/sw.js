@@ -1,5 +1,5 @@
 // Hopabout offline cache. Bump VERSION whenever you upload a changed file.
-const VERSION = 'hopabout-v1';
+const VERSION = 'hopabout-v2';
 const FONT_CSS = 'https://fonts.googleapis.com/css2?family=Lilita+One&display=swap';
 const FILES = [
   './', './index.html', './manifest.webmanifest',
