@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#f3f1ec">
+<title>Interval Timer</title>
+<style>
+:root{
+  --bg:#f3f1ec; --surface:#ffffff; --fg:#22262a; --muted:#6b7177; --line:#dedad2;
+  --active:#f26b1d; --active-ink:#2a1405;
+  --rest:#1fa35c; --rest-ink:#04200e;
+  --prep:#3d4a56; --prep-ink:#f2f4f6;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#1b1f23; --surface:#262b30; --fg:#eef0f2; --muted:#9aa1a8; --line:#353b41;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#1b1f23; --surface:#262b30; --fg:#eef0f2; --muted:#9aa1a8; --line:#353b41;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0;height:100%;background:var(--bg);color:var(--fg);
+  font-family:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,-apple-system,sans-serif;
+  font-variant-numeric:tabular-nums;
+  -webkit-tap-highlight-color:transparent;
+  -webkit-user-select:none;user-select:none;
+  transition:background-color .35s ease,color .35s ease;
+}
+button{font:inherit;color:inherit;touch-action:manipulation;cursor:pointer}
+button:focus-visible{outline:3px solid currentColor;outline-offset:3px}
+.screen{display:none;height:100%;flex-direction:column;max-width:560px;margin:0 auto;padding:20px 20px 24px}
+.screen.on{display:flex}
+
+/* ---------- Setup ---------- */
+.setup h1{font-size:2rem;font-weight:800;margin:8px 0 4px;letter-spacing:-.01em}
+.setup .sub{color:var(--muted);margin:0 0 20px;font-size:1rem}
+.rows{display:flex;flex-direction:column;gap:2px;background:var(--line);border-radius:20px;overflow:hidden}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--surface);padding:14px 14px 14px 18px}
+.row .name{display:flex;align-items:center;gap:10px;font-size:1.15rem;font-weight:650}
+.dot{width:12px;height:12px;border-radius:50%;flex:none}
+.stepper{display:flex;align-items:center;gap:6px}
+.stepper button{width:48px;height:48px;border-radius:14px;border:0;background:var(--bg);font-size:1.6rem;font-weight:700;line-height:1}
+.stepper button:active{transform:scale(.94)}
+.stepper .val{min-width:4.2ch;text-align:center;font-size:1.5rem;font-weight:750}
+.summary{margin:18px 4px 0;color:var(--muted);font-size:1.05rem}
+.summary b{color:var(--fg);font-weight:750}
+.spacer{flex:1;min-height:20px}
+.big{width:100%;height:64px;border:0;border-radius:20px;font-size:1.35rem;font-weight:800}
+.go{background:var(--active);color:var(--active-ink)}
+.note{color:var(--muted);font-size:.85rem;text-align:center;margin:12px 0 0}
+
+/* ---------- Run ---------- */
+body[data-phase="active"]{background:var(--active);color:var(--active-ink)}
+body[data-phase="rest"]{background:var(--rest);color:var(--rest-ink)}
+body[data-phase="prep"]{background:var(--prep);color:var(--prep-ink)}
+.run .top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:1.1rem;font-weight:700}
+.run .top .total{text-align:right;opacity:.85}
+.run .top .total small{display:block;font-size:.85rem;font-weight:600;opacity:.8}
+.run .middle{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;min-height:0}
+.phase-name{font-size:clamp(1.8rem,9vw,3rem);font-weight:800;margin:0;letter-spacing:-.01em}
+.clock{font-size:clamp(6rem,34vw,15rem);font-weight:800;line-height:.95;letter-spacing:-.04em;margin:6px 0 18px}
+.bar{width:100%;height:12px;border-radius:6px;background:rgba(0,0,0,.18);overflow:hidden}
+body[data-phase="prep"] .bar{background:rgba(255,255,255,.18)}
+.bar i{display:block;height:100%;width:0;background:currentColor;border-radius:6px;transition:width .1s linear}
+.next{margin-top:16px;font-size:1.15rem;font-weight:650;opacity:.85}
+.controls{display:flex;gap:12px}
+.controls button{flex:1;height:64px;border-radius:20px;font-size:1.25rem;font-weight:800;border:3px solid currentColor;background:transparent}
+.controls .primary{background:currentColor}
+.controls .primary span{color:var(--paint)}
+body[data-phase="active"]{--paint:var(--active)}
+body[data-phase="rest"]{--paint:var(--rest)}
+body[data-phase="prep"]{--paint:var(--prep)}
+.paused .clock,.paused .phase-name{opacity:.55}
+
+/* ---------- Done ---------- */
+.done .middle{flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center}
+.done h2{font-size:2.4rem;font-weight:800;margin:0 0 8px}
+.done p{color:var(--muted);font-size:1.15rem;margin:0}
+.done .btns{display:flex;flex-direction:column;gap:12px}
+.ghost{background:transparent;border:3px solid var(--line)}
+
+@media (prefers-reduced-motion: reduce){body,.bar i{transition:none}}
+</style>
+</head>
+<body>
+
+<section class="screen setup on" id="setup">
+  <h1>Interval timer</h1>
+  <p class="sub">Set your periods, then press start.</p>
+  <div class="rows" id="rows"></div>
+  <p class="summary">Workout length <b id="sumTotal">0:00</b></p>
+  <div class="spacer"></div>
+  <button class="big go" id="startBtn">Start</button>
+  <p class="note">Keep this screen open while training. Turn off silent mode to hear the beeps.</p>
+</section>
+
+<section class="screen run" id="run" aria-live="off">
+  <div class="top">
+    <div id="setLabel">Set 1 of 8</div>
+    <div class="total"><span id="elapsed">0:00</span><small>of <span id="totalLen">0:00</span></small></div>
+  </div>
+  <div class="middle">
+    <p class="phase-name" id="phaseName">Get ready</p>
+    <div class="clock" id="clock">0:10</div>
+    <div class="bar"><i id="bar"></i></div>
+    <div class="next" id="next"></div>
+  </div>
+  <div class="controls">
+    <button id="stopBtn">Stop</button>
+    <button class="primary" id="pauseBtn"><span id="pauseTxt">Pause</span></button>
+  </div>
+</section>
+
+<section class="screen done" id="done">
+  <div class="middle">
+    <h2>Workout complete</h2>
+    <p id="doneTxt"></p>
+  </div>
+  <div class="btns">
+    <button class="big go" id="againBtn">Start again</button>
+    <button class="big ghost" id="editBtn">Change settings</button>
+  </div>
+</section>
+
+<script>
+(function(){
+  // ---------- Settings ----------
+  var S = {active:30, rest:15, sets:8, prep:10};
+  try{ var saved = JSON.parse(localStorage.getItem('interval-timer-settings')||'null');
+       if(saved) for(var k in S) if(typeof saved[k]==='number') S[k]=saved[k]; }catch(e){}
+  function save(){ try{ localStorage.setItem('interval-timer-settings', JSON.stringify(S)); }catch(e){} }
+
+  var FIELDS = [
+    {key:'active', name:'Active',   color:'var(--active)', min:5, max:3600, step:5, time:true},
+    {key:'rest',   name:'Rest',     color:'var(--rest)',   min:0, max:3600, step:5, time:true},
+    {key:'sets',   name:'Sets',     color:null,            min:1, max:99,   step:1, time:false},
+    {key:'prep',   name:'Get ready',color:'var(--prep)',   min:0, max:120,  step:5, time:true}
+  ];
+
+  function fmt(sec){ sec=Math.max(0,Math.round(sec)); var m=Math.floor(sec/60), s=sec%60; return m+':'+(s<10?'0':'')+s; }
+  function totalLen(){ return S.prep + S.sets*S.active + (S.sets-1)*S.rest; }
+
+  var rows = document.getElementById('rows');
+  FIELDS.forEach(function(f){
+    var row = document.createElement('div'); row.className='row';
+    row.innerHTML =
+      '<div class="name">'+(f.color?'<span class="dot" style="background:'+f.color+'"></span>':'<span class="dot" style="border:2px solid var(--muted)"></span>')+f.name+'</div>'+
+      '<div class="stepper"><button aria-label="Decrease '+f.name+'">−</button><span class="val" aria-live="polite"></span><button aria-label="Increase '+f.name+'">+</button></div>';
+    rows.appendChild(row);
+    var btns=row.querySelectorAll('button'), val=row.querySelector('.val');
+    f.render=function(){ val.textContent = f.time? fmt(S[f.key]) : S[f.key]; };
+    function change(dir){
+      var step = f.time && S[f.key]>=120 ? 15 : f.step;
+      S[f.key]=Math.min(f.max,Math.max(f.min,S[f.key]+dir*step));
+      f.render(); updateSummary(); save();
+    }
+    [[btns[0],-1],[btns[1],1]].forEach(function(p){
+      var b=p[0], dir=p[1], t1=null, t2=null;
+      function stop(){ clearTimeout(t1); clearInterval(t2); t1=t2=null; }
+      b.addEventListener('pointerdown',function(e){ e.preventDefault(); change(dir); stop();
+        t1=setTimeout(function(){ t2=setInterval(function(){change(dir);},90); },420); });
+      ['pointerup','pointerleave','pointercancel'].forEach(function(ev){ b.addEventListener(ev,stop); });
+      b.addEventListener('click',function(e){ if(e.detail===0) change(dir); }); // keyboard
+    });
+    f.render();
+  });
+  function updateSummary(){ document.getElementById('sumTotal').textContent=fmt(totalLen()); }
+  updateSummary();
+
+  // ---------- Audio (generated, no files needed) ----------
+  var ctx=null;
+  function unlockAudio(){
+    try{
+      if(!ctx){ var AC=window.AudioContext||window.webkitAudioContext; ctx=new AC(); }
+      if(ctx.state!=='running') ctx.resume();
+      var b=ctx.createBuffer(1,1,22050), s=ctx.createBufferSource(); s.buffer=b; s.connect(ctx.destination); s.start(0);
+    }catch(e){}
+  }
+  function tone(freq, dur, delay, vol, type){
+    if(!ctx) return;
+    var t=ctx.currentTime+(delay||0), o=ctx.createOscillator(), g=ctx.createGain();
+    o.type=type||'square'; o.frequency.value=freq;
+    g.gain.setValueAtTime(0.0001,t);
+    g.gain.exponentialRampToValueAtTime(vol||0.25,t+0.01);
+    g.gain.setValueAtTime(vol||0.25,t+dur-0.04);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+    o.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t+dur+0.02);
+  }
+  var SND = {
+    count: function(){ tone(880,0.13); },                                  // last 5 s before active
+    go:    function(){ tone(1320,0.4,0,0.3); },                             // active starts
+    end:   function(){ tone(988,0.22,0,0.3); tone(740,0.22,0.24,0.3); tone(523,0.4,0.48,0.3); }, // active ends
+    finish:function(){ tone(523,0.18,1.0); tone(659,0.18,1.2); tone(784,0.18,1.4); tone(1047,0.5,1.6,0.3); }
+  };
+
+  // ---------- Screen wake lock ----------
+  var lock=null;
+  function keepAwake(){ try{ if('wakeLock' in navigator) navigator.wakeLock.request('screen').then(function(l){lock=l;}).catch(function(){}); }catch(e){} }
+  function releaseAwake(){ try{ if(lock){ lock.release(); lock=null; } }catch(e){} }
+
+  // ---------- Runner ----------
+  var R=null, timer=null;
+  var $=function(id){return document.getElementById(id);};
+  var themeMeta=document.querySelector('meta[name="theme-color"]');
+
+  function build(){
+    var p=[], at=0;
+    function add(o){ o.start=at; at+=o.d*1000; p.push(o); }
+    if(S.prep>0) add({t:'prep',d:S.prep,set:1});
+    for(var i=1;i<=S.sets;i++){
+      add({t:'active',d:S.active,set:i});
+      if(i<S.sets && S.rest>0) add({t:'rest',d:S.rest,set:i});
+    }
+    return {phases:p,total:at};
+  }
+  function now(){ return performance.now(); }
+  function elapsed(){ return (R.pausedAt!==null?R.pausedAt:now()) - R.startedAt - R.pausedTotal; }
+
+  function show(id){ ['setup','run','done'].forEach(function(s){ $(s).classList.toggle('on',s===id); }); }
+  function setPhaseColor(t){
+    if(t) document.body.setAttribute('data-phase',t); else document.body.removeAttribute('data-phase');
+    var c = t ? getComputedStyle(document.documentElement).getPropertyValue('--'+t).trim()
+              : getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
+    if(themeMeta) themeMeta.setAttribute('content',c);
+  }
+
+  function start(){
+    unlockAudio(); keepAwake();
+    var b=build();
+    R={phases:b.phases,total:b.total,startedAt:now(),pausedTotal:0,pausedAt:null,idx:-1,beeped:{}};
+    $('totalLen').textContent=fmt(R.total/1000);
+    $('run').classList.remove('paused'); $('pauseTxt').textContent='Pause';
+    show('run');
+    clearInterval(timer); timer=setInterval(tick,100); tick();
+  }
+
+  function tick(){
+    var e=elapsed();
+    if(e>=R.total){ finish(); return; }
+    var i=R.phases.length-1;
+    while(i>0 && R.phases[i].start>e) i--;
+    var ph=R.phases[i];
+
+    if(i!==R.idx){
+      var prev=R.idx>=0?R.phases[R.idx]:null;
+      if(prev && prev.t==='active') SND.end();
+      if(ph.t==='active') (prev && prev.t==='active') ? setTimeout(SND.go,800) : SND.go();
+      R.idx=i; setPhaseColor(ph.t);
+      $('phaseName').textContent = ph.t==='active'?'Active':ph.t==='rest'?'Rest':'Get ready';
+      var nx=R.phases[i+1];
+      $('next').textContent = nx ? 'Next: '+(nx.t==='active'?'active':'rest')+' '+fmt(nx.d) : 'Last one';
+      $('setLabel').textContent = ph.t==='rest' ? 'Set '+ph.set+' of '+S.sets+' done' : 'Set '+ph.set+' of '+S.sets;
+    }
+
+    var remain=ph.start+ph.d*1000-e, sec=Math.ceil(remain/1000);
+    $('clock').textContent=fmt(sec);
+    $('bar').style.width=(100*(1-remain/(ph.d*1000)))+'%';
+    $('elapsed').textContent=fmt(Math.floor(e/1000));
+
+    // beep each second for the last 5 seconds before an active period
+    var nextPh=R.phases[i+1];
+    if(nextPh && nextPh.t==='active' && ph.t!=='active' && sec>=1 && sec<=5 && R.pausedAt===null){
+      var key=i+'-'+sec;
+      if(!R.beeped[key]){ R.beeped[key]=1; SND.count(); }
+    }
+  }
+
+  function finish(){
+    clearInterval(timer); timer=null;
+    var last=R.phases[R.phases.length-1];
+    if(last && last.t==='active'){ SND.end(); SND.finish(); }
+    releaseAwake(); setPhaseColor(null);
+    $('doneTxt').textContent=S.sets+' sets in '+fmt(R.total/1000);
+    show('done');
+  }
+
+  function togglePause(){
+    unlockAudio();
+    if(R.pausedAt===null){ R.pausedAt=now(); $('pauseTxt').textContent='Resume'; $('run').classList.add('paused'); releaseAwake(); }
+    else { R.pausedTotal+=now()-R.pausedAt; R.pausedAt=null; $('pauseTxt').textContent='Pause'; $('run').classList.remove('paused'); keepAwake(); }
+    tick();
+  }
+
+  var stopArmed=null;
+  function resetStopBtn(){ clearTimeout(stopArmed); stopArmed=null; $('stopBtn').textContent='Stop'; }
+  function stopRun(){
+    // first tap arms, second tap within 3 s stops (browser confirm dialogs are blocked here)
+    if(!stopArmed){
+      $('stopBtn').textContent='Tap to stop';
+      stopArmed=setTimeout(resetStopBtn,3000);
+      return;
+    }
+    resetStopBtn();
+    clearInterval(timer); timer=null; releaseAwake(); setPhaseColor(null); show('setup');
+  }
+
+  $('startBtn').addEventListener('click',start);
+  $('againBtn').addEventListener('click',start);
+  $('editBtn').addEventListener('click',function(){ show('setup'); });
+  $('pauseBtn').addEventListener('click',togglePause);
+  $('stopBtn').addEventListener('click',stopRun);
+
+  document.addEventListener('visibilitychange',function(){
+    if(document.visibilityState==='visible' && R && timer){
+      if(ctx && ctx.state!=='running') ctx.resume();
+      if(R.pausedAt===null) keepAwake();
+      tick();
+    }
+  });
+})();
+</script>
+</body>
+</html>
