@@ -46,9 +46,12 @@ button:focus-visible{outline:3px solid currentColor;outline-offset:3px}
 .setup h1{font-size:2rem;font-weight:800;margin:8px 0 4px;letter-spacing:-.01em}
 .setup .sub{color:var(--muted);margin:0 0 20px;font-size:1rem}
 .rows{display:flex;flex-direction:column;gap:2px;background:var(--line);border-radius:20px;overflow:hidden}
-.row{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--surface);padding:14px 14px 14px 18px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--surface);padding:10px 12px 10px 18px}
 .row .name{display:flex;align-items:center;gap:10px;font-size:1.15rem;font-weight:650}
 .dot{width:12px;height:12px;border-radius:50%;flex:none}
+.hint{display:block;font-size:.85rem;font-weight:500;color:var(--muted);margin-top:1px}
+.setup{height:auto;min-height:100%}
+#setLabel small{display:block;font-size:.85rem;font-weight:600;opacity:.8}
 .stepper{display:flex;align-items:center;gap:6px}
 .stepper button{width:48px;height:48px;border-radius:14px;border:0;background:var(--bg);font-size:1.6rem;font-weight:700;line-height:1}
 .stepper button:active{transform:scale(.94)}
@@ -136,26 +139,28 @@ body[data-phase="prep"]{--paint:var(--prep)}
 <script>
 (function(){
   // ---------- Settings ----------
-  var S = {active:30, rest:15, sets:8, prep:10};
+  var S = {active:30, rest:15, exercises:3, sets:4, setBreak:60, prep:10};
   try{ var saved = JSON.parse(localStorage.getItem('interval-timer-settings')||'null');
        if(saved) for(var k in S) if(typeof saved[k]==='number') S[k]=saved[k]; }catch(e){}
   function save(){ try{ localStorage.setItem('interval-timer-settings', JSON.stringify(S)); }catch(e){} }
 
   var FIELDS = [
-    {key:'active', name:'Active',   color:'var(--active)', min:5, max:3600, step:5, time:true},
-    {key:'rest',   name:'Rest',     color:'var(--rest)',   min:0, max:3600, step:5, time:true},
-    {key:'sets',   name:'Sets',     color:null,            min:1, max:99,   step:1, time:false},
-    {key:'prep',   name:'Get ready',color:'var(--prep)',   min:0, max:120,  step:5, time:true}
+    {key:'active',    name:'Active',    hint:null,                    color:'var(--active)', min:5, max:3600, step:5, time:true},
+    {key:'rest',      name:'Rest',      hint:'Between exercises',     color:'var(--rest)',   min:0, max:3600, step:5, time:true},
+    {key:'exercises', name:'Exercises', hint:'Per set',               color:null,            min:1, max:50,   step:1, time:false},
+    {key:'sets',      name:'Sets',      hint:null,                    color:null,            min:1, max:99,   step:1, time:false},
+    {key:'setBreak',  name:'Set break', hint:'Between sets',          color:'var(--rest)',   min:0, max:3600, step:5, time:true},
+    {key:'prep',      name:'Get ready', hint:'Before the first set',  color:'var(--prep)',   min:0, max:120,  step:5, time:true}
   ];
 
   function fmt(sec){ sec=Math.max(0,Math.round(sec)); var m=Math.floor(sec/60), s=sec%60; return m+':'+(s<10?'0':'')+s; }
-  function totalLen(){ return S.prep + S.sets*S.active + (S.sets-1)*S.rest; }
+  function totalLen(){ return S.prep + S.sets*S.exercises*S.active + S.sets*(S.exercises-1)*S.rest + (S.sets-1)*S.setBreak; }
 
   var rows = document.getElementById('rows');
   FIELDS.forEach(function(f){
     var row = document.createElement('div'); row.className='row';
     row.innerHTML =
-      '<div class="name">'+(f.color?'<span class="dot" style="background:'+f.color+'"></span>':'<span class="dot" style="border:2px solid var(--muted)"></span>')+f.name+'</div>'+
+      '<div class="name">'+(f.color?'<span class="dot" style="background:'+f.color+'"></span>':'<span class="dot" style="border:2px solid var(--muted)"></span>')+'<span>'+f.name+(f.hint?'<small class="hint">'+f.hint+'</small>':'')+'</span></div>'+
       '<div class="stepper"><button aria-label="Decrease '+f.name+'">−</button><span class="val" aria-live="polite"></span><button aria-label="Increase '+f.name+'">+</button></div>';
     rows.appendChild(row);
     var btns=row.querySelectorAll('button'), val=row.querySelector('.val');
@@ -217,10 +222,13 @@ body[data-phase="prep"]{--paint:var(--prep)}
   function build(){
     var p=[], at=0;
     function add(o){ o.start=at; at+=o.d*1000; p.push(o); }
-    if(S.prep>0) add({t:'prep',d:S.prep,set:1});
-    for(var i=1;i<=S.sets;i++){
-      add({t:'active',d:S.active,set:i});
-      if(i<S.sets && S.rest>0) add({t:'rest',d:S.rest,set:i});
+    if(S.prep>0) add({t:'prep',d:S.prep,set:1,ex:1});
+    for(var s=1;s<=S.sets;s++){
+      for(var x=1;x<=S.exercises;x++){
+        add({t:'active',d:S.active,set:s,ex:x});
+        if(x<S.exercises && S.rest>0) add({t:'rest',d:S.rest,set:s,ex:x});
+      }
+      if(s<S.sets && S.setBreak>0) add({t:'rest',kind:'break',d:S.setBreak,set:s,ex:S.exercises});
     }
     return {phases:p,total:at};
   }
@@ -257,10 +265,11 @@ body[data-phase="prep"]{--paint:var(--prep)}
       if(prev && prev.t==='active') SND.end();
       if(ph.t==='active') (prev && prev.t==='active') ? setTimeout(SND.go,800) : SND.go();
       R.idx=i; setPhaseColor(ph.t);
-      $('phaseName').textContent = ph.t==='active'?'Active':ph.t==='rest'?'Rest':'Get ready';
+      $('phaseName').textContent = ph.t==='active'?'Active':ph.kind==='break'?'Set break':ph.t==='rest'?'Rest':'Get ready';
       var nx=R.phases[i+1];
-      $('next').textContent = nx ? 'Next: '+(nx.t==='active'?'active':'rest')+' '+fmt(nx.d) : 'Last one';
-      $('setLabel').textContent = ph.t==='rest' ? 'Set '+ph.set+' of '+S.sets+' done' : 'Set '+ph.set+' of '+S.sets;
+      $('next').textContent = nx ? 'Next: '+(nx.t==='active'?'active':nx.kind==='break'?'set break':'rest')+' '+fmt(nx.d) : 'Last one';
+      var sub = ph.kind==='break' ? 'Set complete' : ph.t==='rest' ? 'Exercise '+ph.ex+' of '+S.exercises+' done' : 'Exercise '+ph.ex+' of '+S.exercises;
+      $('setLabel').innerHTML = 'Set '+ph.set+' of '+S.sets+'<small>'+sub+'</small>';
     }
 
     var remain=ph.start+ph.d*1000-e, sec=Math.ceil(remain/1000);
@@ -281,7 +290,7 @@ body[data-phase="prep"]{--paint:var(--prep)}
     var last=R.phases[R.phases.length-1];
     if(last && last.t==='active'){ SND.end(); SND.finish(); }
     releaseAwake(); setPhaseColor(null);
-    $('doneTxt').textContent=S.sets+' sets in '+fmt(R.total/1000);
+    $('doneTxt').textContent=S.sets+(S.sets===1?' set':' sets')+' of '+S.exercises+(S.exercises===1?' exercise':' exercises')+' in '+fmt(R.total/1000);
     show('done');
   }
 
