@@ -185,29 +185,62 @@ body[data-phase="prep"]{--paint:var(--prep)}
 
   // ---------- Audio (generated, no files needed) ----------
   var ctx=null;
+  var master=null;
   function unlockAudio(){
     try{
-      if(!ctx){ var AC=window.AudioContext||window.webkitAudioContext; ctx=new AC(); }
-      if(ctx.state!=='running') ctx.resume();
+      // iOS 17+: treat as media playback so sounds aren't silenced by the ring/silent switch
+      if(navigator.audioSession) navigator.audioSession.type='playback';
+      if(!ctx){
+        var AC=window.AudioContext||window.webkitAudioContext; ctx=new AC();
+        var comp=ctx.createDynamicsCompressor();
+        comp.threshold.value=-18; comp.knee.value=12; comp.ratio.value=4; comp.attack.value=0.003; comp.release.value=0.15;
+        master=ctx.createGain(); master.gain.value=1.4;
+        master.connect(comp); comp.connect(ctx.destination);
+      }
       var b=ctx.createBuffer(1,1,22050), s=ctx.createBufferSource(); s.buffer=b; s.connect(ctx.destination); s.start(0);
-    }catch(e){}
+      return ctx.state!=='running' ? ctx.resume() : Promise.resolve();
+    }catch(e){ return Promise.resolve(); }
   }
-  function tone(freq, dur, delay, vol, type){
+  // one soft, plucked voice: quick attack, smooth exponential decay, optional pitch glide
+  function voice(o){
     if(!ctx) return;
-    var t=ctx.currentTime+(delay||0), o=ctx.createOscillator(), g=ctx.createGain();
-    o.type=type||'square'; o.frequency.value=freq;
+    var t=ctx.currentTime+0.02+(o.at||0), osc=ctx.createOscillator(), g=ctx.createGain(), v=o.vol||0.25;
+    osc.type=o.type||'sine';
+    osc.frequency.setValueAtTime(o.f,t);
+    if(o.f2) osc.frequency.exponentialRampToValueAtTime(o.f2,t+(o.glide||o.dur*0.5));
     g.gain.setValueAtTime(0.0001,t);
-    g.gain.exponentialRampToValueAtTime(vol||0.25,t+0.01);
-    g.gain.setValueAtTime(vol||0.25,t+dur-0.04);
-    g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
-    o.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t+dur+0.02);
+    g.gain.exponentialRampToValueAtTime(v,t+(o.atk||0.006));
+    if(o.hold) g.gain.setValueAtTime(v,t+Math.max(0.012,o.dur-0.04)); // hold at full level, then a quick fade (crisp, loud)
+    g.gain.exponentialRampToValueAtTime(0.0001,t+o.dur);
+    osc.connect(g); g.connect(master); osc.start(t); osc.stop(t+o.dur+0.05);
+  }
+  function bell(f,at,dur,vol){ // sine body + faint octave shimmer
+    voice({f:f,at:at,dur:dur,vol:vol});
+    voice({f:f*2,at:at,dur:dur*0.5,vol:vol*0.18});
+  }
+  // crisp note = held square (bite, carries outdoors) + held sine/triangle (body, keeps it musical)
+  function crisp(f,at,dur,vol,f2){
+    voice({f:f,f2:f2,glide:0.03,at:at,dur:dur,vol:vol*0.55,type:'square',hold:1,atk:0.003});
+    voice({f:f,f2:f2,glide:0.03,at:at,dur:dur,vol:vol,type:'triangle',hold:1,atk:0.003});
   }
   var SND = {
-    count: function(){ tone(784,0.07,0,0.3,'triangle'); tone(1175,0.1,0.07,0.3,'triangle'); }, // last 5 s of rest: upbeat rising chirp
-    countActive: function(){ tone(880,0.13); },                            // last 5 s of active: single beep
-    go:    function(){ tone(1320,0.4,0,0.3); },                             // active starts
-    end:   function(){ tone(1047,0.1,0,0.32,'triangle'); tone(1319,0.1,0.1,0.32,'triangle'); tone(1568,0.1,0.2,0.32,'triangle'); tone(2093,0.45,0.3,0.32,'triangle'); }, // active ends: bright ta-da
-    finish:function(){ tone(523,0.18,1.0); tone(659,0.18,1.2); tone(784,0.18,1.4); tone(1047,0.5,1.6,0.3); }
+    // rest + get ready, last 5 s: one clean note per second that climbs in pitch (5 to 1), building into the start
+    count: function(sec){ var f={5:1047,4:1175,3:1319,2:1568,1:1760}[sec]||1047; crisp(f,0,0.14,0.28); },
+    // active, last 5 s: single sharp high hit with an upward flick
+    countActive: function(){ crisp(1760,0,0.17,0.32,2349); },
+    // active starts: simple double beep on one high note, second slightly longer
+    go: function(){ crisp(2093,0,0.09,0.3); crisp(2093,0.14,0.22,0.3); },
+    // active ends: two clean separate notes rising a fourth (E6 to A6), second one rings out
+    end: function(){ crisp(1319,0,0.11,0.28); voice({f:1760,at:0.13,dur:0.5,vol:0.3,type:'triangle',atk:0.003}); voice({f:1760,at:0.13,dur:0.3,vol:0.12,type:'square',atk:0.003}); },
+    // workout complete: warm, smooth major-chord bloom (pure sine, no buzz) with a soft bell on top
+    finish: function(){
+      var t=1.0;
+      voice({f:523, at:t,dur:2.8,vol:0.2, atk:0.12});
+      voice({f:659, at:t,dur:2.6,vol:0.16,atk:0.14});
+      voice({f:784, at:t,dur:2.6,vol:0.16,atk:0.16});
+      voice({f:1047,at:t,dur:2.4,vol:0.14,atk:0.18});
+      bell(2093,t+0.2,1.8,0.16);
+    }
   };
 
   // ---------- Screen wake lock ----------
@@ -247,13 +280,16 @@ body[data-phase="prep"]{--paint:var(--prep)}
   }
 
   function start(){
-    unlockAudio(); keepAwake();
+    var audioReady=unlockAudio(); keepAwake();
     var b=build();
     R={phases:b.phases,total:b.total,startedAt:now(),pausedTotal:0,pausedAt:null,idx:-1,beeped:{}};
     $('totalLen').textContent=fmt(R.total/1000);
     $('run').classList.remove('paused'); $('pauseTxt').textContent='Pause';
-    show('run');
-    clearInterval(timer); timer=setInterval(tick,100); tick();
+    show('run'); tick();
+    // start the clock once audio is actually running, so the get-ready countdown is heard
+    clearInterval(timer); timer=null;
+    var go=false, begin=function(){ if(go) return; go=true; R.startedAt=now(); R.beeped={}; timer=setInterval(tick,100); tick(); };
+    audioReady.then(begin,begin); setTimeout(begin,600);
   }
 
   function tick(){
@@ -294,7 +330,7 @@ body[data-phase="prep"]{--paint:var(--prep)}
     if(sec>=1 && sec<=5 && R.pausedAt===null){
       var key=i+'-'+sec;
       if(ph.t==='active'){ if(!R.beeped[key]){ R.beeped[key]=1; SND.countActive(); } }
-      else if(nextPh && nextPh.t==='active'){ if(!R.beeped[key]){ R.beeped[key]=1; SND.count(); } }
+      else if(ph.t==='prep' || (nextPh && nextPh.t==='active')){ if(!R.beeped[key]){ R.beeped[key]=1; SND.count(sec); } }
     }
   }
 
