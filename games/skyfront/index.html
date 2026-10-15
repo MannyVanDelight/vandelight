@@ -967,12 +967,8 @@ function audioInit(){
   // bass bus: soft saturation adds harmonics so the low end is audible on phone speakers
   const ws=c.createWaveShaper(),cv=new Float32Array(1024);for(let i=0;i<1024;i++){const x=i/511.5-1;cv[i]=Math.tanh(3.2*x)/Math.tanh(3.2);}ws.curve=cv;
   const lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=1100;AU.boomBus=c.createGain();AU.boomBus.gain.value=1.6;AU.boomBus.connect(ws);ws.connect(lp);
-  // reverb: a generated 3-second decaying impulse gives explosions and thunder a sense of space
-  const len=Math.floor(c.sampleRate*3),ir=c.createBuffer(2,len,c.sampleRate);
-  for(let ch=0;ch<2;ch++){const d2=ir.getChannelData(ch);let lpv=0;for(let i=0;i<len;i++){const t=i/c.sampleRate;lpv+=.35*((Math.random()*2-1)-lpv);d2[i]=lpv*Math.pow(1-t/3,2.2)*Math.exp(-t*1.1);}}
-  const verb=c.createConvolver();verb.buffer=ir;AU.verbIn=c.createGain();AU.verbIn.gain.value=.9;AU.verbIn.connect(verb);verb.connect(AU.master);
-  AU.blast=c.createGain();AU.blast.gain.value=1.25;AU.blast.connect(AU.sfx);AU.blast.connect(AU.verbIn);
-  lp.connect(AU.sfx);lp.connect(AU.verbIn);
+  AU.blast=c.createGain();AU.blast.gain.value=1.25;AU.blast.connect(AU.sfx);
+  lp.connect(AU.sfx);
   AU.eng=c.createGain();AU.eng.gain.value=1;AU.eng.connect(AU.sfx);
   buildEngines();
   const w=MUS.want;MUS.want='off';setMood(w);
@@ -1013,12 +1009,13 @@ const SFX={
   // explosion = sharp crack + filtered body + saturated sub thump + rumbling tail + debris
   boom(pos,big){if(!this.ok())return;const v=blastVol(pos);if(v<.01)return;const t=AU.ctx.currentTime,far=1-v,k=big?1:.75;
     if(v>.2)duck(Math.min(.75,(big?.85:.5)*v),big?.35:.15);
-    nz(t,.06,'highpass',3000,1600,.7,.7*v*k,.001,AU.blast);
-    tn(t,.22,'sine',big?175:200,big?60:80,1.3*v*k,.002,AU.boomBus);
-    tn(t,big?1.6:.9,'sine',big?58:72,24,1.4*v*k,.003,AU.boomBus);
-    nz(t,big?2.6:1.4,'lowpass',(big?2400:2800)*(1-far*.7),100,.8,1.2*k*v,.004,AU.blast);
-    bz(t+.03,big?3.6:2,'lowpass',380,60,.7,(big?1.3:.8)*v,.08,AU.blast);
-    for(let i=0;i<(big?12:5);i++)nz(t+rand(.1,.9),.04,'bandpass',rand(1500,4500),0,.8,rand(.08,.18)*v,.002,AU.blast);},
+    const cut=(big?900:1100)*(1-far*.6);
+    bz(t,big?3.2:1.9,'lowpass',cut,70,.7,(big?1.6:1.1)*v,.025,AU.blast);
+    nz(t,big?1.1:.7,'lowpass',cut*.7,110,.6,(big?.9:.6)*v,.018,AU.blast);
+    tn(t,.4,'sine',big?120:140,45,1.2*v*k,.012,AU.boomBus);
+    tn(t,big?1.8:1,'sine',big?55:68,24,1.5*v*k,.015,AU.boomBus);
+    bz(t+rand(.25,.45),big?2.6:1.4,'lowpass',260,55,.6,(big?.9:.5)*v,.2,AU.blast);
+    for(let i=0;i<(big?7:3);i++)bz(t+rand(.35,1.6),rand(.12,.3),'bandpass',rand(300,800),0,.9,rand(.1,.22)*v,.01,AU.blast);},
   hit(){if(!this.ok())return;const t=AU.ctx.currentTime;if(t-AU.lastHit<.05)return;AU.lastHit=t;
     tn(t,.05,'triangle',3100,2300,.07);nz(t,.06,'bandpass',1300,800,1.2,.14);tn(t,.09,'sine',170,80,.3,.002,AU.boomBus);},
   ouch(){if(!this.ok())return;const t=AU.ctx.currentTime;
@@ -1026,11 +1023,16 @@ const SFX={
     tn(t,.35,'triangle',420,380,.09);tn(t,.3,'triangle',690,610,.06);nz(t,.04,'highpass',3500,3500,.7,.2,.001);},
   flakGun(pos){if(!this.ok())return;const v=distVol(pos)*.6;if(v<.01)return;const t=AU.ctx.currentTime;tn(t,.3,'sine',85,40,v,.003,AU.boomBus);nz(t,.12,'lowpass',700,200,.7,.3*v);},
   flak(pos){if(!this.ok())return;const v=Math.max(blastVol(pos),.08);const t=AU.ctx.currentTime;if(v>.5)duck(.4*v,.1);
-    nz(t,.05,'highpass',3000,2000,.7,.65*v,.001,AU.blast);nz(t,.5,'bandpass',1700,300,.8,.6*v,.003,AU.blast);tn(t,.18,'sine',190,80,1.1*v,.002,AU.boomBus);tn(t,.5,'sine',90,35,1.1*v,.002,AU.boomBus);bz(t+.03,1.4,'lowpass',320,80,.6,.6*v,.08,AU.blast);},
+    nz(t,.5,'lowpass',1200,200,.7,.8*v,.01,AU.blast);tn(t,.3,'sine',130,50,1.1*v,.008,AU.boomBus);tn(t,.6,'sine',75,32,1.1*v,.01,AU.boomBus);bz(t+.05,1.4,'lowpass',300,70,.6,.7*v,.1,AU.blast);},
   thunder(pos){if(!this.ok())return;const d=camera.position.distanceTo(pos),v=clamp(1-d/2600,.3,1),t=AU.ctx.currentTime+Math.min(2.5,d/800);
-    if(d<220){nz(t,.25,'highpass',2600,1200,.6,1.1*v,.001,AU.blast);nz(t,.6,'bandpass',900,250,.6,.9*v,.002,AU.blast);tn(t,.3,'sine',160,60,1.3*v,.002,AU.boomBus);}
-    setTimeout(()=>duck(.6*v,.6),Math.min(2500,d/800*1000));
-    bz(t,4.5,'lowpass',560,70,.5,1.3*v,.2,AU.blast);tn(t,2.6,'sine',46,28,1.2*v,.06,AU.boomBus);bz(t+rand(.4,1),3,'lowpass',280,60,.5,.8*v,.3,AU.blast);},
+    if(d<500){ // close: an irregular ripping crackle over ~0.7s, not a single hit
+      const n=34,near=1-d/500;let tt=t;
+      for(let i=0;i<n;i++){const f=i/n;tt+=.004+.03*f*f*Math.random();nz(tt,rand(.02,.06),'bandpass',rand(700,2600)*(1-.4*f),0,rand(.6,1.4),(1-f*.8)*rand(.25,.6)*v*near,.002,AU.blast);}
+      bz(t+.02,1.2,'lowpass',700,120,.6,.9*v*near,.05,AU.blast);tn(t+.02,.9,'sine',90,35,1.1*v*near,.03,AU.boomBus);
+    }
+    setTimeout(()=>duck(.6*v,.8),Math.min(2500,d/800*1000));
+    for(let i=0;i<5;i++){const st=t+.1+i*rand(.35,.75);bz(st,rand(1.6,3),'lowpass',rand(220,420),55,.5,rand(.6,1.1)*v*(1-i*.12),rand(.15,.4),AU.blast);}
+    tn(t+.1,3.2,'sine',44,27,1.1*v,.25,AU.boomBus);},
   static(pos){if(!this.ok())return;const v=Math.max(distVol(pos),.15);const t=AU.ctx.currentTime;for(let i=0;i<6;i++)nz(t+i*rand(.08,.2),.06,'bandpass',rand(3000,5000),0,2,.06*v,.002);},
   flyby(pos){if(!this.ok())return;const v=distVol(pos);nz(AU.ctx.currentTime,1.1,'bandpass',1500,260,2,.4*v,.35);},
   beep(f,d,v){if(!this.ok())return;tn(AU.ctx.currentTime,d||.07,'square',f,f,v||.06);},
