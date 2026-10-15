@@ -1,5 +1,5 @@
 // Skyfront offline cache. Bump VERSION whenever any file changes so phones pick up the update.
-const VERSION='skyfront-v1';
+const VERSION='skyfront-v3';
 const FILES=['./','./index.html','./three.min.js','./manifest.webmanifest',
   './icons/icon-192.png','./icons/icon-512.png','./icons/icon-maskable-512.png','./icons/apple-touch-icon.png','./icons/favicon-32.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(VERSION).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting()));});
