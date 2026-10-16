@@ -161,6 +161,7 @@ html,body{background:#0e1319}
   <label class="tog"><input type="checkbox" id="musChk"> Music</label>
   <label class="tog"><input type="checkbox" id="invChk"> Invert pitch (drag down to climb)</label>
   <button id="startBtn" class="big">Take off</button>
+  <button id="freshBtn" class="ghost hidden">Start from wave 1</button>
   <p class="help">Drag on the left side to steer. Hold Fire. Tap the weapon button to switch guns.<br>Keyboard: arrows or WASD, Space to fire, Q to switch, Esc to pause.</p>
 </div>
 
@@ -182,6 +183,7 @@ html,body{background:#0e1319}
   <div class="row"><span>Best</span><b id="oBest"></b></div>
   <p class="note" id="oNote"></p>
   <button id="oRetry" class="big">Fly again</button>
+  <button id="oFresh" class="ghost hidden">Start from wave 1</button>
   <button id="oMenu" class="ghost">Back to hangar</button>
 </div>
 
@@ -204,8 +206,8 @@ const TAU=Math.PI*2;
 
 /* ---------- save data ---------- */
 const KEY='skyfront.save.v1';
-const save={unlocked:[0],best:{campaign:0,endless:0,bossrush:0,bomber:0},bossBeaten:false,invert:false,plane:0,bplane:6,mode:'endless',sfx:true,music:true,weather:'random'};
-try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&typeof s==='object'){Object.assign(save,s);save.best=Object.assign({campaign:0,endless:0,bossrush:0,bomber:0},s.best||{});}}catch(e){}
+const save={unlocked:[0],best:{campaign:0,endless:0,bossrush:0,bomber:0},reach:{endless:1,bomber:1},bossBeaten:false,invert:false,plane:0,bplane:6,mode:'endless',sfx:true,music:true,weather:'random'};
+try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&typeof s==='object'){Object.assign(save,s);save.best=Object.assign({campaign:0,endless:0,bossrush:0,bomber:0},s.best||{});save.reach=Object.assign({endless:1,bomber:1},s.reach||{});}}catch(e){}
 if(!Array.isArray(save.unlocked))save.unlocked=[0];
 if(save.mode==='campaign')save.mode='endless';
 if(save.weather==='dawn')save.weather='random';if(save.weather==='overcast')save.weather='storm';
@@ -1263,24 +1265,26 @@ const lights=[];
 for(let i=0;i<10;i++){
   const g=new THREE.Group();
   const base=new THREE.Mesh(new THREE.CylinderGeometry(4,4.6,2,10),mat(0x4a4c3e));base.position.y=1;g.add(base);
-  const post=new THREE.Mesh(new THREE.BoxGeometry(1.4,4,1.4),mat(0x2c2f2a));post.position.y=4;g.add(post);
-  const lamp=new THREE.Mesh(new THREE.CylinderGeometry(1.7,1.4,2.2,12),mat(0x3a3d38));lamp.position.y=6.5;g.add(lamp);
+  const post=new THREE.Mesh(new THREE.CylinderGeometry(.7,1.8,19,4),mat(0x2c2f2a));post.position.y=11;post.rotation.y=Math.PI/4;g.add(post);
+  const deck=new THREE.Mesh(new THREE.CylinderGeometry(2.6,2.6,.5,10),mat(0x3a3d38));deck.position.y=20.8;g.add(deck);
+  const lamp=new THREE.Mesh(new THREE.CylinderGeometry(2.1,1.7,2.6,12),mat(0x3a3d38));lamp.position.y=22.5;g.add(lamp);
   const beam=new THREE.Mesh(beamGeo,beamMat);beam.frustumCulled=false;
   const glow=new THREE.Sprite(lampGlowMat);glow.scale.set(9,9,1);
   scene.add(g,beam,glow);g.visible=beam.visible=glow.visible=false;
-  lights.push({g,lamp,beam,glow,pos:new THREE.Vector3(),dir:new THREE.Vector3(0,1,0),alive:false,lock:false,lostT:0,litT:0,flakT:1,seed:0,yaw0:0,hp:30});
+  const lp=new THREE.Vector3();
+  lights.push({g,lamp,beam,glow,pos:lp,obj:{position:lp},speed:0,falling:true,light:true,dir:new THREE.Vector3(0,1,0),alive:false,lock:false,lostT:0,litT:0,flakT:1,seed:0,yaw0:0,hp:30});
 }
 const flak=[];
 function placeLights(n){
   flak.length=0;
   for(let i=0;i<lights.length;i++){
-    const L=lights[i],on=i<n;L.alive=on;L.g.visible=L.beam.visible=L.glow.visible=on;L.lamp.visible=true;if(!on)continue;
+    const L=lights[i],on=i<n;L.alive=on;L.falling=!on;L.g.visible=L.beam.visible=L.glow.visible=on;L.lamp.visible=true;if(!on)continue;
     let x,z;do{const a=rand(0,TAU),d=rand(250,1100);x=AREA.x+Math.cos(a)*d;z=AREA.z+Math.sin(a)*d;}while(Math.abs(x+10)<90&&z>-240&&z<240);
-    L.g.position.set(x,0,z);L.pos.set(x,6.5,z);L.glow.position.copy(L.pos);L.beam.position.copy(L.pos);
+    L.g.position.set(x,0,z);L.pos.set(x,22.5,z);L.falling=false;L.glow.position.copy(L.pos);L.beam.position.copy(L.pos);
     L.hp=30;L.lock=false;L.lostT=0;L.litT=0;L.flakT=rand(.6,1.4);L.seed=rand(0,TAU);L.yaw0=rand(0,TAU);L.el0=.5;L.dir.set(0,1,0);
   }
 }
-function hideLights(){for(const L of lights){L.alive=false;L.g.visible=L.beam.visible=L.glow.visible=false;}flak.length=0;G.spotted=false;}
+function hideLights(){for(const L of lights){L.alive=false;L.falling=true;L.g.visible=L.beam.visible=L.glow.visible=false;}flak.length=0;G.spotted=false;}
 function lightCount(){return 6+Math.min(4,Math.floor(G.wave/5));}
 function updateLights(dt,combat){
   let spotted=false;
@@ -1330,9 +1334,9 @@ function flakBurst(p){
 function hitLights(b){
   for(const L of lights){
     if(!L.alive)continue;
-    if(segHit(b.prev,b.pos,L.pos,6)){
+    if(segHit(b.prev,b.pos,L.pos,10)){
       L.hp-=b.dmg;spark(b.pos);SFX.hit();
-      if(L.hp<=0){L.alive=false;L.beam.visible=L.glow.visible=false;L.lamp.visible=false;L.lock=false;explode(L.pos,false);G.score+=150;banner('Searchlight down','+150');}
+      if(L.hp<=0){L.alive=false;L.falling=true;L.beam.visible=L.glow.visible=false;L.lamp.visible=false;L.lock=false;explode(L.pos,false);G.score+=150;banner('Searchlight down','+150');}
       return true;
     }
   }
@@ -1545,8 +1549,10 @@ function toMenu(){
 function menuView(){
   if(W>=H)camera.setViewOffset(W,H,-W*.22,0,W,H);else camera.setViewOffset(W,H,0,H*.2,W,H);
 }
-function startSortie(){
-  G.mode=save.mode;G.wave=1;G.score=0;G.plane=G.mode==='bomber'?save.bplane:save.plane;G.failReason=null;G.outT=0;
+function reachOf(m){return m==='bossrush'?1:Math.max(1,(save.reach&&save.reach[m])||1);}
+function unitOf(m){return m==='bomber'?'run':'wave';}
+function startSortie(from){
+  G.mode=save.mode;G.wave=Math.max(1,from||1);G.score=0;G.plane=G.mode==='bomber'?save.bplane:save.plane;G.failReason=null;G.outT=0;
   if(preview){scene.remove(preview);disposeObj(preview);preview=null;previewIdx=-1;}
   hidePanels();clearEnemies();clearBullets();beginTakeoff();
 }
@@ -1570,6 +1576,7 @@ function endTakeoff(skipped){
   startWave();
 }
 function startWave(){
+  if(G.mode!=='bossrush'){save.reach[G.mode]=Math.max(reachOf(G.mode),G.wave);persist();}
   if(bomberMode()){startBomberRound();return;}
   const w=waveSpec(G.mode,G.wave);
   G.state='battle';G.escorts=false;
@@ -1729,10 +1736,12 @@ function finish(won,unlocked,newRush){
   $('oWaveL').textContent=won?'Waves flown':'Went down on';
   $('oWave').textContent=G.mode==='bossrush'?'Boss Rush':(won?G.wave:'Wave '+G.wave);
   $('oScore').textContent=G.score;$('oBest').textContent=save.best[G.mode]+(G.score>prevBest&&G.score>0?' (new)':'');
+  {const rw=reachOf(G.mode),u=unitOf(G.mode);$('oRetry').textContent=rw>1?'Continue from '+u+' '+rw:'Fly again';$('oFresh').textContent='Start from '+u+' 1';$('oFresh').classList.toggle('hidden',rw<=1);}
   $('oNote').textContent=won?'Every plane you have unlocked stays in your hangar.':'Planes you have unlocked stay in your hangar. Pick one and go again.';
   $('over').classList.remove('hidden');$('over').scrollTop=0;
 }
-$('oRetry').onclick=()=>{startSortie();};
+$('oRetry').onclick=()=>{startSortie(reachOf(G.mode));};
+$('oFresh').onclick=()=>{startSortie(1);};
 $('oMenu').onclick=()=>toMenu();
 function togglePause(){
   if(G.state==='paused'){resetInput();G.state=G.prev;AU.paused=false;$('pause').classList.add('hidden');return;}
@@ -1770,7 +1779,9 @@ function renderMenu(){
   const sk=$('skyChips');sk.innerHTML='';
   for(const k of['random',...Object.keys(WEATHERS)]){const b=document.createElement('button');b.className='chip'+((save.weather||'random')===k?' sel':'');b.textContent=k==='random'?'Random':WEATHERS[k].name;
     b.onclick=()=>{save.weather=k;persist();applyWeather(pickWeather());renderMenu();};sk.appendChild(b);}
-  const sb=$('startBtn');sb.disabled=locked;sb.textContent=locked?'Plane locked':'Take off in the '+s.name;
+  const sb=$('startBtn'),rw=reachOf(save.mode),u=unitOf(save.mode);sb.disabled=locked;
+  sb.textContent=locked?'Plane locked':(rw>1?'Continue from '+u+' '+rw:'Take off in the '+s.name);
+  const fb=$('freshBtn');fb.textContent='Start from '+u+' 1';fb.disabled=locked;fb.classList.toggle('hidden',rw<=1);
   if(previewIdx!==i||!preview){
     if(preview){scene.remove(preview);disposeObj(preview);}
     preview=buildPlane(s,locked);preview.position.set(0,preview.userData.groundY,-60);preview.rotation.y=.6;scene.add(preview);previewIdx=i;
@@ -1781,7 +1792,8 @@ function hangarKey(){return save.mode==='bomber'?'bplane':'plane';}
 $('prevP').onclick=()=>{const L=hangarList(),k=hangarKey(),j=L.indexOf(save[k]);save[k]=L[(j+L.length-1)%L.length];persist();renderMenu();};
 $('nextP').onclick=()=>{const L=hangarList(),k=hangarKey(),j=L.indexOf(save[k]);save[k]=L[(j+1)%L.length];persist();renderMenu();};
 $('invChk').onchange=e=>{save.invert=e.target.checked;persist();};
-$('startBtn').onclick=()=>{if(!save.unlocked.includes(save[hangarKey()]))return;startSortie();};
+$('startBtn').onclick=()=>{if(!save.unlocked.includes(save[hangarKey()]))return;startSortie(reachOf(save.mode));};
+$('freshBtn').onclick=()=>{if(!save.unlocked.includes(save[hangarKey()]))return;startSortie(1);};
 
 /* ---------- HUD ---------- */
 const hud={hp:-1,score:-1,wave:'',left:-1,boss:-1};
@@ -1814,6 +1826,11 @@ function findTarget(cone,maxD){
     tA.subVectors(e.obj.position,P.obj.position);const d=tA.length();if(d>maxD||d<1)continue;
     const a=Math.acos(clamp(tA.dot(P.fwd)/d,-1,1));if(a<bestA){bestA=a;best=e;}
   }
+  if(G.night)for(const L of lights){
+    if(!L.alive)continue;
+    tA.subVectors(L.pos,P.obj.position);const d=tA.length();if(d>maxD||d<1)continue;
+    const a=Math.acos(clamp(tA.dot(P.fwd)/d,-1,1));if(a<bestA){bestA=a;best=L;}
+  }
   return best;
 }
 function enemyVel(e,out){return out.copy(e.dir).multiplyScalar(e.speed);}
@@ -1840,8 +1857,8 @@ function updatePlayer(dt,auto){
   P.vel.copy(P.fwd).multiplyScalar(s.speed);
   P.obj.position.addScaledVector(P.vel,dt);
   const y=P.obj.position.y;
-  if(y<16){P.obj.position.y=16;if(P.pitch<.12)P.pitch=.12;warn='Pull up';}
-  else if(y<45&&P.pitch<-.2)warn='Pull up';
+  if(y<10){P.obj.position.y=10;if(P.pitch<.1)P.pitch=.1;warn='Pull up';}
+  else if(y<38&&P.pitch<-.2)warn='Pull up';
   if(y>650){P.obj.position.y=650;if(P.pitch>0)P.pitch=0;}
   for(const p of P.obj.userData.props)p.rotation.z+=dt*45;
   const vt=clamp(Math.abs(ix)*.85+Math.abs(iy)*.85,0,1);P.vapor+=((s.jet?.18:.05)+.5*Math.pow(vt,1.5)-P.vapor)*Math.min(1,4*dt);
@@ -2092,15 +2109,15 @@ function drawSkyFx(){
   if(G.lflash>0){ctx.fillStyle='rgba(225,235,255,'+(.55*G.lflash)+')';ctx.fillRect(0,0,W,H);}
   // sun glare when flying into the sun on clear days
   if(G.weather!=='sunny'||!(G.state==='battle'||G.state==='cleared'||G.state==='takeoff'||G.state==='inter'))return;
-  camera.getWorldDirection(tB);const dot=tB.dot(SUN_DIR);if(dot<.6)return;
+  camera.getWorldDirection(tB);const dot=tB.dot(SUN_DIR);if(dot<.66)return;
   tA.copy(camera.position).addScaledVector(SUN_DIR,1000).project(camera);if(tA.z>1)return;
-  const k=Math.pow(clamp((dot-.6)/.38,0,1),1.25),sx=(tA.x+1)/2*W,sy=(1-tA.y)/2*H,R=Math.max(W,H)*1.15;
+  const k=Math.pow(clamp((dot-.66)/.32,0,1),1.4),sx=(tA.x+1)/2*W,sy=(1-tA.y)/2*H,R=Math.max(W,H)*1.05;
   ctx.save();ctx.globalCompositeOperation='lighter';
-  const g=ctx.createRadialGradient(sx,sy,0,sx,sy,R);g.addColorStop(0,'rgba(255,253,240,'+k+')');g.addColorStop(.16,'rgba(255,244,215,'+(.85*k)+')');g.addColorStop(.5,'rgba(255,228,180,'+(.38*k)+')');g.addColorStop(1,'rgba(255,220,160,0)');
+  const g=ctx.createRadialGradient(sx,sy,0,sx,sy,R);g.addColorStop(0,'rgba(255,253,240,'+(.95*k)+')');g.addColorStop(.14,'rgba(255,242,210,'+(.68*k)+')');g.addColorStop(.48,'rgba(255,226,175,'+(.26*k)+')');g.addColorStop(1,'rgba(255,220,160,0)');
   ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
-  ctx.fillStyle='rgba(255,247,228,'+(.62*k*k)+')';ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='rgba(255,247,228,'+(.42*k*k)+')';ctx.fillRect(0,0,W,H);
   const cx=W/2,cy=H/2;
-  for(const [f,r,a,c] of[[.2,60,.35,'255,215,150'],[.35,26,.3,'255,200,120'],[.7,16,.35,'160,210,255'],[1.15,52,.22,'255,170,110'],[1.5,24,.28,'200,255,200']]){
+  for(const [f,r,a,c] of[[.2,50,.26,'255,215,150'],[.35,24,.24,'255,200,120'],[.7,15,.28,'160,210,255'],[1.15,48,.17,'255,170,110'],[1.5,22,.22,'200,255,200']]){
     const fx=sx+(cx-sx)*f*2,fy=sy+(cy-sy)*f*2;const gg=ctx.createRadialGradient(fx,fy,0,fx,fy,r*(W/800));gg.addColorStop(0,'rgba('+c+','+(a*k)+')');gg.addColorStop(1,'rgba('+c+',0)');ctx.fillStyle=gg;ctx.beginPath();ctx.arc(fx,fy,r*(W/800),0,TAU);ctx.fill();}
   ctx.restore();
 }
