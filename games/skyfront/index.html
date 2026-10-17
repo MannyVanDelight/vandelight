@@ -61,12 +61,15 @@ html,body{background:#0e1319}
 #banner{position:absolute;top:24%;left:0;right:0;text-align:center;font-family:var(--stencil);font-size:clamp(30px,7vw,64px);letter-spacing:.05em;opacity:0;transition:opacity .35s}
 #banner small{display:block;font-family:var(--font);font-size:clamp(15px,2.4vw,22px);font-weight:600;letter-spacing:.03em;margin-top:2px}
 #warn{position:absolute;top:42%;left:0;right:0;text-align:center;color:#ff6a52;font-weight:800;font-size:22px;letter-spacing:.12em}
+#viewBtn{pointer-events:auto;position:absolute;top:calc(var(--st) + 12px);right:calc(var(--sr) + 186px);height:40px;padding:0 14px;border-radius:20px;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.45);color:#fff;font-weight:700;font-size:15px}
 #pauseBtn{pointer-events:auto;position:absolute;top:calc(var(--st) + 12px);right:calc(var(--sr) + 138px);width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.45);color:#fff;font-size:14px}
 #joyBase{position:absolute;width:124px;height:124px;margin:-62px 0 0 -62px;border-radius:50%;border:2px solid rgba(255,255,255,.5);background:rgba(0,0,0,.16);opacity:0;transition:opacity .12s}
 #joyBase.on{opacity:1}
 #joyKnob{position:absolute;left:50%;top:50%;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;background:rgba(239,230,207,.75);box-shadow:0 2px 6px rgba(0,0,0,.35)}
 #joyHint{position:absolute;left:calc(var(--sl) + 34px);bottom:calc(var(--sb) + 40px);width:120px;height:120px;border-radius:50%;border:2px dashed rgba(255,255,255,.55);display:flex;align-items:center;justify-content:center;text-align:center;font-weight:600;font-size:16px;line-height:1.1}
 #fireBtn{pointer-events:auto;position:absolute;right:calc(var(--sr) + 22px);bottom:calc(var(--sb) + 22px);width:104px;height:104px;border-radius:50%;background:rgba(214,69,47,.55);border:2px solid rgba(255,255,255,.75);color:#fff;font-weight:800;font-size:22px;letter-spacing:.08em;touch-action:none}
+#rollBtn{pointer-events:auto;position:absolute;right:calc(var(--sr) + 42px);bottom:calc(var(--sb) + 142px);width:64px;height:64px;border-radius:50%;background:rgba(0,0,0,.42);border:2px solid rgba(255,255,255,.6);color:#fff;font-weight:800;font-size:15px;letter-spacing:.06em;touch-action:none}
+#rollBtn:active{background:rgba(255,210,74,.55)}
 #fireBtn.on{background:rgba(255,96,64,.9);transform:scale(.96)}
 #wpnBtn{pointer-events:auto;position:absolute;right:calc(var(--sr) + 138px);bottom:calc(var(--sb) + 34px);min-width:92px;height:58px;padding:0 12px;border-radius:10px;background:rgba(0,0,0,.42);border:1px solid rgba(255,255,255,.5);color:#fff;font-weight:700;font-size:17px;line-height:1.05;touch-action:none}
 #wpnBtn small{display:block;font-size:13px;font-weight:600;opacity:.85}
@@ -103,6 +106,7 @@ html,body{background:#0e1319}
 .mode.sel{border-color:var(--olive);box-shadow:inset 4px 0 0 var(--brass);background:var(--chip)}
 .mode:disabled{opacity:.5;cursor:not-allowed}
 .tog{display:flex;align-items:center;gap:10px;font-size:17px;font-weight:600;margin:10px 0 12px}
+#bakCode{width:100%;font:13px/1.35 ui-monospace,Menlo,monospace;padding:8px;border-radius:4px;border:1px solid var(--line);background:var(--chip);color:var(--ink);-webkit-user-select:text;user-select:text;resize:none;margin:4px 0 6px}
 .tog input{width:20px;height:20px;accent-color:var(--olive)}
 .big{display:block;width:100%;border:0;border-radius:4px;background:var(--brass);color:var(--btn-fg);font-weight:800;font-size:24px;letter-spacing:.03em;padding:12px;margin-top:6px}
 .big:disabled{opacity:.45;cursor:not-allowed}
@@ -133,10 +137,12 @@ html,body{background:#0e1319}
   <div id="banner"></div>
   <div id="warn"></div>
   <button id="pauseBtn" aria-label="Pause">❚❚</button>
+  <button id="viewBtn" aria-label="Switch camera view">Cockpit</button>
   <div id="joyHint">Drag here<br>to fly</div>
   <div id="joyBase"><div id="joyKnob"></div></div>
   <button id="wpnBtn" aria-label="Switch weapon"><span id="wpnName"></span><small id="wpnAmmo"></small></button>
   <button id="fireBtn">FIRE</button>
+  <button id="rollBtn" aria-label="Barrel roll">ROLL</button>
   <div id="rot">Turn your phone sideways for a wider view</div>
 </div>
 
@@ -154,15 +160,19 @@ html,body{background:#0e1319}
   <div class="weap" id="pWeap"></div>
   <div class="sect"><span>Mode</span><span>Best</span></div>
   <div id="modes"></div>
+  <div class="sect"><span>Controls</span></div>
+  <div class="chips" id="ctrlChips"></div>
+  <p class="note" id="ctrlNote"></p>
   <div class="sect"><span>Sky</span></div>
   <div class="chips" id="skyChips"></div>
   <div class="sect"><span>Settings</span></div>
   <label class="tog"><input type="checkbox" id="sfxChk"> Sound effects</label>
   <label class="tog"><input type="checkbox" id="musChk"> Music</label>
   <label class="tog"><input type="checkbox" id="invChk"> Invert pitch (drag down to climb)</label>
+  <button id="bakBtn" class="ghost">Back up or restore progress</button>
   <button id="startBtn" class="big">Take off</button>
   <button id="freshBtn" class="ghost hidden">Start from wave 1</button>
-  <p class="help">Drag on the left side to steer. Hold Fire. Tap the weapon button to switch guns.<br>Keyboard: arrows or WASD, Space to fire, Q to switch, Esc to pause.</p>
+  <p class="help">Drag on the left side to steer; hold the stick back to loop. Hold Fire, tap Roll to barrel roll and dodge, tap the weapon button to switch.<br>Keyboard: arrows or WASD, Space to fire, R to roll, Q to switch, Esc to pause.</p>
 </div>
 
 <div id="inter" class="panel center hidden">
@@ -187,10 +197,21 @@ html,body{background:#0e1319}
   <button id="oMenu" class="ghost">Back to hangar</button>
 </div>
 
+<div id="bak" class="panel center hidden">
+  <div class="ptitle">Your progress</div>
+  <p class="note">Copy this code and keep it somewhere safe, like Notes. To restore, paste a saved code into the box and tap Restore. Restoring merges with what you already have, so nothing gets lost.</p>
+  <textarea id="bakCode" rows="4" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
+  <button id="bakCopy" class="big">Copy my code</button>
+  <button id="bakRestore" class="ghost">Restore from pasted code</button>
+  <p class="note" id="bakMsg"></p>
+  <button id="bakClose" class="ghost">Close</button>
+</div>
+
 <div id="pause" class="panel center hidden">
   <div class="ptitle">Paused</div>
   <label class="tog"><input type="checkbox" id="sfxChk2"> Sound effects</label>
   <label class="tog"><input type="checkbox" id="musChk2"> Music</label>
+  <label class="tog"><input type="checkbox" id="advChk2"> Advanced flight (free, no auto-level)</label>
   <button id="pResume" class="big">Resume</button>
   <button id="pQuit" class="ghost">Quit to hangar</button>
 </div>
@@ -213,32 +234,34 @@ if(save.mode==='campaign')save.mode='endless';
 if(save.weather==='dawn')save.weather='random';if(save.weather==='overcast')save.weather='storm';
 if(!save.unlocked.includes(0))save.unlocked.push(0);
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(save));}catch(e){}}
+try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();}catch(e){}
 
 /* ---------- data ---------- */
 const WEAPONS={
   mg:{id:'mg',name:'MG',full:'Machine guns',rate:.075,dmg:7,speed:290,spread:.012,life:1.5,mat:'mg',scale:[1,1,1],assist:.10},
   cannon:{id:'cannon',name:'Cannon',full:'Autocannon',rate:.32,dmg:38,speed:250,spread:.006,life:1.7,mat:'cannon',scale:[2.2,2.2,1.1],assist:.12},
-  rockets:{id:'rockets',name:'Rockets',full:'Homing rockets',rate:.55,dmg:75,speed:110,spread:0,life:4,mat:'rocket',scale:[1.9,1.9,.9],ammo:10,homing:true}
+  rockets:{id:'rockets',name:'Rockets',full:'Homing rockets',rate:.55,dmg:75,speed:110,spread:0,life:4,mat:'rocket',scale:[1.9,1.9,.9],ammo:10,homing:true},
+  missile:{id:'missile',name:'Missiles',full:'Heat-seeking missiles',rate:.9,dmg:130,speed:40,spread:0,life:9,mat:'rocket',scale:[1.4,1.4,1.5],ammo:4,seeker:true}
 };
 const PLANES=[
-  {name:'Spitfire',role:'Agile interceptor',desc:'Elliptical wings and a light touch. The tightest turner you start with.',speed:62,turn:2.3,hp:100,cfg:'spitfire',weapons:['mg','rockets']},
-  {name:'P-51 Mustang',role:'Long-range escort',desc:'Fast and clean, with six heavy machine guns and rockets.',speed:72,turn:2.15,hp:115,cfg:'p51',weapons:['mg','rockets']},
-  {name:'Fw 190',role:'Heavy-hitting fighter',desc:'Rugged radial-engined fighter that hits hard with cannon.',speed:70,turn:2.05,hp:140,cfg:'fw190',weapons:['mg','cannon']},
-  {name:'Wildcat',role:'Carrier fighter',desc:'Stubby and nearly indestructible. Takes a beating and keeps flying.',speed:63,turn:2.2,hp:190,cfg:'wildcat',weapons:['mg','cannon','rockets']},
-  {name:'Me 262',role:'First jet fighter',desc:'Twin jets, heavy cannon and rocket salvos. Huge speed, wide turns.',speed:90,turn:1.9,hp:150,cfg:'me262',jet:true,weapons:['cannon','rockets']},
-  {name:'F-14 Tomcat',role:'Carrier jet',desc:'Swept wings, twin tails and a rotary cannon.',speed:105,turn:2.25,hp:210,cfg:'f14',jet:true,weapons:['mg','cannon','rockets']},
+  {name:'Spitfire',role:'Agile interceptor',desc:'Elliptical wings and a light touch. The tightest turner you start with.',speed:62,turn:2.3,hp:100,cfg:'spitfire',weapons:['mg','rockets','missile']},
+  {name:'P-51 Mustang',role:'Long-range escort',desc:'Fast and clean, with six heavy machine guns and rockets.',speed:72,turn:2.15,hp:115,cfg:'p51',weapons:['mg','rockets','missile']},
+  {name:'Fw 190',role:'Heavy-hitting fighter',desc:'Rugged radial-engined fighter that hits hard with cannon.',speed:70,turn:2.05,hp:140,cfg:'fw190',weapons:['mg','cannon','missile']},
+  {name:'Wildcat',role:'Carrier fighter',desc:'Stubby and nearly indestructible. Takes a beating and keeps flying.',speed:63,turn:2.2,hp:190,cfg:'wildcat',weapons:['mg','cannon','rockets','missile']},
+  {name:'Me 262',role:'First jet fighter',desc:'Twin jets, heavy cannon and rocket salvos. Huge speed, wide turns.',speed:90,turn:1.9,hp:150,cfg:'me262',jet:true,weapons:['cannon','rockets','missile']},
+  {name:'F-14 Tomcat',role:'Carrier jet',desc:'Swept wings, twin tails and a rotary cannon.',speed:105,turn:2.25,hp:210,cfg:'f14',jet:true,weapons:['mg','cannon','missile'],missileAmmo:8},
   {name:'Lancaster',role:'Heavy bomber',bomber:true,desc:'Four Merlin engines, a huge bomb bay and three gun turrets.',speed:58,turn:1.35,hp:420,cfg:'lancaster',bombs:14,blast:24},
-  {name:'F-16 Falcon',role:'Multirole fighter',desc:'Light, quick and twitchy. A dogfighting classic.',speed:112,turn:2.5,hp:220,cfg:'f16',jet:true,weapons:['mg','cannon','rockets']},
+  {name:'F-16 Falcon',role:'Multirole fighter',desc:'Light, quick and twitchy. A dogfighting classic.',speed:112,turn:2.5,hp:220,cfg:'f16',jet:true,weapons:['mg','cannon','missile'],missileAmmo:8},
   {name:'B-17',role:'Flying Fortress',bomber:true,desc:'Four gun turrets keep fighters honest. Very tough.',speed:60,turn:1.3,hp:540,cfg:'b17',bombs:12,blast:24},
-  {name:'Typhoon',role:'Canard delta',desc:'Eurofighter agility: canards, delta wing, huge climb rate.',speed:115,turn:2.6,hp:225,cfg:'typhoon',jet:true,weapons:['mg','cannon','rockets']},
+  {name:'Typhoon',role:'Canard delta',desc:'Eurofighter agility: canards, delta wing, huge climb rate.',speed:115,turn:2.6,hp:225,cfg:'typhoon',jet:true,weapons:['mg','cannon','missile'],missileAmmo:8},
   {name:'F-117',role:'Stealth attack',bomber:true,desc:'Nearly invisible to radar. Few bombs, but they steer onto the target.',speed:78,turn:1.65,hp:280,cfg:'f117',jet:true,bombs:8,blast:26,power:1.6,guided:true,stealth:.6},
-  {name:'F-22 Raptor',role:'Air superiority',desc:'Stealthy, fast and brutally agile.',speed:120,turn:2.65,hp:240,cfg:'f22',jet:true,weapons:['mg','cannon','rockets']},
+  {name:'F-22 Raptor',role:'Air superiority',desc:'Stealthy, fast and brutally agile.',speed:120,turn:2.65,hp:240,cfg:'f22',jet:true,weapons:['mg','cannon','missile'],missileAmmo:8},
   {name:'B-1B Lancer',role:'Supersonic bomber',bomber:true,desc:'Fast, with a huge load and self-defence missiles.',speed:100,turn:1.25,hp:460,cfg:'b1b',jet:true,bombs:24,blast:22,missiles:true},
-  {name:'Su-57 Felon',role:'Super-manoeuvrable',desc:'The tightest-turning jet you can fly.',speed:118,turn:2.75,hp:235,cfg:'su57',jet:true,weapons:['mg','cannon','rockets']},
+  {name:'Su-57 Felon',role:'Super-manoeuvrable',desc:'The tightest-turning jet you can fly.',speed:118,turn:2.75,hp:235,cfg:'su57',jet:true,weapons:['mg','cannon','missile'],missileAmmo:8},
   {name:'B-2 Spirit',role:'Stealth bomber',bomber:true,desc:'A flying wing that slips past radar, carrying the biggest bombs.',speed:82,turn:1.3,hp:500,cfg:'b2',jet:true,bombs:16,blast:32,power:1.3,stealth:.45},
-  {name:'J-20',role:'Long-range stealth',desc:'Long canard delta built for speed and heavy hits.',speed:122,turn:2.35,hp:250,cfg:'j20',jet:true,weapons:['mg','cannon','rockets']},
-  {name:'F-35',role:'Stealth multirole',desc:'Tough, well armed and sensor-heavy.',speed:110,turn:2.4,hp:265,cfg:'f35',jet:true,weapons:['mg','cannon','rockets']},
-  {name:'SR-71 Blackbird',role:'Mach 3 interceptor',desc:'Nothing outruns it. Armed with missiles like its YF-12 interceptor sibling.',speed:140,turn:1.65,hp:220,cfg:'sr71',jet:true,weapons:['rockets'],rocketAmmo:28}
+  {name:'J-20',role:'Long-range stealth',desc:'Long canard delta built for speed and heavy hits.',speed:122,turn:2.35,hp:250,cfg:'j20',jet:true,weapons:['mg','cannon','missile'],missileAmmo:8},
+  {name:'F-35',role:'Stealth multirole',desc:'Tough, well armed and sensor-heavy.',speed:110,turn:2.4,hp:265,cfg:'f35',jet:true,weapons:['mg','cannon','missile'],missileAmmo:8},
+  {name:'SR-71 Blackbird',role:'Mach 3 interceptor',desc:'Nothing outruns it. Armed with heat-seekers like its YF-12 interceptor sibling.',speed:140,turn:1.65,hp:220,cfg:'sr71',jet:true,weapons:['missile'],missileAmmo:20}
 ];
 // endless-mode unlocks: wave cleared -> plane index
 const UNLOCK_AT={1:1,2:2,3:3,4:4,5:5,7:6,10:7,13:8,15:9,18:10,20:11,23:12,25:13,28:14,30:15,35:16,40:17};
@@ -359,10 +382,12 @@ function waveSpec(mode,n){
   if(mode==='bomber')return{f:0,h:0};
   if(mode==='campaign')return[{f:3,h:0},{f:4,h:0},{f:4,h:1},{f:5,h:2},{boss:true,f:2,h:0}][n-1];
   if(n%5===0){const k=n/5;return{boss:true,f:Math.min(1+k,6),h:Math.min(k-1,3),bossHp:1+(k-1)*.45};}
-  return{f:Math.min(2+Math.round(n*.6),10),h:Math.min(Math.floor((n-1)/3),4)};
+  const g=Math.log(1+(n-1)/6);return{f:3+Math.floor(2.6*g),h:Math.max(0,Math.floor((g-.5)*2))};
 }
 const AREA=new THREE.Vector3(0,0,400);
 function diffLvl(){return G.mode==='bossrush'?5:G.wave;}
+// one curve for everything: rises steadily from wave 1 and keeps rising, but more gently the further you get
+function diffG(){return Math.log(1+(diffLvl()-1)/6);}
 
 /* ---------- three setup ---------- */
 const canvas=$('c');
@@ -440,7 +465,7 @@ document.body.appendChild(probe);
 function resize(){
   W=canvas.clientWidth||window.innerWidth;H=canvas.clientHeight||window.innerHeight;DPR=Math.min(window.devicePixelRatio||1,2);
   renderer.setSize(W,H,false);
-  camera.aspect=W/H;camera.fov=W<H?80:62;camera.updateProjectionMatrix();
+  camera.aspect=W/H;camera.fov=(W<H?80:62)+(P&&P.cockpitBits?12:0);camera.updateProjectionMatrix();
   ov.width=Math.round(W*DPR);ov.height=Math.round(H*DPR);
   const cs=getComputedStyle(probe);
   insets.t=parseFloat(cs.paddingTop)||0;insets.r=parseFloat(cs.paddingRight)||0;insets.b=parseFloat(cs.paddingBottom)||0;insets.l=parseFloat(cs.paddingLeft)||0;
@@ -779,7 +804,7 @@ const bullets=[];
 function spawnBullet(){
   let b=null;for(let i=0;i<bullets.length;i++)if(!bullets[i].alive){b=bullets[i];break;}
   if(!b){if(bullets.length>=500)return null;b={mesh:new THREE.Mesh(bulGeo,BM.mg),pos:new THREE.Vector3(),prev:new THREE.Vector3(),vel:new THREE.Vector3(),alive:false};scene.add(b.mesh);bullets.push(b);}
-  b.alive=true;b.mesh.visible=true;b.target=null;b.rocket=false;b.smokeT=0;return b;
+  b.alive=true;b.mesh.visible=true;b.target=null;b.rocket=false;b.missile=false;b.smokeT=0;return b;
 }
 function killBullet(b){b.alive=false;b.mesh.visible=false;}
 function clearBullets(){for(const b of bullets)killBullet(b);}
@@ -850,7 +875,7 @@ shadow.renderOrder=1;scene.add(shadow);
 
 /* ---------- state ---------- */
 const G={state:'boot',prev:null,mode:save.mode,wave:1,score:0,T:0,tk:0,shake:0,bannerT:0,clearT:0,deadT:0,bossRef:null,plane:save.plane,lastUnlock:-1,aim:null,lock:null,flash:0,weather:'sunny',shadowK:.5,night:false,spotted:false,storm:false,lflash:0};
-const P={obj:null,spec:null,heading:0,pitch:0,roll:0,hp:100,maxHp:100,cool:0,wi:0,ammo:{},fwd:new THREE.Vector3(0,0,1),vel:new THREE.Vector3(),alive:true,side:1,smokeT:0};
+const P={q:new THREE.Quaternion(),rollT:0,rollCD:0,evadeT:0,lockT:0,seekT:null,obj:null,spec:null,heading:0,pitch:0,roll:0,hp:100,maxHp:100,cool:0,wi:0,ammo:{},fwd:new THREE.Vector3(0,0,1),vel:new THREE.Vector3(),alive:true,side:1,smokeT:0};
 const enemies=[];
 let preview=null,previewIdx=-1,menuAng=0;
 const camLook=new THREE.Vector3();
@@ -859,7 +884,12 @@ const tA=new THREE.Vector3(),tB=new THREE.Vector3(),tC=new THREE.Vector3(),tD=ne
 function setPlayerPlane(i){
   if(P.obj){scene.remove(P.obj);disposeObj(P.obj);}
   P.spec=PLANES[i];P.obj=buildPlane(P.spec,false);scene.add(P.obj);
+  const c=CFG[P.spec.cfg];
+  if(c.canopy){const C=c.canopy,rr=fusR((C.z+c.L/2)/c.L,c.R,c.noseR,c.tailR)*1.08*.72;P.eye=new THREE.Vector3(0,rr+C.r*.8+.38,C.z-.25);}
+  else P.eye=new THREE.Vector3(0,1.6,2.3);
+  P.obj.traverse(o=>{if(o.material===propDiscMat)o.userData.disc=true;});
 }
+function setCockpitBits(inCockpit){if(!P.obj||P.cockpitBits===inCockpit)return;P.cockpitBits=inCockpit;P.obj.traverse(o=>{if(o.userData.disc)o.visible=!inCockpit;});for(const pr of P.obj.userData.props)pr.visible=!inCockpit;const f=(W<H?80:62)+(inCockpit?12:0);if(camera.fov!==f){camera.fov=f;camera.updateProjectionMatrix();}}
 function applyPlayerTransform(){
   P.obj.rotation.set(-P.pitch,P.heading,P.roll,'YXZ');
   P.fwd.set(Math.sin(P.heading)*Math.cos(P.pitch),Math.sin(P.pitch),Math.cos(P.heading)*Math.cos(P.pitch));
@@ -897,7 +927,7 @@ function heal(touches){
   if(joyId!==null&&String(joyId)[0]==='t'&&!live.has(joyId))joyRelease();
   if(fireId!==null&&!live.has(fireId))fireUp();
 }
-const uiTarget=t=>t&&t.closest&&t.closest('.panel,label,input,#pauseBtn,#wpnBtn,#skipBtn');
+const uiTarget=t=>t&&t.closest&&t.closest('.panel,label,input,textarea,#pauseBtn,#wpnBtn,#skipBtn,#rollBtn,#viewBtn');
 document.addEventListener('touchstart',e=>{
   heal(e.touches);
   for(const t of e.changedTouches){
@@ -934,12 +964,18 @@ function ptrEnd(e){if(e.pointerType==='touch')return;const id='p'+e.pointerId;if
 document.addEventListener('pointerup',ptrEnd);document.addEventListener('pointercancel',ptrEnd);
 fireBtn.addEventListener('contextmenu',e=>e.preventDefault());
 $('wpnBtn').addEventListener('pointerdown',e=>{e.preventDefault();switchWeapon();});
+$('rollBtn').addEventListener('pointerdown',e=>{e.preventDefault();doRoll();});
+function toggleView(){save.view=save.view==='cockpit'?'chase':'cockpit';persist();syncViewBtn();}
+function syncViewBtn(){$('viewBtn').textContent=save.view==='cockpit'?'Chase view':'Cockpit';}
+$('viewBtn').addEventListener('pointerdown',e=>{e.preventDefault();toggleView();});syncViewBtn();
 window.addEventListener('keydown',e=>{
   keys[e.code]=true;
   if(e.code==='Space'||e.code.startsWith('Arrow'))e.preventDefault();
   if(e.repeat)return;
   if((e.code==='KeyQ'||e.code==='KeyE')&&flying())switchWeapon();
+  if(e.code==='KeyR'||e.code==='ShiftLeft'||e.code==='ShiftRight')doRoll();
   if(e.code==='Escape'||e.code==='KeyP')togglePause();
+  if(e.code==='KeyV'&&flying())toggleView();
 });
 window.addEventListener('keyup',e=>{keys[e.code]=false;});
 window.addEventListener('blur',resetInput);
@@ -1041,6 +1077,8 @@ const SFX={
   bombDrop(){if(!this.ok())return;const t=AU.ctx.currentTime;tn(t,.12,'square',190,110,.08);tn(t+.15,2.4,'sine',1500,480,.025,.3);},
   gunner(){if(!this.ok())return;nz(AU.ctx.currentTime,.05,'bandpass',2000,1300,.9,.12);},
   armor(){if(!this.ok())return;const t=AU.ctx.currentTime;if(t-AU.lastHit<.05)return;AU.lastHit=t;tn(t,.06,'triangle',2600,2200,.07);tn(t,.05,'square',900,700,.03);tn(t,.08,'sine',220,120,.25,.002,AU.boomBus);},
+  missile(){if(!this.ok())return;const t=AU.ctx.currentTime;nz(t,1.2,'bandpass',400,2200,1.1,.4,.05);bz(t,.8,'lowpass',500,200,.7,.4,.03);tn(t,.15,'square',220,140,.05);},
+  whoosh(){if(!this.ok())return;nz(AU.ctx.currentTime,.7,'bandpass',600,1800,1.6,.25,.15);},
   click(){if(!this.ok())return;tn(AU.ctx.currentTime,.05,'sine',900,600,.08);}
 };
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('button');if(b&&b.id!=='fireBtn'&&b.id!=='wpnBtn')SFX.click();});
@@ -1331,12 +1369,13 @@ function flakBurst(p){
     else if(d<32)G.shake=Math.max(G.shake,.25);
   }
 }
+function killLight(L){if(!L.alive)return;L.alive=false;L.falling=true;L.beam.visible=L.glow.visible=false;L.lamp.visible=false;L.lock=false;explode(L.pos,false);G.score+=150;banner('Searchlight down','+150');}
 function hitLights(b){
   for(const L of lights){
     if(!L.alive)continue;
     if(segHit(b.prev,b.pos,L.pos,10)){
       L.hp-=b.dmg;spark(b.pos);SFX.hit();
-      if(L.hp<=0){L.alive=false;L.falling=true;L.beam.visible=L.glow.visible=false;L.lamp.visible=false;L.lock=false;explode(L.pos,false);G.score+=150;banner('Searchlight down','+150');}
+      if(L.hp<=0)killLight(L);
       return true;
     }
   }
@@ -1560,7 +1599,7 @@ function beginTakeoff(){
   camera.clearViewOffset();
   setPlayerPlane(G.plane);
   clearTarget();G.sight=false;P.bombs=P.spec.bombs||0;$('fireBtn').textContent=bomberMode()?'BOMB':'FIRE';
-  P.hp=P.maxHp=P.spec.hp;P.ammo={rockets:P.spec.rocketAmmo||WEAPONS.rockets.ammo};P.wi=0;P.cool=0;P.alive=true;
+  P.hp=P.maxHp=P.spec.hp;P.ammo={rockets:P.spec.rocketAmmo||WEAPONS.rockets.ammo,missile:P.spec.missileAmmo||WEAPONS.missile.ammo};P.lockT=0;P.seekT=null;G.seekCand=null;P.wi=0;P.cool=0;P.alive=true;
   P.heading=0;P.pitch=0;P.roll=0;P.vapor=0;P.obj.position.set(0,P.obj.userData.groundY,-140);P.obj.visible=true;P.obj.userData.gear.visible=true;applyPlayerTransform();resetTrails();
   resetInput();G.state='takeoff';G.tk=0;applyWeather(pickWeather());setMood(waveSpec(G.mode,G.wave).boss?'boss':'battle');
   const label=G.mode==='bossrush'?'Boss Rush':'Wave '+G.wave;
@@ -1571,6 +1610,8 @@ function beginTakeoff(){
 function endTakeoff(skipped){
   P.obj.userData.gear.visible=false;
   if(skipped){resetTrails();P.obj.position.set(0,45,110);P.pitch=.18;applyPlayerTransform();camera.position.copy(P.obj.position).addScaledVector(P.fwd,-21);camera.position.y+=6.5;camLook.copy(P.obj.position).addScaledVector(P.fwd,40);}
+  syncQ();P.rollT=0;P.rollCD=0;P.evadeT=0;P.inverted=false;camUp.set(0,1,0);
+  $('rollBtn').classList.toggle('hidden',!!P.spec.bomber);
   $('tk').classList.add('hidden');document.body.classList.remove('cine');
   $('hud').classList.remove('hidden');
   startWave();
@@ -1580,7 +1621,7 @@ function startWave(){
   if(bomberMode()){startBomberRound();return;}
   const w=waveSpec(G.mode,G.wave);
   G.state='battle';G.escorts=false;
-  const mul=G.mode==='endless'?1+.06*(G.wave-1):1;
+  const mul=G.mode==='endless'?1+.04*(G.wave-1):1;
   const kind=w.boss?bossKind():null;if(kind)G.lastBoss=kind;
   const nf=kind==='aces'?0:(kind==='fortress'?Math.max(0,w.f-2):w.f),nh=kind==='aces'?0:w.h;
   for(let i=0;i<nf;i++)spawnEnemy('fighter',mul);
@@ -1597,7 +1638,7 @@ function spawnEnemy(type,mul,at){
   else{const ang=P.heading+rand(-.7,.7),d=rand(520,820);obj.position.set(P.obj.position.x+Math.sin(ang)*d,rand(90,260),P.obj.position.z+Math.cos(ang)*d);}
   const dir=new THREE.Vector3(P.obj.position.x-obj.position.x,0,P.obj.position.z-obj.position.z).normalize();
   scene.add(obj);
-  enemies.push({obj,type,hp:t.hp*mul,maxHp:t.hp*mul,dir,speed:t.speed*rand(.95,1.08)*(1+Math.min(.35,.01*(diffLvl()-1)))+Math.max(0,P.spec.speed-62)*.45,turn:t.turn*(1+Math.min(.3,.01*(diffLvl()-1))),r:t.r,dmg:t.dmg*Math.min(1.6,1+.02*(diffLvl()-1)),score:t.score,cool:rand(3,5),burst:0,bt:0,state:'attack',timer:0,falling:false,fallT:0,smokeT:0,boss:false,bank:0,breakDir:new THREE.Vector3(),seed:rand(0,TAU)});
+  enemies.push({obj,type,hp:t.hp*mul,maxHp:t.hp*mul,dir,speed:t.speed*rand(.95,1.08)*(1+.07*diffG())+Math.max(0,P.spec.speed-62)*.38,turn:t.turn*(1+.06*diffG()),r:t.r,dmg:t.dmg*(1+.15*diffG()),score:t.score,cool:rand(3,5),burst:0,bt:0,state:'attack',timer:0,falling:false,fallT:0,smokeT:0,boss:false,bank:0,breakDir:new THREE.Vector3(),seed:rand(0,TAU)});
 }
 /* ---------- boss roster: bomber, zeppelin, ace squadron, flying fortress ---------- */
 const BOSS_ORDER=['bomber','zeppelin','aces','fortress'];
@@ -1745,7 +1786,7 @@ $('oFresh').onclick=()=>{startSortie(1);};
 $('oMenu').onclick=()=>toMenu();
 function togglePause(){
   if(G.state==='paused'){resetInput();G.state=G.prev;AU.paused=false;$('pause').classList.add('hidden');return;}
-  if(flying()){G.prev=G.state;G.state='paused';resetInput();AU.paused=true;syncAudioToggles();$('pause').classList.remove('hidden');}
+  if(flying()){G.prev=G.state;G.state='paused';resetInput();AU.paused=true;syncAudioToggles();$('advChk2').checked=!!save.advanced;$('pause').classList.remove('hidden');}
 }
 $('pauseBtn').onclick=togglePause;$('pResume').onclick=togglePause;
 $('pQuit').onclick=()=>{AU.paused=false;$('pause').classList.add('hidden');const prevBest=save.best[G.mode]||0;if(G.score>prevBest){save.best[G.mode]=G.score;persist();}toMenu();};
@@ -1775,7 +1816,10 @@ function renderMenu(){
     if(lk&&save.mode===m.id)modeOk=false;
   }
   if(!modeOk){save.mode='endless';persist();return renderMenu();}
-  $('invChk').checked=!!save.invert;syncAudioToggles();
+  $('invChk').checked=!!save.invert;syncAudioToggles();$('advChk2').checked=!!save.advanced;
+  const cc=$('ctrlChips');cc.innerHTML='';
+  for(const [v,label] of[[false,'Normal'],[true,'Advanced']]){const b=document.createElement('button');b.className='chip'+(!!save.advanced===v?' sel':'');b.textContent=label;b.onclick=()=>{save.advanced=v;persist();renderMenu();};cc.appendChild(b);}
+  $('ctrlNote').textContent=save.advanced?'Stick rolls the plane directly and nothing auto-levels: loops, Immelmanns and inverted flight are all yours. Roll does a half roll.':'Stick turns and the plane levels itself. Roll does a full barrel roll that dodges bullets.';
   const sk=$('skyChips');sk.innerHTML='';
   for(const k of['random',...Object.keys(WEATHERS)]){const b=document.createElement('button');b.className='chip'+((save.weather||'random')===k?' sel':'');b.textContent=k==='random'?'Random':WEATHERS[k].name;
     b.onclick=()=>{save.weather=k;persist();applyWeather(pickWeather());renderMenu();};sk.appendChild(b);}
@@ -1791,7 +1835,21 @@ function hangarList(){return save.mode==='bomber'?BOMBERS:FIGHTERS;}
 function hangarKey(){return save.mode==='bomber'?'bplane':'plane';}
 $('prevP').onclick=()=>{const L=hangarList(),k=hangarKey(),j=L.indexOf(save[k]);save[k]=L[(j+L.length-1)%L.length];persist();renderMenu();};
 $('nextP').onclick=()=>{const L=hangarList(),k=hangarKey(),j=L.indexOf(save[k]);save[k]=L[(j+1)%L.length];persist();renderMenu();};
+function saveCode(){return 'SKY1:'+btoa(unescape(encodeURIComponent(JSON.stringify(save))));}
+$('bakBtn').onclick=()=>{$('bakCode').value=saveCode();$('bakMsg').textContent='';$('bak').classList.remove('hidden');};
+$('bakClose').onclick=()=>$('bak').classList.add('hidden');
+$('bakCopy').onclick=()=>{const v=saveCode();$('bakCode').value=v;const done=()=>{$('bakMsg').textContent='Copied. Paste it into Notes to keep it safe.';};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(v).then(done,()=>{$('bakCode').select();$('bakMsg').textContent='Select the code above and copy it.';});else{$('bakCode').select();$('bakMsg').textContent='Select the code above and copy it.';}};
+$('bakRestore').onclick=()=>{
+  try{const o=JSON.parse(decodeURIComponent(escape(atob($('bakCode').value.trim().replace(/^SKY1:/,'')))));if(!o||!Array.isArray(o.unlocked))throw 0;
+    for(const i of o.unlocked)if(!save.unlocked.includes(i))save.unlocked.push(i);
+    for(const k in(o.best||{}))save.best[k]=Math.max(save.best[k]||0,o.best[k]||0);
+    for(const k in(o.reach||{}))save.reach[k]=Math.max(save.reach[k]||1,o.reach[k]||1);
+    if(o.bossBeaten)save.bossBeaten=true;persist();renderMenu();$('bakMsg').textContent='Progress restored: '+save.unlocked.length+' planes unlocked.';
+  }catch(e){$('bakMsg').textContent='That code did not work. Make sure you pasted all of it.';}
+};
 $('invChk').onchange=e=>{save.invert=e.target.checked;persist();};
+$('advChk2').onchange=e=>{save.advanced=e.target.checked;persist();};
 $('startBtn').onclick=()=>{if(!save.unlocked.includes(save[hangarKey()]))return;startSortie(reachOf(save.mode));};
 $('freshBtn').onclick=()=>{if(!save.unlocked.includes(save[hangarKey()]))return;startSortie(1);};
 
@@ -1834,6 +1892,39 @@ function findTarget(cone,maxD){
   return best;
 }
 function enemyVel(e,out){return out.copy(e.dir).multiplyScalar(e.speed);}
+/* ---------- aerobatic flight for fighters: quaternion attitude, unlimited pitch, barrel rolls ---------- */
+const _qa=new THREE.Quaternion(),_ax=new THREE.Vector3(),_lx=new THREE.Vector3(),_ly=new THREE.Vector3(),WUP=new THREE.Vector3(0,1,0),_eul=new THREE.Euler(),camUp=new THREE.Vector3(0,1,0);
+function syncQ(){P.q.setFromEuler(_eul.set(-P.pitch,P.heading,P.roll,'YXZ'));}
+function readQ(){
+  P.obj.quaternion.copy(P.q);P.fwd.set(0,0,1).applyQuaternion(P.q);
+  _lx.set(1,0,0).applyQuaternion(P.q);_ly.set(0,1,0).applyQuaternion(P.q);
+  P.heading=Math.atan2(P.fwd.x,P.fwd.z);P.pitch=Math.asin(clamp(P.fwd.y,-1,1));P.roll=Math.atan2(_lx.y,_ly.y);
+}
+function aeroFly(dt,ix,iy,s){
+  const q=P.q,adv=!!save.advanced;
+  if(adv){ // advanced: stick left/right rolls the plane directly, nothing auto-levels
+    _qa.setFromAxisAngle(_ax.set(0,0,1),ix*3*dt);q.multiply(_qa);
+    _qa.setFromAxisAngle(WUP,-ix*s.turn*.25*dt);q.premultiply(_qa);
+  }else{_qa.setFromAxisAngle(WUP,-ix*s.turn*dt);q.premultiply(_qa);}
+  _qa.setFromAxisAngle(_ax.set(1,0,0),-iy*s.turn*1.15*dt);q.multiply(_qa);       // pitch: no limit, so full back stick loops
+  _lx.set(1,0,0).applyQuaternion(q);_ly.set(0,1,0).applyQuaternion(q);
+  const bank=Math.atan2(_lx.y,_ly.y);
+  if(P.rollT>0){ // normal: full 360 barrel roll; advanced: 180 half roll
+    const step=Math.min(P.rollT,dt);P.rollT-=dt;
+    _qa.setFromAxisAngle(_ax.set(0,0,1),P.rollSpan/P.rollDur*P.rollDir*step);q.multiply(_qa);
+  }else if(!adv&&Math.abs(iy)<.3){
+    let e=ix*.9-bank;e=Math.atan2(Math.sin(e),Math.cos(e));   // normal mode: bank into turns, always settle back upright
+    _qa.setFromAxisAngle(_ax.set(0,0,1),e*Math.min(1,4.5*dt));q.multiply(_qa);
+    if(Math.abs(iy)<.05){const pf=Math.asin(clamp(_ax.set(0,0,1).applyQuaternion(q).y,-1,1)),sg=_ly.y>=0?1:-1;_qa.setFromAxisAngle(_ax.set(1,0,0),sg*pf*.75*dt);q.multiply(_qa);}
+  }
+  q.normalize();readQ();
+}
+function doRoll(){
+  if(!P.spec||P.spec.bomber||!flying()||!P.alive||(P.rollCD||0)>0||P.rollT>0)return;
+  const kx=(keys.ArrowRight||keys.KeyD?1:0)-(keys.ArrowLeft||keys.KeyA?1:0),x=joyId!==null?input.x:kx;
+  const adv=!!save.advanced;P.rollSpan=adv?Math.PI:TAU;P.rollDur=adv?.45:.7;
+  P.rollDir=x<-.1?-1:1;P.rollT=P.rollDur;P.rollCD=adv?.6:1.1;P.evadeT=adv?.4:.5;SFX.whoosh();
+}
 function updatePlayer(dt,auto){
   const s=P.spec;
   let ix=0,iy=0;
@@ -1842,24 +1933,30 @@ function updatePlayer(dt,auto){
     const ky=(keys.ArrowUp||keys.KeyW?1:0)-(keys.ArrowDown||keys.KeyS?1:0);
     ix=joyId!==null?input.x:kx;iy=(joyId!==null?input.y:ky)*(save.invert?-1:1);
   }
-  P.heading-=ix*s.turn*dt;
-  P.pitch+=iy*s.turn*.9*dt;
-  if(Math.abs(iy)<.05)P.pitch*=1-.7*dt;
-  P.pitch=clamp(P.pitch,s.bomber?-.6:-1,s.bomber?.6:1);
   let warn='';
-  const dx=P.obj.position.x-AREA.x,dz=P.obj.position.z-AREA.z;
-  if(dx*dx+dz*dz>1300*1300){
-    const want=Math.atan2(-dx,-dz);let diff=want-P.heading;diff=Math.atan2(Math.sin(diff),Math.cos(diff));
-    P.heading+=clamp(diff,-1,1)*dt*1.3;ix=clamp(-diff,-1,1)*.6;warn='Turn back to the fight';
+  const dx=P.obj.position.x-AREA.x,dz=P.obj.position.z-AREA.z,outside=dx*dx+dz*dz>1300*1300;
+  P.rollCD=Math.max(0,(P.rollCD||0)-dt);P.evadeT=Math.max(0,(P.evadeT||0)-dt);
+  if(s.bomber){
+    P.heading-=ix*s.turn*dt;
+    P.pitch+=iy*s.turn*.9*dt;
+    if(Math.abs(iy)<.05)P.pitch*=1-.7*dt;
+    P.pitch=clamp(P.pitch,-.6,.6);
+    if(outside){
+      const want=Math.atan2(-dx,-dz);let diff=want-P.heading;diff=Math.atan2(Math.sin(diff),Math.cos(diff));
+      P.heading+=clamp(diff,-1,1)*dt*1.3;ix=clamp(-diff,-1,1)*.6;warn='Turn back to the fight';
+    }
+    P.roll+=(ix*.9-P.roll)*Math.min(1,5*dt);
+    applyPlayerTransform();
+  }else{
+    if(outside){const want=Math.atan2(-dx,-dz);let diff=want-P.heading;diff=Math.atan2(Math.sin(diff),Math.cos(diff));ix=clamp(-diff*1.5,-1,1)*.85;warn='Turn back to the fight';}
+    aeroFly(dt,ix,iy,s);
   }
-  P.roll+=(ix*.9-P.roll)*Math.min(1,5*dt);
-  applyPlayerTransform();
   P.vel.copy(P.fwd).multiplyScalar(s.speed);
   P.obj.position.addScaledVector(P.vel,dt);
   const y=P.obj.position.y;
-  if(y<10){P.obj.position.y=10;if(P.pitch<.1)P.pitch=.1;warn='Pull up';}
+  if(y<10){P.obj.position.y=10;if(P.pitch<.1){P.pitch=.1;if(!s.bomber){if(Math.abs(P.roll)>1.6){P.roll=0;P.inverted=false;}syncQ();readQ();}}warn='Pull up';}
   else if(y<38&&P.pitch<-.2)warn='Pull up';
-  if(y>650){P.obj.position.y=650;if(P.pitch>0)P.pitch=0;}
+  if(y>650){P.obj.position.y=650;if(P.pitch>0){P.pitch=0;if(!s.bomber){syncQ();readQ();}}}
   for(const p of P.obj.userData.props)p.rotation.z+=dt*45;
   const vt=clamp(Math.abs(ix)*.85+Math.abs(iy)*.85,0,1);P.vapor+=((s.jet?.18:.05)+.5*Math.pow(vt,1.5)-P.vapor)*Math.min(1,4*dt);
   updateTrails(P.vapor);
@@ -1870,13 +1967,23 @@ function updatePlayer(dt,auto){
     if(G.state==='battle'&&(input.fire||keys.Space))dropBomb();
   }else if(!auto){
     const w=WEAPONS[s.weapons[P.wi]];
-    G.aim=findTarget(w.homing?.5:w.assist,w.homing?900:650);
-    G.lock=w.homing?G.aim:null;
-    if(G.lock&&G.lock!==AU.lastLock)SFX.beep(1320,.08,.05);AU.lastLock=G.lock;
+    if(w.seeker){
+      // seeker head: hold a target in the cone and the lock builds; it keeps tracking after launch
+      const cand=findTarget(.32,1400);
+      if(cand&&cand===P.seekT)P.lockT+=dt;else{P.seekT=cand;P.lockT=0;}
+      G.seekCand=cand;G.aim=null;G.lock=null;
+      AU.toneT=(AU.toneT||0)-dt;
+      if(cand&&AU.toneT<=0){const locked=P.lockT>=.6;AU.toneT=locked?.35:.22;SFX.beep(locked?1500:760,locked?.18:.06,locked?.05:.035);}
+    }else{
+      G.seekCand=null;
+      G.aim=findTarget(w.homing?.5:w.assist,w.homing?900:650);
+      G.lock=w.homing?G.aim:null;
+      if(G.lock&&G.lock!==AU.lastLock)SFX.beep(1320,.08,.05);AU.lastLock=G.lock;
+    }
     if(P.hp/P.maxHp<.25){AU.alarmT-=dt;if(AU.alarmT<=0){AU.alarmT=.9;SFX.beep(880,.12,.045);}}
     P.cool-=dt;
     if(input.fire||keys.Space)fireWeapon(w);
-  }else{G.aim=null;G.lock=null;}
+  }else{G.aim=null;G.lock=null;G.seekCand=null;}
   if(!warn&&G.storm){for(const st of strikes)if(st.phase==='warn'&&Math.hypot(P.obj.position.x-st.x,P.obj.position.z-st.z)<STRIKE_R*1.6){warn='Lightning: get clear!';break;}}
   if(!warn&&G.spotted)warn='Spotted: turn across the beam, dive low or shoot the light';
   $('warn').textContent=warn;
@@ -1886,6 +1993,15 @@ function fireWeapon(w){
   if(w.ammo&&P.ammo[w.id]<=0){P.cool=.3;return;}
   P.cool=w.rate;
   const s=P.spec;
+  if(w.seeker){
+    const tgt=P.lockT>=.6&&P.seekT&&!P.seekT.falling?P.seekT:null;
+    P.side=-P.side;tC.set(P.side*s.span*.18,-1,s.len*.1);P.obj.updateMatrixWorld();P.obj.localToWorld(tC);
+    const b=spawnBullet();if(!b)return;
+    b.owner='p';b.dmg=w.dmg;b.mesh.material=BM.rocket;b.mesh.scale.set(w.scale[0],w.scale[1],w.scale[2]);
+    b.missile=true;b.target=tgt;b.searchT=tgt?9:.4;b.pos.copy(tC);b.prev.copy(tC);b.life=w.life;b.vel.copy(P.fwd).multiplyScalar(s.speed+w.speed);b.mesh.position.copy(tC);
+    P.ammo.missile--;P.lockT=0;P.seekT=null;updateWeaponHud();SFX.missile();
+    return;
+  }
   // muzzle
   if(w.id==='cannon')tC.set(0,0,s.len*.6);
   else{P.side=-P.side;tC.set(P.side*s.span*(w.homing?.2:.28),w.homing?-.9:-.3,s.len*.3);}
@@ -1943,7 +2059,7 @@ function updateEnemy(e,dt){
   if(e.ace&&P.alive){
     e.jinkCD-=dt;
     if(e.hp<e.maxHp*.4&&!e.retreated){e.retreated=true;e.state='break';e.timer=4;e.breakDir.copy(tA).negate().setY(.25).normalize();}
-    else if(e.jinkCD<=0&&e.state==='attack'&&dist<320&&P.fwd.dot(tC.copy(tA).negate())/dist>Math.cos(.14)){e.jinkCD=rand(2.2,3.5);e.state='break';e.timer=1.1;e.breakDir.crossVectors(P.fwd,tD.set(0,1,0)).multiplyScalar(Math.random()<.5?1:-1).setY(rand(-.2,.4)).normalize();}
+    else if(e.jinkCD<=0&&e.state==='attack'&&dist<320&&P.fwd.dot(tC.copy(tA).negate())/dist>Math.cos(.1)){e.jinkCD=rand(3,4.5);e.state='break';e.timer=1.1;e.breakDir.crossVectors(P.fwd,tD.set(0,1,0)).multiplyScalar(Math.random()<.5?1:-1).setY(rand(-.2,.4)).normalize();}
   }
   if(!P.alive){}
   else if(e.state==='attack'){
@@ -1963,14 +2079,14 @@ function updateEnemy(e,dt){
   if(e.hp<e.maxHp*.5){e.smokeT-=dt;if(e.smokeT<=0){e.smokeT=.08;smoke(pos,false);}}
   e.cool-=dt;
   if(P.alive&&G.state==='battle'){
-    if(e.burst>0){e.burst-=dt;e.bt-=dt;if(e.bt<=0){e.bt=.11;enemyShoot(tC.copy(pos).addScaledVector(e.dir,6),dist,210,e.dmg,e.ace?.035:clamp(.075-.007*diffLvl(),.04,.075),'enemy');}}
-    else if(e.cool<=0&&dist<(e.ace?450:400)&&e.dir.dot(tA)/dist>Math.cos(e.ace?.26:.22)){e.burst=e.ace?.9:.7;e.cool=(e.ace?rand(1.2,2):rand(1.8,3.2))*clamp(1.35-.1*diffLvl(),.8,1.35);}
+    if(e.burst>0){e.burst-=dt;e.bt-=dt;if(e.bt<=0){e.bt=.11;enemyShoot(tC.copy(pos).addScaledVector(e.dir,6),dist,210,e.dmg,e.ace?.045:clamp(.075-.012*diffG(),.045,.075),'enemy');}}
+    else if(e.cool<=0&&dist<(e.ace?450:400)&&e.dir.dot(tA)/dist>Math.cos(e.ace?.26:.22)){e.burst=e.ace?.9:.7;e.cool=(e.ace?rand(1.5,2.4):rand(1.8,3.2))*Math.max(.95,1.35-.17*diffG());}
   }
 }
 function updateBoss(e,dt){
   positionBoss(e,dt);
   for(const p of e.obj.userData.props)p.rotation.z+=dt*30;
-  const mul=G.mode==='endless'?1+.06*(G.wave-1):1;
+  const mul=G.mode==='endless'?1+.04*(G.wave-1):1;
   if(!e.enraged&&e.hp<e.maxHp*.5){
     e.enraged=true;
     if(e.kind==='bomber'){banner('Bomber enraged','Escorts launching');for(let i=0;i<3;i++)spawnEnemy('fighter',mul,e.obj.position);}
@@ -2027,11 +2143,36 @@ function segHit(a,b,c,r){
   const L=abx*abx+aby*aby+abz*abz;let t=L>0?(acx*abx+acy*aby+acz*abz)/L:0;t=t<0?0:t>1?1:t;
   const dx=acx-abx*t,dy=acy-aby*t,dz=acz-abz*t;return dx*dx+dy*dy+dz*dz<r*r;
 }
+function missileSeek(b){
+  tA.copy(b.vel).normalize();let best=null,bd=900;
+  for(const e of enemies){if(e.falling)continue;tB.subVectors(e.obj.position,b.pos);const d=tB.length();if(d<bd&&tB.dot(tA)/d>Math.cos(.7)){bd=d;best=e;}}
+  return best;
+}
+function updateMissile(b,dt){
+  if(b.target&&(b.target.falling||b.target.dead))b.target=null;
+  if(!b.target){b.searchT=(b.searchT||0)-dt;if(b.searchT<=0){b.searchT=.25;b.target=missileSeek(b);}}
+  const spd=Math.min(b.vel.length()+170*dt,360);
+  tA.copy(b.vel).normalize();
+  if(b.target){
+    const tp=aimPoint(b.target,b.pos),d=b.pos.distanceTo(tp);
+    enemyVel(b.target,tB);tC.copy(tp).addScaledVector(tB,Math.min(1.5,d/spd)).sub(b.pos).normalize();
+    const ang=Math.acos(clamp(tA.dot(tC),-1,1)),maxA=3.8*dt;if(ang>1e-4)tA.lerp(tC,Math.min(1,maxA/ang)).normalize();
+    if(d<9){ // proximity fuse
+      const t=b.target;explode(b.pos,false);
+      if(t.light){t.hp=0;killLight(t);}else damageEnemy(t,b.dmg,b.pos,null);
+      killBullet(b);return true;
+    }
+  }
+  b.vel.copy(tA).multiplyScalar(spd);
+  b.smokeT-=dt;if(b.smokeT<=0){b.smokeT=.025;spawnPart(b.pos,tmpV.set(0,0,0),0xe2e2e2,.8,3.5,.9,.92);spawnPart(b.pos,ZERO,0xffb050,.6,.2,.06,.9);}
+  return false;
+}
 function updateBullets(dt){
   for(const b of bullets){
     if(!b.alive)continue;
     b.prev.copy(b.pos);
-    if(b.rocket){
+    if(b.missile){if(updateMissile(b,dt))continue;}
+    else if(b.rocket){
       if(b.target&&(b.target.falling||b.target.dead))b.target=null;
       const spd=Math.min(b.vel.length()+dt*90,260);
       if(b.target){tA.subVectors(aimPoint(b.target,b.pos),b.pos).normalize();tB.copy(b.vel).normalize().lerp(tA,Math.min(1,3.2*dt)).normalize();b.vel.copy(tB);}
@@ -2052,7 +2193,7 @@ function updateBullets(dt){
       if(hit&&hp&&hp.armored){spark(b.pos);spark(b.pos);SFX.armor();if(b.rocket)explode(b.pos,false);killBullet(b);continue;}
       if(hit){damageEnemy(hit,b.dmg,b.pos,hp);if(b.rocket)explode(b.pos,false);killBullet(b);continue;}
       if(G.night&&hitLights(b)){killBullet(b);continue;}
-    }else if(P.alive&&segHit(b.prev,b.pos,P.obj.position,4.5)){damagePlayer(b.dmg);killBullet(b);continue;}
+    }else if(P.alive&&!(P.evadeT>0)&&segHit(b.prev,b.pos,P.obj.position,4.5)){damagePlayer(b.dmg);killBullet(b);continue;}
     b.mesh.position.copy(b.pos);tC.copy(b.pos).add(b.vel);b.mesh.lookAt(tC);
   }
 }
@@ -2067,13 +2208,33 @@ function updateParts(dt){
 
 /* ---------- camera ---------- */
 function sightCam(dt){
+  camera.up.set(0,1,0);camUp.set(0,1,0);
   const p=P.obj.position,a=1-Math.exp(-6*dt);predictImpact(predicted);
   tA.set(p.x,p.y-2.6,p.z).addScaledVector(P.fwd,2);camera.position.lerp(tA,a);camLook.lerp(predicted,Math.min(1,a*1.6));camera.lookAt(camLook);
 }
+function turnToward(v,target,maxA){
+  const d=clamp(v.dot(target),-1,1),ang=Math.acos(d);if(ang<1e-4)return v;
+  tD.crossVectors(v,target);if(tD.lengthSq()<1e-8)tD.copy(P.fwd);tD.normalize();
+  return v.applyAxisAngle(tD,Math.min(ang,maxA)).normalize();
+}
+function cockpitCam(){
+  setCockpitBits(true);
+  _ly.set(0,1,0).applyQuaternion(P.obj.quaternion);
+  tA.copy(P.eye);P.obj.localToWorld(tA);camera.position.copy(tA);
+  if(G.shake>0){camera.position.x+=rand(-.4,.4)*G.shake;camera.position.y+=rand(-.4,.4)*G.shake;}
+  camUp.copy(_ly);camera.up.copy(_ly);camLook.copy(tA).addScaledVector(P.fwd,100);camera.lookAt(camLook);
+}
 function chaseCam(dt,k){
   if(bomberMode()&&G.sight&&(G.state==='battle'||G.state==='cleared')){sightCam(dt);return;}
+  if(save.view==='cockpit'&&P.alive&&(G.state==='battle'||G.state==='cleared'||G.state==='inter')){cockpitCam();if(G.shake>0)G.shake=Math.max(0,G.shake-dt*1.5);return;}
+  setCockpitBits(false);
   const p=P.obj.position;const a=1-Math.exp(-k*dt);
-  tA.copy(p).addScaledVector(P.fwd,-21);tA.y+=6.5;camera.position.lerp(tA,a);
+  _ly.set(0,1,0).applyQuaternion(P.obj.quaternion);
+  // the camera only turns over for loops, sustained inverted flight, or advanced mode; never mid-roll
+  const follow=save.advanced?1:(Math.abs(P.fwd.y)>.5||(_ly.y<.25&&!(P.rollT>0)))?1:.18;
+  tC.copy(WUP).lerp(_ly,follow);if(tC.lengthSq()<1e-4)tC.copy(camUp);tC.normalize();
+  turnToward(camUp,tC,3.5*dt);camera.up.copy(camUp);
+  tA.copy(p).addScaledVector(P.fwd,-21).addScaledVector(camUp,6.5);camera.position.lerp(tA,a);
   tB.copy(p).addScaledVector(P.fwd,40);camLook.lerp(tB,Math.min(1,a*1.4));
   if(G.shake>0){camera.position.x+=rand(-1,1)*G.shake;camera.position.y+=rand(-1,1)*G.shake;G.shake=Math.max(0,G.shake-dt*1.5);}
   camera.lookAt(camLook);
@@ -2095,6 +2256,7 @@ function updateTakeoff(dt){
   if(t>5.4)endTakeoff(false);
 }
 function updateMenu(dt){
+  camera.up.set(0,1,0);
   if(!preview)return;
   menuAng+=dt*.22;
   const p=preview.position;
@@ -2154,6 +2316,8 @@ function drawOverlay(){
   drawSkyFx();
   if(!(G.state==='battle'||G.state==='cleared'||G.state==='paused'))return;
   drawStrikeMarks();
+  if(P.cockpitBits){ctx.strokeStyle='rgba(18,22,16,.5)';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(W*.02,H);ctx.lineTo(W*.09,0);ctx.moveTo(W*.98,H);ctx.lineTo(W*.91,0);ctx.stroke();
+    ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(W*.09,2);ctx.quadraticCurveTo(W*.5,H*.05,W*.91,2);ctx.stroke();}
   if(bomberMode())drawBomberOverlay();
   // crosshair
   tA.copy(P.obj.position).addScaledVector(P.fwd,140).project(camera);
@@ -2180,6 +2344,20 @@ function drawOverlay(){
       const sc=Math.min(mx/Math.max(Math.abs(c),1e-3),my/Math.max(Math.abs(s),1e-3));
       const px=W/2+c*sc,py=H/2+s*sc;
       ctx.save();ctx.translate(px,py);ctx.rotate(a);ctx.beginPath();ctx.moveTo(12,0);ctx.lineTo(-6,-8);ctx.lineTo(-6,8);ctx.closePath();ctx.fill();ctx.restore();
+    }
+  }
+  // seeker lock and missile tracking
+  {const c=G.seekCand;
+    if(c&&!c.falling){tA.copy(aimPoint(c,P.obj.position)).project(camera);
+      if(tA.z<1){const x=(tA.x+1)/2*W,y=(1-tA.y)/2*H,prog=clamp(P.lockT/.6,0,1),locked=prog>=1,r=locked?17:42-24*prog;
+        ctx.strokeStyle=locked?'#ff4a3a':'#ffd24a';ctx.lineWidth=2.2;ctx.beginPath();ctx.moveTo(x,y-r);ctx.lineTo(x+r,y);ctx.lineTo(x,y+r);ctx.lineTo(x-r,y);ctx.closePath();ctx.stroke();
+        if(locked){ctx.fillStyle='#ff4a3a';ctx.font='700 13px '+getComputedStyle(document.body).fontFamily;ctx.textAlign='center';ctx.fillText('LOCKED',x,y-r-6);ctx.textAlign='left';}}}
+    for(const b of bullets){
+      if(!b.alive||!b.missile||!b.target||b.target.falling)continue;
+      tA.copy(aimPoint(b.target,b.pos)).project(camera);const behind=tA.z>1;let x=(tA.x+1)/2*W,y=(1-tA.y)/2*H;
+      if(!behind&&x>10&&x<W-10&&y>10&&y<H-10){ctx.strokeStyle='#ffb347';ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,13,0,TAU);ctx.stroke();}
+      else{let dx=tA.x,dy=-tA.y;if(behind){dx=-dx;dy=-dy;}const a=Math.atan2(dy,dx),cc=Math.cos(a),ss=Math.sin(a),sc=Math.min((W/2-52)/Math.max(Math.abs(cc),1e-3),(H/2-52)/Math.max(Math.abs(ss),1e-3));
+        ctx.save();ctx.translate(W/2+cc*sc,H/2+ss*sc);ctx.rotate(a);ctx.strokeStyle='#ffb347';ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(-6,-10);ctx.lineTo(6,0);ctx.lineTo(-6,10);ctx.moveTo(-14,-10);ctx.lineTo(-2,0);ctx.lineTo(-14,10);ctx.stroke();ctx.restore();}
     }
   }
   // lead / lock
@@ -2242,7 +2420,7 @@ function update(dt){
     for(const e of enemies)updateEnemy(e,dt);
     for(let i=enemies.length-1;i>=0;i--)if(enemies[i].dead){scene.remove(enemies[i].obj);disposeObj(enemies[i].obj);enemies.splice(i,1);}
     updateBullets(dt);updateParts(dt);updateHud(dt);
-    camera.lookAt(camLook);
+    camUp.lerp(WUP,.05).normalize();camera.up.copy(camUp);camera.lookAt(camLook);
     if(st==='dead'){G.deadT+=dt;if(G.deadT>2.4)finish(false);}
   }
 }
