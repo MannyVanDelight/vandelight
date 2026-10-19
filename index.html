@@ -431,11 +431,19 @@
         <div><strong style="display:block;color:var(--accent-color);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:2px;font-size:.7rem">Technique</strong>Cinematic VFX compositing, AI concept art wrestling, 3D prop modeling, interactive polling, and Bitcoin Ordinals integration.</div>
         <div><strong style="display:block;color:var(--accent-color);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:2px;font-size:.7rem">Theme</strong>Who needs a predictable Hollywood script when you can hand the steering wheel to a horde of passionate internet rascals?</div>
       </div>
+
+            <!-- Shattered Dawn: character approach stills (lightbox) -->
+      <div style="max-width:900px;margin:0 auto 2.5rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem">
+        <button data-still="sdJae" data-title="Jae-Min — Shattered Dawn" onClick="{{ openStill }}" aria-label="Open Jae-Min image" style="display:block;width:100%;padding:0;border:1px solid var(--border-color);border-radius:4px;overflow:hidden;background:none;transition:border-color .4s" style-hover="border-color:var(--accent-color)">
+          <img data-img="sdJae" alt="Jae-Min — Shattered Dawn" loading="lazy" decoding="async" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background-image:repeating-linear-gradient(45deg,var(--stripe-a) 0 9px,var(--stripe-b) 9px 18px)">
+        </button>
+        <button data-still="sdLayla" data-title="Layla — Shattered Dawn" onClick="{{ openStill }}" aria-label="Open Layla image" style="display:block;width:100%;padding:0;border:1px solid var(--border-color);border-radius:4px;overflow:hidden;background:none;transition:border-color .4s" style-hover="border-color:var(--accent-color)">
+          <img data-img="sdLayla" alt="Layla — Shattered Dawn" loading="lazy" decoding="async" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background-image:repeating-linear-gradient(45deg,var(--stripe-a) 0 9px,var(--stripe-b) 9px 18px)">
+        </button>
+      </div>
+
       <div style="max-width:900px;margin:0 auto;padding-bottom:7rem">
-        <figure style="margin:0 0 2.5rem">
-          <img data-img="sdHero" alt="Shattered Dawn key visual" loading="lazy" decoding="async" style="width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:4px;border:1px solid var(--border-color);display:block;background-image:repeating-linear-gradient(45deg,var(--stripe-a) 0 9px,var(--stripe-b) 9px 18px)">
-          <figcaption style="font-family:'Montserrat',sans-serif;font-size:.75rem;line-height:1.6;color:var(--text-muted);margin-top:.6rem;font-style:italic">Shattered Dawn — where cinema, community choice, and digital lore collide. The audience decides who survives, what gets built, and where the story goes next.</figcaption>
-        </figure>
+       
         <p style="font-size:1.12rem;line-height:1.8;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">Listen up, fellow rascals.</p>
         <p style="font-size:1.12rem;line-height:1.8;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">For decades, traditional filmmaking has treated audiences like passive passengers: you sit in a dark room, eat your overpriced popcorn, and watch whatever pre-packaged story a studio executive greenlit three years ago. If a character makes a mind-bogglingly bad decision, you scream at the screen, but nothing changes.</p>
         <p style="font-size:1.12rem;line-height:1.8;color:var(--text-muted);margin-bottom:1.4rem;text-wrap:pretty">I got tired of yelling at the screen. So I thought: <em>What happens if we hand the steering wheel directly to the audience?</em></p>
@@ -529,7 +537,8 @@ class Component extends DCLogic {
     uoFleeting: 'assets/UO-Fleeting-web-meta.jpg',
     uoEchoes: 'assets/UO-Echoes of Delight-web-meta.jpg',
     uoAuramancer: 'assets/UO-Auramancer-web-meta.jpg',
-    sdHero: 'assets/shattered-dawn-hero.jpg'
+    sdJae: 'assets/Jae-Approach.jpg',
+    sdLayla: 'assets/Layla-Approach.jpg'
   };
 
   /* ---------- data ---------- */
@@ -1021,6 +1030,12 @@ class Component extends DCLogic {
         const t = this.tiles[Number(e.currentTarget.dataset.tile)];
         if (!t) return;
         this.setState({ lb: { type: 'image', src: t.src, title: t.label || t.slot } });
+      },
+      openStill: (e) => {
+        const d = e.currentTarget.dataset;
+        const src = this.csImg[d.still];
+        if (!src) return;
+        this.setState({ lb: { type: 'image', src, title: d.title } });
       },
       sendContact: () => this.sendContact(),
       closeLightbox: () => this.setState({ lb: null })
