@@ -468,6 +468,65 @@
       </div>
     </article>
 
+    <article hidden="{{ hideLike2Like }}">
+      <div style="padding:7rem 0 2.5rem;text-align:center;border-bottom:1px solid var(--border-color)">
+        <span style="display:block;font-family:'Cormorant Garamond',serif;font-size:.8rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent-color);margin-bottom:1rem">Automotive CGI</span>
+        <h2 style="font-size:clamp(2.6rem,7vw,6rem);font-weight:400;font-style:italic">Like 2 Like</h2>
+      </div>
+      <div style="max-width:900px;margin:0 auto;padding:2.5rem 0 7rem">
+        <!-- REPLACE with your existing Like 2 Like description if you have one -->
+        <p style="font-size:1.12rem;line-height:1.8;color:var(--text-muted);margin-bottom:2.5rem;text-wrap:pretty;text-align:center">One car. One colour. Nothing else in the frame.</p>
+
+        <!-- Like 2 Like grid (lightbox) -->
+        <div style="display:grid;grid-template-columns:{{ l2lCols }};gap:1.5rem">
+          <figure style="margin:0">
+            <button data-still="l2lReventon" data-title="Reventón — Like 2 Like" onClick="{{ openStill }}" aria-label="Open Reventón image" style="display:block;width:100%;padding:0;border:1px solid var(--border-color);border-radius:4px;overflow:hidden;background:none;transition:border-color .4s" style-hover="border-color:var(--accent-color)">
+              <img data-img="l2lReventon" alt="Reventón top-down render" loading="lazy" decoding="async" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background-image:repeating-linear-gradient(45deg,var(--stripe-a) 0 9px,var(--stripe-b) 9px 18px)">
+            </button>
+            <figcaption style="font-family:'Montserrat',sans-serif;font-size:.75rem;line-height:1.6;color:var(--text-muted);margin-top:.6rem;font-style:italic">Reventón — bronze on rust. Every fighter-jet crease traced in one warm tone.</figcaption>
+          </figure>
+          <figure style="margin:0">
+            <button data-still="l2l918" data-title="918 Concept — Like 2 Like" onClick="{{ openStill }}" aria-label="Open 918 Concept image" style="display:block;width:100%;padding:0;border:1px solid var(--border-color);border-radius:4px;overflow:hidden;background:none;transition:border-color .4s" style-hover="border-color:var(--accent-color)">
+              <img data-img="l2l918" alt="918 Concept top-down render" loading="lazy" decoding="async" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background-image:repeating-linear-gradient(45deg,var(--stripe-a) 0 9px,var(--stripe-b) 9px 18px)">
+            </button>
+            <figcaption style="font-family:'Montserrat',sans-serif;font-size:.75rem;line-height:1.6;color:var(--text-muted);margin-top:.6rem;font-style:italic">918 Concept — acid green, roof off. Only the carbon spine dares to disagree.</figcaption>
+          </figure>
+          <figure style="margin:0">
+            <button data-still="l2lAlpha" data-title="Alpha — Like 2 Like" onClick="{{ openStill }}" aria-label="Open Alpha image" style="display:block;width:100%;padding:0;border:1px solid var(--border-color);border-radius:4px;overflow:hidden;background:none;transition:border-color .4s" style-hover="border-color:var(--accent-color)">
+              <img data-img="l2lAlpha" alt="Alpha top-down render" loading="lazy" decoding="async" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background-image:repeating-linear-gradient(45deg,var(--stripe-a) 0 9px,var(--stripe-b) 9px 18px)">
+            </button>
+            <figcaption style="font-family:'Montserrat',sans-serif;font-size:.75rem;line-height:1.6;color:var(--text-muted);margin-top:.6rem;font-style:italic">Alpha — yellow on yellow. Glass, chrome and curve do the talking.</figcaption>
+          </figure>
+          <figure style="margin:0">
+            <button data-still="l2lColorado" data-title="Colorado ’73 — Like 2 Like" onClick="{{ openStill }}" aria-label="Open Colorado ’73 image" style="display:block;width:100%;padding:0;border:1px solid var(--border-color);border-radius:4px;overflow:hidden;background:none;transition:border-color .4s" style-hover="border-color:var(--accent-color)">
+              <img data-img="l2lColorado" alt="Colorado ’73 top-down render" loading="lazy" decoding="async" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background-image:repeating-linear-gradient(45deg,var(--stripe-a) 0 9px,var(--stripe-b) 9px 18px)">
+            </button>
+            <figcaption style="font-family:'Montserrat',sans-serif;font-size:.75rem;line-height:1.6;color:var(--text-muted);margin-top:.6rem;font-style:italic">Colorado ’73 — violet over violet, with a tangerine cabin as the one loud note.</figcaption>
+          </figure>
+          <figure style="margin:0">
+            <button data-still="l2lDuesenberg" data-title="Duesenberg — Like 2 Like" onClick="{{ openStill }}" aria-label="Open Duesenberg image" style="display:block;width:100%;padding:0;border:1px solid var(--border-color);border-radius:4px;overflow:hidden;background:none;transition:border-color .4s" style-hover="border-color:var(--accent-color)">
+              <img data-img="l2lDuesenberg" alt="Duesenberg top-down render" loading="lazy" decoding="async" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background-image:repeating-linear-gradient(45deg,var(--stripe-a) 0 9px,var(--stripe-b) 9px 18px)">
+            </button>
+            <figcaption style="font-family:'Montserrat',sans-serif;font-size:.75rem;line-height:1.6;color:var(--text-muted);margin-top:.6rem;font-style:italic">Duesenberg — red on red. Chrome pipes and a silver tail break the spell.</figcaption>
+          </figure>
+          <figure style="margin:0">
+            <button data-still="l2l959" data-title="959 — Like 2 Like" onClick="{{ openStill }}" aria-label="Open 959 image" style="display:block;width:100%;padding:0;border:1px solid var(--border-color);border-radius:4px;overflow:hidden;background:none;transition:border-color .4s" style-hover="border-color:var(--accent-color)">
+              <img data-img="l2l959" alt="959 top-down render" loading="lazy" decoding="async" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background-image:repeating-linear-gradient(45deg,var(--stripe-a) 0 9px,var(--stripe-b) 9px 18px)">
+            </button>
+            <figcaption style="font-family:'Montserrat',sans-serif;font-size:.75rem;line-height:1.6;color:var(--text-muted);margin-top:.6rem;font-style:italic">959 — sky on sky, coral leather glowing through the glass.</figcaption>
+          </figure>
+        </div>
+
+        <!-- Centred closer (square) -->
+        <figure style="margin:2.5rem auto 0;max-width:420px">
+          <button data-still="l2lAlphaGlow" data-title="Alpha Glow — Like 2 Like" onClick="{{ openStill }}" aria-label="Open Alpha Glow image" style="display:block;width:100%;padding:0;border:1px solid var(--border-color);border-radius:4px;overflow:hidden;background:none;transition:border-color .4s" style-hover="border-color:var(--accent-color)">
+            <img data-img="l2lAlphaGlow" alt="Alpha Glow rear render" loading="lazy" decoding="async" style="width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background-image:repeating-linear-gradient(45deg,var(--stripe-a) 0 9px,var(--stripe-b) 9px 18px)">
+          </button>
+          <figcaption style="font-family:'Montserrat',sans-serif;font-size:.75rem;line-height:1.6;color:var(--text-muted);margin-top:.6rem;font-style:italic;text-align:center">Alpha Glow — the exception. Black on black, lit only in red.</figcaption>
+        </figure>
+      </div>
+    </article>
+
     <article hidden="{{ hideSoon }}">
       <div style="min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8rem 0 6rem">
         <span style="display:block;font-family:'Montserrat',sans-serif;font-size:.7rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent-color);margin-bottom:1.5rem">In Production</span>
@@ -538,7 +597,14 @@ class Component extends DCLogic {
     uoEchoes: 'assets/UO-Echoes of Delight-web-meta.jpg',
     uoAuramancer: 'assets/UO-Auramancer-web-meta.jpg',
     sdJae: 'assets/Jae-Approach.jpg',
-    sdLayla: 'assets/Layla-Approach.jpg'
+    sdLayla: 'assets/Layla-Approach.jpg',
+    l2lReventon: 'assets/Reventon-web.jpg',
+    l2l918: 'assets/918-Concept-01-web.jpg',
+    l2lAlpha: 'assets/Alpha-01-web.jpg',
+    l2lColorado: 'assets/Colorado73-web.jpg',
+    l2lDuesenberg: 'assets/Duesenberg-01-web.jpg',
+    l2l959: 'assets/Porsche-959-web.jpg',
+    l2lAlphaGlow: 'assets/Alpha-Glow-web.jpg'
   };
 
   /* ---------- data ---------- */
@@ -562,7 +628,7 @@ class Component extends DCLogic {
     { id: 'mooning', title: 'Mooning The Ignorant', sub: 'Animation Loops', badge: 'Case Study', cover: 'assets/1155.jpg' },
     { id: 'shattered', title: 'Shattered Dawn', sub: 'Vote Your Heroine', badge: 'Case Study', cover: 'assets/ShatteredDawn01.jpg' },
     { id: 'melodyssey', title: 'Melodyssey', sub: 'Audio-Visual Odyssey', badge: 'In Production', cover: 'assets/Melodyssey01.jpg' },
-    { id: 'like2like', title: 'Like 2 Like', sub: 'Coming Soon', badge: 'In Production', cover: 'assets/Like2Like.jpg' },
+    { id: 'like2like', title: 'Like 2 Like', sub: 'Automotive CGI', badge: 'Case Study', cover: 'assets/Like2Like.jpg' },
     { id: 'colorburst', title: 'Color Burst Fury', sub: 'Coming Soon', badge: 'In Production', cover: 'assets/Fury.jpg' }
   ].map(p => ({ ...p, slot: p.cover, aria: 'Open ' + p.title }));
 
@@ -928,7 +994,6 @@ class Component extends DCLogic {
     const s = this.state;
     const soonMap = {
       melodyssey: { title: 'Melodyssey', sub: 'Audio-Visual Odyssey', slot: 'assets/Melodyssey01.jpg' },
-      like2like: { title: 'Like 2 Like', sub: 'Project — Coming Soon', slot: 'assets/Like2Like.jpg' },
       colorburst: { title: 'Color Burst Fury', sub: 'Project — Coming Soon', slot: 'assets/Fury.jpg' }
     };
     const soon = soonMap[s.project];
@@ -976,6 +1041,8 @@ class Component extends DCLogic {
       hideUmami: s.project !== 'umami',
       hideMooning: s.project !== 'mooning',
       hideShattered: s.project !== 'shattered',
+      hideLike2Like: s.project !== 'like2like',
+      l2lCols: s.isMobile ? 'repeat(2,1fr)' : 'repeat(3,1fr)',
       hideSoon: !soon,
       soonTitle: soon ? soon.title : '',
       soonSub: soon ? soon.sub : '',
